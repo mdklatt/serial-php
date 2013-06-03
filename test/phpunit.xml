@@ -1,4 +1,4 @@
-<!-- Configuration file for phpunit. -->
+<!-- PHPUnit configuration file for the serial test suite. -->
 <phpunit bootstrap="_env.php">
   <testsuites>
     <testsuite name="serial">
