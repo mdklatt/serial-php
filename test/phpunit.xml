@@ -1,0 +1,9 @@
+<!-- Configuration file for phpunit. -->
+<phpunit bootstrap="_env.php">
+  <testsuites>
+    <testsuite name="serial">
+      <file>test_dtype.php</file>
+      <file>test_reader.php</file>
+    </testsuite>
+  </testsuites>
+</phpunit>
