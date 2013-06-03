@@ -14,7 +14,7 @@ function reject_filter($record)
 }
 
 
-function modify_filter(&$record)
+function modify_filter($record)
 {
     $record["str"] = strtoupper($record["str"]);
     return $record["str"] != "abc" ? $record : null;

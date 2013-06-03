@@ -32,11 +32,8 @@ implements Iterator
      * Based on this record the filter can perform the following actions:
      * 1. Return null to reject the record (the iterator will drop it).
      * 2. Return the data record as is.
-     * 3. Return a new or *modified record.
+     * 3. Return a new/modified record.
      * 4. Throw a StopIteration exception to stop iteration prior to the EOF.
-     *
-     * *Input filters are free to use pass-by-reference and modify the record
-     *  before returning it.
      */
     public function filter($callback=null)
     {
@@ -74,9 +71,8 @@ implements Iterator
                 break;  // EOF
             }
             foreach ($this->_filters as $callback) {
-                // Pass this record through each filter; pass by reference so
-                // the filter can modify the record directly.
-                if (!($record = call_user_func($callback, &$record))) {
+                // Pass this record through each filter.
+                if (!($record = call_user_func($callback, $record))) {
                     break;
                 }
             }
