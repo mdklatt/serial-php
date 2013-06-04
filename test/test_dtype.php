@@ -32,7 +32,7 @@ abstract class _DataTypeTest extends PHPUnit_Framework_TestCase
     public function testEncode()
     {
         $token = $this->_dtype->encode($this->_value);
-        $this->assertEquals($this->_token, $token);
+        $this->assertSame($this->_token, $token);
         return;
     }
 }
@@ -42,8 +42,8 @@ class IntTypeTest extends _DataTypeTest
 {
     protected function setUp()
     {
-        $this->_dtype = new IntType();
-        $this->_token = '123';
+        $this->_dtype = new IntType('%4d');
+        $this->_token = ' 123';
         $this->_value = 123;
         return;
     }
@@ -54,8 +54,8 @@ class FloatTypeTest extends _DataTypeTest
 {
     protected function setUp()
     {
-        $this->_dtype = new FloatType();
-        $this->_token = '1.23';
+        $this->_dtype = new FloatType('%6.3f');
+        $this->_token = ' 1.230';
         $this->_value = 1.23;
         return;
     }
@@ -100,8 +100,8 @@ class ConstTypeTest extends _DataTypeTest
 {
     protected function setUp()
     {
-        $this->_dtype = new ConstType(9999);
-        $this->_token = '9999';
+        $this->_dtype = new ConstType(9999, '%5d');
+        $this->_token = ' 9999';
         $this->_value = 9999;
         return;
     }
@@ -114,7 +114,7 @@ class ConstTypeTest extends _DataTypeTest
     {
         // Test for constant value regardless of input.
         $value = $this->_dtype->decode('');
-        $this->assertEquals($this->_value, $value);
+        $this->assertSame($this->_value, $value);
         return;
     }
 
@@ -126,7 +126,7 @@ class ConstTypeTest extends _DataTypeTest
     {
         // Test for constant value regardless of input.
         $token = $this->_dtype->encode(null);
-        $this->assertEquals($this->_token, $token);
+        $this->assertSame($this->_token, $token);
         return;
     }
 }

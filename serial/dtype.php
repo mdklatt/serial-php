@@ -6,7 +6,7 @@
  * _Reader and _Writer classes are responsible for calling decode() and 
  * encode().
  */
- 
+  
 abstract class _DataType
 {
     public function __construct($callback, $fmt, $default)
@@ -102,7 +102,7 @@ class ConstType extends _DataType
     public function encode($value)
     {
         // Value is ignored.
-        return sprintf('%s', $this->_default);
+        return sprintf($this->_fmt, $this->_default);
     }
 }
 
