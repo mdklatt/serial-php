@@ -33,7 +33,7 @@ abstract class _DataType
         if ($value === null) {
             $value = $this->_default;
         }
-        return sprintf($this->_fmt, $value);
+        return $value !== null ? sprintf($this->_fmt, $value) : "";
     }
 } 
 
@@ -80,7 +80,7 @@ class StringType extends _DataType
         if ($value === null) {
             $value = $this->_default !== null ? $this->_default : '';
         }
-        return $this->_quote.$value.$this->_quote;
+        return $this->_quote.sprintf($this->_fmt, $value).$this->_quote;
     }
 }
 
@@ -127,7 +127,10 @@ class DateTimeType extends _DataType
     public function encode($value)
     {
         if ($value === null) {
-            $value = $this->_default !== null ? $this->_default : '';
+            if ($this->_default === null) {
+                return '';
+            }
+            $value = $this->_default;
         }
         return $value->format($this->_timefmt);
     }

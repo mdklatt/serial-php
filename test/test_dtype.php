@@ -10,29 +10,74 @@ require_once 'dtype.php';
 
 abstract class _DataTypeTest extends PHPUnit_Framework_TestCase
 {    
-    protected $_dtype;
-    protected $_token;
-    protected $_value;
+    protected $dtype;
+    protected $token;
+    protected $value;
+    protected $default_dtype;
+    protected $default_token;
+    protected $defualt_value;
     
     /**
-     * Test the decode method.
+     * Test the decode() method.
      *
      */
     public function testDecode()
     {
-        $value = $this->_dtype->decode($this->_token);
-        $this->assertEquals($this->_value, $value);
+        $value = $this->dtype->decode($this->token);
+        $this->assertEquals($this->value, $value);
+        return;
+    }
+    
+    /**
+     * Test the decode() method for null input.
+     *
+     */
+    public function testDecodeNull()
+    {
+        $this->assertEquals(null, $this->dtype->decode(' '));
         return;
     }
 
+    /**
+     * Test the decode() method for a default value.
+     *
+     */
+    public function testDecodeDefault()
+    {
+        $default_value = $this->default_dtype->decode($this->default_token);
+        $this->assertEquals($this->default_value, $default_value);
+        return;
+    }
+    
     /**
      * Test the encode method.
      *
      */
     public function testEncode()
     {
-        $token = $this->_dtype->encode($this->_value);
-        $this->assertSame($this->_token, $token);
+        $token = $this->dtype->encode($this->value);
+        $this->assertSame($this->token, $token);
+        return;
+    }
+
+    /**
+     * Test the encode() method for null output.
+     *
+     */
+    public function testEncodeNull()
+    {
+        $this->assertSame('', $this->dtype->encode(null));
+        return;
+    }
+
+    /**
+     * Test the decode() method for a default value.
+     *
+     */
+    public function testEncodeDefault()
+    {
+        $default_token = $this->default_dtype->encode($this->default_value);
+        $this->assertSame($this->default_token, $default_token);
         return;
     }
 }
@@ -42,9 +87,13 @@ class IntTypeTest extends _DataTypeTest
 {
     protected function setUp()
     {
-        $this->_dtype = new IntType('%4d');
-        $this->_token = ' 123';
-        $this->_value = 123;
+        $fmt = '%4d';
+        $this->value = 123;
+        $this->token = ' 123';
+        $this->dtype = new IntType($fmt);
+        $this->default_value = -999;
+        $this->default_token = '-999';
+        $this->default_dtype = new IntType($fmt, $this->default_value);
         return;
     }
 }
@@ -54,9 +103,13 @@ class FloatTypeTest extends _DataTypeTest
 {
     protected function setUp()
     {
-        $this->_dtype = new FloatType('%6.3f');
-        $this->_token = ' 1.230';
-        $this->_value = 1.23;
+        $fmt = '%6.3f';
+        $this->value = 1.23;
+        $this->token = ' 1.230';
+        $this->dtype = new FloatType($fmt);
+        $this->default_value = -9.999;
+        $this->default_token = '-9.999';
+        $this->default_dtype = new FloatType($fmt, $this->default_dtype);
         return;
     }
 }
@@ -66,31 +119,39 @@ class StringTypeTest extends _DataTypeTest
 {
     protected function setUp()
     {
-        $this->_dtype = new StringType();
-        $this->_token = 'abc';
-        $this->_value = 'abc';
+        $fmt = '%4s';
+        $this->value = 'abc';
+        $this->token = ' abc';
+        $this->dtype = new StringType($fmt);
+        $this->default_value = 'xyz';
+        $this->default_token = ' xyz';
+        $this->default_dtype = new StringType($fmt, $this->default_dtype);
+        $this->quote_token = '"abc"';
+        $this->quote_dtype = new StringType('%s', '"');
         return;
     }
     
-    private function _setUpQuote()
-    {
-        $this->_dtype = new StringType('%s', '"');
-        $this->_token = '"abc"';
-        $this->_value = 'abc';
-        return;
-    }
-
     public function testDecodeQuote()
     {
-        $this->_setUpQuote();
-        $this->testDecode();
+        $value = $this->quote_dtype->decode($this->quote_token);
+        $this->assertEquals($this->value, $value);
         return;
     }
 
     public function testEncodeQuote()
     {
-        $this->_setUpQuote();
-        $this->testEncode();
+        $quote_token = $this->quote_dtype->encode($this->value);
+        $this->assertEquals($this->quote_token, $quote_token);
+        return;
+    }
+
+    /**
+     * Test the encode() method for null output.
+     *
+     */
+    public function testEncodeNull()
+    {
+        $this->assertSame('    ', $this->dtype->encode(null));
         return;
     }
 }
@@ -100,33 +161,32 @@ class ConstTypeTest extends _DataTypeTest
 {
     protected function setUp()
     {
-        $this->_dtype = new ConstType(9999, '%5d');
-        $this->_token = ' 9999';
-        $this->_value = 9999;
+        $this->value = 9999;
+        $this->token = ' 9999';
+        $this->dtype = new ConstType($this->value, '%5d');
+        $this->default_value = $this->value;
+        $this->default_token = $this->token;
+        $this->default_dtype = $this->dtype;
         return;
     }
 
     /**
-     * Test the decode method.
+     * Test the decode() method for null input.
      *
      */
-    public function testDecode()
+    public function testDecodeNull()
     {
-        // Test for constant value regardless of input.
-        $value = $this->_dtype->decode('');
-        $this->assertSame($this->_value, $value);
+        $this->testDecodeDefault();
         return;
     }
 
     /**
-     * Test the encode method.
+     * Test the encode() method for null input.
      *
      */
-    public function testEncode()
+    public function testEncodeNull()
     {
-        // Test for constant value regardless of input.
-        $token = $this->_dtype->encode(null);
-        $this->assertSame($this->_token, $token);
+        $this->testEncodeDefault();
         return;
     }
 }
@@ -136,9 +196,12 @@ class DateTimeTypeTest extends _DataTypeTest
 {
     protected function setUp()
     {
-        $this->_dtype = new DateTimeType('Ymd');
-        $this->_token = '20130602';
-        $this->_value = DateTime::createFromFormat('Ymd', '20130602');
+        $this->value = DateTime::createFromFormat('Ymd', '20121231');
+        $this->token = '20121231';
+        $this->dtype = new DateTimeType('Ymd');
+        $this->default_value = DateTime::createFromFormat('Ymd', '19010101');
+        $this->default_token = '19010101';
+        $this->default_dtype = new DateTimeType('Ymd', $this->default_value);
         return;
     }
 }
