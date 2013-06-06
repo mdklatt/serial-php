@@ -53,12 +53,6 @@ abstract class _TabularReaderTest extends PHPUnit_Framework_TestCase
         return;
     }
     
-    public function test_fields()
-    {
-        $this->assertEquals(array("str", "int"), $this->_reader->fields());
-        return;
-    }
-    
     public function test_filter()
     {
         $this->_records = array(

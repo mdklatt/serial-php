@@ -121,11 +121,6 @@ abstract class _TabularReader extends _Reader
         return;
     }
     
-    public function fields()
-    {
-        return array_keys($this->_fields);
-    }
-    
     protected function _get()
     {
         if (!($line = @fgets($this->_stream))) {
