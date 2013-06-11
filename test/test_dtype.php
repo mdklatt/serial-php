@@ -44,7 +44,7 @@ abstract class _DataTypeTest extends PHPUnit_Framework_TestCase
      */
     public function testDecodeDefault()
     {
-        $default_value = $this->default_dtype->decode($this->default_token);
+        $default_value = $this->default_dtype->decode(' ');
         $this->assertEquals($this->default_value, $default_value);
         return;
     }
@@ -76,7 +76,7 @@ abstract class _DataTypeTest extends PHPUnit_Framework_TestCase
      */
     public function testEncodeDefault()
     {
-        $default_token = $this->default_dtype->encode($this->default_value);
+        $default_token = $this->default_dtype->encode(null);
         $this->assertSame($this->default_token, $default_token);
         return;
     }
@@ -109,7 +109,7 @@ class FloatTypeTest extends _DataTypeTest
         $this->dtype = new FloatType($fmt);
         $this->default_value = -9.999;
         $this->default_token = '-9.999';
-        $this->default_dtype = new FloatType($fmt, $this->default_dtype);
+        $this->default_dtype = new FloatType($fmt, $this->default_value);
         return;
     }
 }
@@ -125,7 +125,7 @@ class StringTypeTest extends _DataTypeTest
         $this->dtype = new StringType($fmt);
         $this->default_value = 'xyz';
         $this->default_token = ' xyz';
-        $this->default_dtype = new StringType($fmt, $this->default_dtype);
+        $this->default_dtype = new StringType($fmt, '', $this->default_value);
         $this->quote_token = '"abc"';
         $this->quote_dtype = new StringType('%s', '"');
         return;
@@ -141,7 +141,7 @@ class StringTypeTest extends _DataTypeTest
     public function testEncodeQuote()
     {
         $quote_token = $this->quote_dtype->encode($this->value);
-        $this->assertEquals($this->quote_token, $quote_token);
+        $this->assertSame($this->quote_token, $quote_token);
         return;
     }
 
@@ -151,7 +151,7 @@ class StringTypeTest extends _DataTypeTest
      */
     public function testEncodeNull()
     {
-        $this->assertSame('    ', $this->dtype->encode(null));
+        $this->assertSame(str_repeat(' ', 4), $this->dtype->encode(null));
         return;
     }
 }
@@ -204,4 +204,68 @@ class DateTimeTypeTest extends _DataTypeTest
         $this->default_dtype = new DateTimeType('Ymd', $this->default_value);
         return;
     }
+}
+
+
+class ArrayTypeTest extends _DataTypeTest
+{
+    protected function setUp()
+    {
+        $fields = array(
+            "str" => array(0, new StringType()),
+            "int" => array(1, new IntType())
+        );
+        $this->value = array(
+            array("str" => "abc", "int" => 123),
+            array("str" => "def", "int" => 456),
+        );
+        $this->token = array("abc", "123", "def", "456");
+        $this->dtype = new ArrayType($fields);
+        $this->default_value = array(array("str" => "xyz", "int" => -999));
+        $this->default_token = array("xyz", "-999");
+        $this->default_dtype = new ArrayType($fields, $this->default_value);
+        return;
+    }
+    
+    /**
+     * Test the decode() method for null input.
+     *
+     */
+    public function testDecodeNull()
+    {
+        $this->assertEquals(array(), $this->dtype->decode(array()));
+        return;
+    }
+
+    /**
+     * Test the decode() method for a default value.
+     *
+     */
+    public function testDecodeDefault()
+    {
+        $default_value = $this->default_dtype->decode(array());
+        $this->assertEquals($this->default_value, $default_value);
+        return;
+    }
+
+    /**
+     * Test the encode() method for null output.
+     *
+     */
+    public function testEncodeNull()
+    {
+        $this->assertSame(array(), $this->dtype->encode(array()));
+        return;
+    }
+
+    /**
+     * Test the decode() method for a default value.
+     *
+     */
+    public function testEncodeDefault()
+    {
+        $default_token = $this->default_dtype->encode(array());
+        $this->assertSame($this->default_token, $default_token);
+        return;
+    }    
 }

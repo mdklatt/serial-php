@@ -6,6 +6,8 @@
  * _Reader and _Writer classes are responsible for calling decode() and 
  * encode().
  */
+require_once('_util.php'); 
+ 
   
 abstract class _DataType
 {
@@ -136,3 +138,54 @@ class DateTimeType extends _DataType
     }
 }
 
+
+class ArrayType extends _DataType
+{
+    private $_fields = array();
+    
+    public function __construct($fields, $default=array())
+    {
+        parent::__construct(null, '%s', $default);
+        $this->_stride = 0;
+        foreach ($fields as $name => $field) {
+            list($pos, $dtype) = $field;
+            $field = field_type($name, $pos, $dtype);
+            $this->_fields[] = $field;
+            $this->_stride += $field->width;
+        }
+        $this->_default = $default;
+        return;
+    }
+    
+    public function decode($token_array)
+    {
+        if (!$token_array) {
+            return $this->_default;
+        }
+        $token_array = new Sequence($token_array);
+        $value_array = array();
+        foreach (range(0, count($token_array) - 1, $this->_stride) as $beg) {
+            $elem = new Sequence($token_array->get(array($beg, $this->_stride)));
+            $value = array();
+            foreach ($this->_fields as $field) {
+                $value[$field->name] = $field->dtype->decode($elem->get($field->pos));
+            }
+            $value_array[] = $value;
+        }
+        return $value_array;
+    }
+    
+    public function encode($value_array)
+    {
+        if (!$value_array) {
+            $value_array = $this->_default;
+        }
+        $token_array = array();
+        foreach ($value_array as $elem) {
+            foreach ($this->_fields as $field) {
+                $token_array[] = $field->dtype->encode($elem[$field->name]);
+            }
+        }
+        return $token_array;
+    }
+}
