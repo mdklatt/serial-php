@@ -120,8 +120,8 @@ class DateTimeType extends _DataType
     
     public function decode($token)
     {
-        if (!($value = trim($token))) {
-            $value = $this->_default;
+        if (!($token = trim($token))) {
+            return $this->_default;
         }
         return DateTime::createFromFormat($this->_timefmt, $token);
     }
