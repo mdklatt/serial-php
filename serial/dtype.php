@@ -149,8 +149,8 @@ class ArrayType extends _DataType
         $this->_stride = 0;
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
-            $field = field_type($name, $pos, $dtype);
-            $this->_fields[] = $field;
+            $field = new Field($pos, $dtype);
+            $this->_fields[$name] = $field;
             $this->_stride += $field->width;
         }
         $this->_default = $default;
@@ -164,8 +164,8 @@ class ArrayType extends _DataType
         for ($beg = 0; $beg < count($token_array); $beg += $this->_stride) {
             $elem = new Sequence($token_array->get(array($beg, $this->_stride)));
             $value = array();
-            foreach ($this->_fields as $field) {
-                $value[$field->name] = $field->dtype->decode($elem->get($field->pos));
+            foreach ($this->_fields as $name => $field) {
+                $value[$name] = $field->dtype->decode($elem->get($field->pos));
             }
             $value_array[] = $value;
         }
@@ -179,8 +179,8 @@ class ArrayType extends _DataType
         }
         $token_array = array();
         foreach ($value_array as $elem) {
-            foreach ($this->_fields as $field) {
-                $token_array[] = $field->dtype->encode($elem[$field->name]);
+            foreach ($this->_fields as $name => $field) {
+                $token_array[] = $field->dtype->encode($elem[$name]);
             }
         }
         return $token_array;

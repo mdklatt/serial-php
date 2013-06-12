@@ -1,21 +1,18 @@
 <?php
-/**
- * Return a field type.
- *
- */
-function field_type($name, $pos, $dtype)
+
+class Field
 {
-    $field = new stdClass();
-    $field->name = $name;
-    $field->pos = $pos;
-    $field->dtype = $dtype;
-    if (is_array($pos)) {
-        $field->width = $pos[1];        
+    public $pos;
+    public $dtype;
+    public $width;
+    
+    public function __construct($pos, $dtype)
+    {
+        $this->pos = $pos;
+        $this->dtype = $dtype;
+        $this->width = is_array($pos) ? $pos[1] : 1;
+        return;
     }
-    else {
-        $field->width = 1;
-    }
-    return $field;
 }
 
 

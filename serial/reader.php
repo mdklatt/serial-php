@@ -4,6 +4,7 @@
  *
  * Readers parse lines of text into data records.
  */
+require_once('_util.php');
 
 abstract class _Reader
 implements Iterator
@@ -113,9 +114,7 @@ abstract class _TabularReader extends _Reader
         parent::__construct($stream);
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
-            $this->_fields[$name] = new stdClass();
-            $this->_fields[$name]->pos = $pos;
-            $this->_fields[$name]->dtype = $dtype;            
+            $this->_fields[$name] = new Field($pos, $dtype);
         }
         $this->_endl = $endl;
         return;
