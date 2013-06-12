@@ -159,12 +159,9 @@ class ArrayType extends _DataType
     
     public function decode($token_array)
     {
-        if (!$token_array) {
-            return $this->_default;
-        }
         $token_array = new Sequence($token_array);
         $value_array = array();
-        foreach (range(0, count($token_array) - 1, $this->_stride) as $beg) {
+        for ($beg = 0; $beg < count($token_array); $beg += $this->_stride) {
             $elem = new Sequence($token_array->get(array($beg, $this->_stride)));
             $value = array();
             foreach ($this->_fields as $field) {
@@ -172,7 +169,7 @@ class ArrayType extends _DataType
             }
             $value_array[] = $value;
         }
-        return $value_array;
+        return $value_array ? $value_array : $this->_default;
     }
     
     public function encode($value_array)

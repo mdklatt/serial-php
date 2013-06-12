@@ -161,6 +161,7 @@ class DelimitedReader extends _TabularReader
     {
         parent::__construct($stream, $fields, $endl);
         $this->_delim = $delim;
+        return;
     }
     
     protected function _split($line)
@@ -168,7 +169,14 @@ class DelimitedReader extends _TabularReader
         $line = explode($this->_delim, $line);
         $tokens = array();
         foreach ($this->_fields as $field) {
-            $tokens[] = $line[$field->pos];
+            if (is_array($field->pos)) {
+                // Token is an array.
+                list($beg, $len) = $field->pos;
+                $tokens[] = array_slice($line, $beg, $len);
+            }
+            else {
+                $tokens[] = $line[$field->pos];                
+            }
         }
         return $tokens;
     }
