@@ -34,7 +34,7 @@ implements Iterator
      * 1. Return null to reject the record (the iterator will drop it).
      * 2. Return the data record as is.
      * 3. Return a new/modified record.
-     * 4. Throw a StopIteration exception to stop iteration prior to the EOF.
+     * 4. Return STOP_ITERATION to signal the end of input.
      */
     public function filter($callback=null)
     {

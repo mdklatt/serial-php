@@ -8,20 +8,20 @@
 require_once 'dtype.php';
 require_once 'reader.php';
 
-function reject_filter($record)
+function reader_reject_filter($record)
 {
     return $record["int"] != 123 ? $record : null;
 }
 
 
-function modify_filter($record)
+function reader_modify_filter($record)
 {
-    $record["int"] *= 10;
+    $record["int"] *= 2;
     return $record;
 }
 
 
-function stop_filter($record)
+function reader_stop_filter($record)
 {
     return $record["int"] != 456 ? $record : DelimitedReader::STOP_ITERATION;
 }
@@ -60,9 +60,9 @@ abstract class _TabularReaderTest extends PHPUnit_Framework_TestCase
     public function test_filter()
     {
         $this->_records = array_slice($this->_records, 1);
-        $this->_records[0]["int"] = 4560;
-        $this->_reader->filter('reject_filter');
-        $this->_reader->filter('modify_filter');
+        $this->_records[0]["int"] = 912;
+        $this->_reader->filter('reader_reject_filter');
+        $this->_reader->filter('reader_modify_filter');
         $this->test_iter();
         return;
     }
@@ -70,7 +70,7 @@ abstract class _TabularReaderTest extends PHPUnit_Framework_TestCase
     public function test_filter_stop()
     {
         $this->_records = array_slice($this->_records, 0, 1);
-        $this->_reader->filter('stop_filter');
+        $this->_reader->filter('reader_stop_filter');
         $this->test_iter();
         return;        
     }
