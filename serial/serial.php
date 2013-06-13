@@ -11,3 +11,4 @@ define('SERIAL_VERSION', '0.1.0dev');
 
 require 'dtype.php';
 require 'reader.php';
+require 'writer.php';

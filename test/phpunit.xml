@@ -4,6 +4,7 @@
     <testsuite name="serial">
       <file>test_dtype.php</file>
       <file>test_reader.php</file>
+      <file>test_writer.php</file>
     </testsuite>
   </testsuites>
 </phpunit>
