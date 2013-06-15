@@ -41,11 +41,13 @@ abstract class _TabularReaderTest extends PHPUnit_Framework_TestCase
         rewind($this->_stream);
         $this->_records = array(
             array(
-                "arr" => array(array("x" => "abc", "y" => "def")), 
-                "int" => 123),
+                "int" => 123,
+                "arr" => array(array("x" => "abc", "y" => "def")),
+            ), 
             array(
-                "arr" => array(array("x" => "ghi", "y" => "jkl")), 
-                "int" => 456),
+                "int" => 456,
+                "arr" => array(array("x" => "ghi", "y" => "jkl")),
+            ), 
         );
         return;
     }
@@ -86,10 +88,10 @@ class FixedWidthReaderTest extends _TabularReaderTest
             "y" => array(array(3, 3), new StringType("%3s")),
         );
         $fields = array(
-            "arr" => array(array(0, 6), new ArrayType($array_fields)), 
-            "int" => array(array(6, 3), new IntType("%3d")),
+            "int" => array(array(0, 3), new IntType("%3d")),
+            "arr" => array(array(3, null), new ArrayType($array_fields)), 
         );
-        $this->_data = "abcdef123\nghijkl456\n";
+        $this->_data = "123abcdef\n456ghijkl\n";
         parent::setUp();
         $this->_reader = new FixedWidthReader($this->_stream, $fields);        
         return;
@@ -106,10 +108,10 @@ class DelimitedReaderTest extends _TabularReaderTest
             "y" => array(1, new StringType()),
         );
         $fields = array(
-            "arr" => array(array(0, 2), new ArrayType($array_fields)), 
-            "int" => array(2, new IntType()),
+            "int" => array(0, new IntType()),
+            "arr" => array(array(1, null), new ArrayType($array_fields)), 
         );
-        $this->_data = "abc, def, 123\nghi, jkl, 456\n";
+        $this->_data = "123, abc, def\n456, ghi, jkl\n";
         parent::setUp();
         $this->_reader = new DelimitedReader($this->_stream, $fields, ',');
         return;

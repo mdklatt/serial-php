@@ -33,11 +33,13 @@ abstract class _TabularWriterTest extends PHPUnit_Framework_TestCase
     {
         $this->_records = array(
             array(
+                "int" => 123,
                 "arr" => array(array("x" => "abc", "y" => "def")), 
-                "int" => 123),
+            ),
             array(
+                "int" => 456,
                 "arr" => array(array("x" => "ghi", "y" => "jkl")), 
-                "int" => 456),
+            ),
         );
         $this->_stream = fopen("php://memory", "rw");
         return;
@@ -73,12 +75,12 @@ class DelimitedWriterTest extends _TabularWriterTest
             "y" => array(1, new StringType()),
         );
         $fields = array(
-            "arr" => array(array(0, 2), new ArrayType($array_fields)), 
-            "int" => array(2, new IntType()),
+            "int" => array(0, new IntType()),
+            "arr" => array(array(1, null), new ArrayType($array_fields)), 
         );
         parent::setUp();
         $this->_writer = new DelimitedWriter($this->_stream, $fields, ',', 'X');
-        $this->_data = "abc,def,123Xghi,jkl,456X";
+        $this->_data = "123,abc,defX456,ghi,jklX";
         return;
     }
 
@@ -86,7 +88,7 @@ class DelimitedWriterTest extends _TabularWriterTest
     {
         $this->_writer->filter('writer_reject_filter');
         $this->_writer->filter('writer_modify_filter');
-        $this->_data = "ghi,jkl,912X";
+        $this->_data = "912,ghi,jklX";
         $this->test_dump();
         return;
     }
@@ -102,12 +104,12 @@ class FixedWidthWriterTest extends _TabularWriterTest
             "y" => array(array(3, 3), new StringType("%3s")),
         );
         $fields = array(
-            "arr" => array(array(0, 6), new ArrayType($array_fields)), 
-            "int" => array(array(6, 3), new IntType("%3d")),
+            "int" => array(array(0, 3), new IntType("%3d")),
+            "arr" => array(array(3, null), new ArrayType($array_fields)), 
         );
         parent::setUp();
         $this->_writer = new FixedWidthWriter($this->_stream, $fields, 'X');        
-        $this->_data = "abcdef123Xghijkl456X";
+        $this->_data = "123abcdefX456ghijklX";
         return;
     }
 
@@ -115,7 +117,7 @@ class FixedWidthWriterTest extends _TabularWriterTest
     {
         $this->_writer->filter('writer_reject_filter');
         $this->_writer->filter('writer_modify_filter');
-        $this->_data = "ghijkl912X";
+        $this->_data = "912ghijklX";
         $this->test_dump();        
         return;
     }
