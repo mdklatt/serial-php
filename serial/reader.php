@@ -145,6 +145,9 @@ class FixedWidthReader extends _TabularReader
         $tokens = array();
         foreach ($this->_fields as $field) {
             list($beg, $len) = $field->pos;
+            if ($len === null) {
+                $len = strlen($line);
+            }
             $tokens[] = substr($line, $beg, $len);
         }
         return $tokens;
