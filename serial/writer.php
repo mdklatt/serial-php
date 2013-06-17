@@ -83,7 +83,14 @@ abstract class _TabularWriter extends _Writer
     {
         $tokens = array();
         foreach ($this->_fields as $name => $field) {
-            $tokens[] = $field->dtype->encode(@$record[$name]);
+            $token = $field->dtype->encode(@$record[$name]);
+            if (is_array($token)) {
+                // An array of tokens; expand inline.
+                $tokens = array_merge($tokens, $token);
+            }
+            else {
+                $tokens[] = $token;
+            } 
         }
         fwrite($this->_stream, $this->_join($tokens).$this->_endl);
         return $this->_join($tokens);
@@ -106,19 +113,6 @@ class DelimitedWriter extends _TabularWriter
     
     protected function _join($tokens)
     {
-        $pos = 0;
-        while ($pos < count($tokens)) {
-            // A token can itself be a sequence of tokens (c.f. ArrayType).
-            $token = $tokens[$pos];
-            if (is_array($token)) {
-                // Expand token array inline.
-                array_splice($tokens, $pos, 1, $token);
-                $pos += count($token);
-            } 
-            else {
-                ++$pos;
-            }            
-        }
         return implode($this->_delim, $tokens);
     }
 }
