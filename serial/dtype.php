@@ -11,6 +11,11 @@ require_once('_util.php');
   
 abstract class _DataType
 {
+    protected $_fmt;
+    protected $_default;
+    
+    private $_callback;
+    
     public function __construct($callback, $fmt, $default)
     {
         $this->_callback = $callback;
@@ -111,6 +116,8 @@ class ConstType extends _DataType
 
 class DateTimeType extends _DataType
 {
+    private $_timefmt;
+    
     public function __construct($timefmt, $default=null)
     {
         parent::__construct(null, '%s', $default);
@@ -142,7 +149,8 @@ class DateTimeType extends _DataType
 class ArrayType extends _DataType
 {
     private $_fields = array();
-    
+    private $_stride;
+
     public function __construct($fields, $default=array())
     {
         parent::__construct(null, '%s', $default);
@@ -153,7 +161,6 @@ class ArrayType extends _DataType
             $this->_fields[$name] = $field;
             $this->_stride += $field->width;
         }
-        $this->_default = $default;
         return;
     }
     
