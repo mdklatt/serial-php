@@ -6,26 +6,18 @@
  */
 require_once('_util.php');
 
+/**
+ * Base class for all readers.
+ *
+ */
 abstract class _Reader
 implements Iterator
 {
     const STOP_ITERATION = 0;  // false-y but not null
         
-    protected $_stream;
     private $_filters = array();
     private $_current = null;
     
-    /**
-     * Abstract base class for all readers.
-     *
-     */
-    
-    public function __construct($stream)
-    {
-        $this->_stream = $stream;
-        return;
-    }
-
     /**
      * Clear all filters (default) or add a filter to this reader.
      *
@@ -107,11 +99,12 @@ implements Iterator
 
 abstract class _TabularReader extends _Reader
 {
+    protected $_stream;
     protected $_fields;
     
     public function __construct($stream, $fields, $endl="\n")
     {
-        parent::__construct($stream);
+        $this->_stream = $stream;
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
             $this->_fields[$name] = new Field($pos, $dtype);

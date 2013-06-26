@@ -5,21 +5,14 @@
  */
 require_once('_util.php');
 
+/**
+ * Base class for all writers.
+ *
+ */
 abstract class _Writer
 {
-    protected $_stream;
     private $_filters = array();
     
-    /**
-     * Abstract base class for all readers.
-     *
-     */  
-    public function __construct($stream)
-    {
-        $this->_stream = $stream;
-        return;
-    }
-
     /**
      * Clear all filters (default) or add a filter to this writer.
      *
@@ -66,11 +59,12 @@ abstract class _Writer
 
 abstract class _TabularWriter extends _Writer
 {
+    protected $_stream;
     protected $_fields;
     
     public function __construct($stream, $fields, $endl=PHP_EOL)
     {
-        parent::__construct($stream);
+        $this->_stream = $stream;
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
             $this->_fields[$name] = new Field($pos, $dtype);
