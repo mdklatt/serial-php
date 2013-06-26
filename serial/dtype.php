@@ -148,13 +148,13 @@ class DateTimeType extends _DataType
 
 class ArrayType extends _DataType
 {
+    public $width;
     private $_fields = array();
-    private $_stride;
+    private $_stride = 0;
 
     public function __construct($fields, $default=array())
     {
         parent::__construct(null, '%s', $default);
-        $this->_stride = 0;
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
             $field = new Field($pos, $dtype);
@@ -176,6 +176,7 @@ class ArrayType extends _DataType
             }
             $value_array[] = $value;
         }
+        $this->width = count($value_array) * $this->_stride;
         return $value_array ? $value_array : $this->_default;
     }
     
@@ -184,6 +185,7 @@ class ArrayType extends _DataType
         if (!$value_array) {
             $value_array = $this->_default;
         }
+        $this->width = count($value_array) * $this->_stride;        
         $token_array = array();
         foreach ($value_array as $elem) {
             foreach ($this->_fields as $name => $field) {

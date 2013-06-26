@@ -76,11 +76,14 @@ abstract class _TabularWriter extends _Writer
     protected function _put($record)
     {
         $tokens = array();
-        foreach ($this->_fields as $name => $field) {
+        foreach ($this->_fields as $name => &$field) {
             $token = $field->dtype->encode(@$record[$name]);
             if (is_array($token)) {
-                // An array of tokens; expand inline.
+                // An array of tokens; expand inline and update the field width
+                // and position based on the actual size of the field.
                 $tokens = array_merge($tokens, $token);
+                $field->pos[1] = $field->dtype->width;
+                $field->width = $field->dtype->width;
             }
             else {
                 $tokens[] = $token;
