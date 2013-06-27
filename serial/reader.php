@@ -19,7 +19,7 @@ implements Iterator
     private $_current = null;
     
     /**
-     * Clear all filters (default) or add a filter to this reader.
+     * Clear all filters (default) or add filters to this reader.
      *
      * A filter is a callback that accepts a data record as its only argument.
      * Based on this record the filter can perform the following actions:
@@ -28,13 +28,20 @@ implements Iterator
      * 3. Return a new/modified record.
      * 4. Return STOP_ITERATION to signal the end of input.
      */
-    public function filter($callback=null)
+    public function filter(/* variadic: $callbacks */)
     {
-        if (!$callback) {
+        if (func_num_args() == 0) {
+            // Default: clear all filters.
             $this->_filters = array();
+            return;
         }
-        else {
-            $this->_filters[] = $callback;
+        foreach (func_get_args() as $callback) {
+            if (is_array($callback)) {
+                $this->_filters = array_merge($this->_filters, $callback);
+            }
+            else {
+                $this->_filters[] = $callback;
+            }            
         }
         return;
     }

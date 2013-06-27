@@ -8,38 +8,35 @@
 require_once 'dtype.php';
 require_once 'reader.php';
 
-function reader_reject_filter($record)
-{
-    return $record["int"] != 123 ? $record : null;
-}
-
-
-function reader_modify_filter($record)
-{
-    $record["int"] *= 2;
-    return $record;
-}
-
-
-function reader_stop_filter($record)
-{
-    return $record["int"] != 456 ? $record : DelimitedReader::STOP_ITERATION;
-}
-
-
 abstract class _TabularReaderTest extends PHPUnit_Framework_TestCase
 {
-    protected $_data;
-    protected $_records;
-    protected $_stream;
-    protected $_reader;
+    static public function reject_filter($record)
+    {
+        return $record["int"] != 123 ? $record : null;
+    }
+    
+    static public function modify_filter($record)
+    {
+        $record["int"] *= 2;
+        return $record;
+    }
+
+    static public function stop_filter($record)
+    {
+        return $record["int"] != 456 ? $record : DelimitedReader::STOP_ITERATION;
+    }
+
+    protected $data;
+    protected $records;
+    protected $stream;
+    protected $reader;
     
     protected function setUp()
     {
-        $this->_stream = fopen("php://memory", "rw");
-        fwrite($this->_stream, $this->_data);
-        rewind($this->_stream);
-        $this->_records = array(
+        $this->stream = fopen("php://memory", "rw");
+        fwrite($this->stream, $this->data);
+        rewind($this->stream);
+        $this->records = array(
             array(
                 "int" => 123,
                 "arr" => array(array("x" => "abc", "y" => "def")),
@@ -54,25 +51,25 @@ abstract class _TabularReaderTest extends PHPUnit_Framework_TestCase
     
     public function test_iter()
     {
-        $records = iterator_to_array($this->_reader, false);
-        $this->assertEquals($this->_records, $records);
+        $records = iterator_to_array($this->reader, false);
+        $this->assertEquals($this->records, $records);
         return;
     }
     
     public function test_filter()
     {
-        $this->_records = array_slice($this->_records, 1);
-        $this->_records[0]["int"] = 912;
-        $this->_reader->filter('reader_reject_filter');
-        $this->_reader->filter('reader_modify_filter');
+        $this->records = array_slice($this->records, 1);
+        $this->records[0]["int"] = 912;
+        $this->reader->filter('_TabularReaderTest::reject_filter', 
+                              '_TabularReaderTest::modify_filter');
         $this->test_iter();
         return;
     }
     
     public function test_filter_stop()
     {
-        $this->_records = array_slice($this->_records, 0, 1);
-        $this->_reader->filter('reader_stop_filter');
+        $this->records = array_slice($this->records, 0, 1);
+        $this->reader->filter('_TabularReaderTest::stop_filter');
         $this->test_iter();
         return;        
     }
@@ -91,9 +88,9 @@ class FixedWidthReaderTest extends _TabularReaderTest
             "int" => array(array(0, 3), new IntType("%3d")),
             "arr" => array(array(3, null), new ArrayType($array_fields)), 
         );
-        $this->_data = "123abcdef\n456ghijkl\n";
+        $this->data = "123abcdef\n456ghijkl\n";
         parent::setUp();
-        $this->_reader = new FixedWidthReader($this->_stream, $fields);        
+        $this->reader = new FixedWidthReader($this->stream, $fields);        
         return;
     }
 }
@@ -111,9 +108,9 @@ class DelimitedReaderTest extends _TabularReaderTest
             "int" => array(0, new IntType()),
             "arr" => array(array(1, null), new ArrayType($array_fields)), 
         );
-        $this->_data = "123, abc, def\n456, ghi, jkl\n";
+        $this->data = "123, abc, def\n456, ghi, jkl\n";
         parent::setUp();
-        $this->_reader = new DelimitedReader($this->_stream, $fields, ',');
+        $this->reader = new DelimitedReader($this->stream, $fields, ',');
         return;
     }
 }

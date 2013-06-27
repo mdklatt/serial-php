@@ -9,29 +9,27 @@ require_once 'dtype.php';
 require_once 'writer.php';
 
 
-function writer_reject_filter($record)
-{
-    return $record["int"] != 123 ? $record : null;
-}
-
-
-function writer_modify_filter($record)
-{
-    $record["int"] *= 2;
-    return $record;
-}
-
-
 abstract class _TabularWriterTest extends PHPUnit_Framework_TestCase
 {
-    protected $_data;
-    protected $_records;
-    protected $_stream;
-    protected $_writer;
+    static public function reject_filter($record)
+    {
+        return $record["int"] != 123 ? $record : null;
+    }
+
+    static public function modify_filter($record)
+    {
+        $record["int"] *= 2;
+        return $record;
+    }
+
+    protected $data;
+    protected $records;
+    protected $stream;
+    protected $writer;
     
     protected function setUp()
     {
-        $this->_records = array(
+        $this->records = array(
             array(
                 "int" => 123,
                 "arr" => array(array("x" => "abc", "y" => "def")), 
@@ -41,25 +39,25 @@ abstract class _TabularWriterTest extends PHPUnit_Framework_TestCase
                 "arr" => array(array("x" => "ghi", "y" => "jkl")), 
             ),
         );
-        $this->_stream = fopen("php://memory", "rw");
+        $this->stream = fopen("php://memory", "rw");
         return;
     }
     
     public function test_write()
     {
-        foreach ($this->_records as $record) {
-            $this->_writer->write($record);
+        foreach ($this->records as $record) {
+            $this->writer->write($record);
         }
-        rewind($this->_stream);
-        $this->assertEquals($this->_data, stream_get_contents($this->_stream));
+        rewind($this->stream);
+        $this->assertEquals($this->data, stream_get_contents($this->stream));
         return;
     }
 
     public function test_dump()
     {
-        $this->_writer->dump($this->_records);
-        rewind($this->_stream);
-        $this->assertEquals($this->_data, stream_get_contents($this->_stream));
+        $this->writer->dump($this->records);
+        rewind($this->stream);
+        $this->assertEquals($this->data, stream_get_contents($this->stream));
         return;
     }
     
@@ -79,16 +77,16 @@ class DelimitedWriterTest extends _TabularWriterTest
             "arr" => array(array(1, null), new ArrayType($array_fields)), 
         );
         parent::setUp();
-        $this->_writer = new DelimitedWriter($this->_stream, $fields, ',', 'X');
-        $this->_data = "123,abc,defX456,ghi,jklX";
+        $this->writer = new DelimitedWriter($this->stream, $fields, ',', 'X');
+        $this->data = "123,abc,defX456,ghi,jklX";
         return;
     }
 
     public function test_filter()
     {
-        $this->_writer->filter('writer_reject_filter');
-        $this->_writer->filter('writer_modify_filter');
-        $this->_data = "912,ghi,jklX";
+        $this->writer->filter('_TabularWriterTest::reject_filter', 
+                               '_TabularWriterTest::modify_filter');
+        $this->data = "912,ghi,jklX";
         $this->test_dump();
         return;
     }
@@ -108,16 +106,16 @@ class FixedWidthWriterTest extends _TabularWriterTest
             "arr" => array(array(3, null), new ArrayType($array_fields)), 
         );
         parent::setUp();
-        $this->_writer = new FixedWidthWriter($this->_stream, $fields, 'X');        
-        $this->_data = "123abcdefX456ghijklX";
+        $this->writer = new FixedWidthWriter($this->stream, $fields, 'X');        
+        $this->data = "123abcdefX456ghijklX";
         return;
     }
 
     public function test_filter()
     {
-        $this->_writer->filter('writer_reject_filter');
-        $this->_writer->filter('writer_modify_filter');
-        $this->_data = "912ghijklX";
+        $this->writer->filter('_TabularWriterTest::reject_filter', 
+                               '_TabularWriterTest::modify_filter');
+        $this->data = "912ghijklX";
         $this->test_dump();        
         return;
     }

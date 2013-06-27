@@ -22,13 +22,20 @@ abstract class _Writer
      * 2. Return the data record as is.
      * 3. Return a new/modified record.
      */
-    public function filter($callback=null)
+    public function filter(/* variadic: $callbacks */)
     {
-        if (!$callback) {
+        if (func_num_args() == 0) {
+            // Default: clear all filters.
             $this->_filters = array();
+            return;
         }
-        else {
-            $this->_filters[] = $callback;
+        foreach (func_get_args() as $callback) {
+            if (is_array($callback)) {
+                $this->_filters = array_merge($this->_filters, $callback);
+            }
+            else {
+                $this->_filters[] = $callback;
+            }            
         }
         return;
     }
