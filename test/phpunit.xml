@@ -5,6 +5,7 @@
       <file>test_dtype.php</file>
       <file>test_reader.php</file>
       <file>test_writer.php</file>
+      <file>test_buffer.php</file>
     </testsuite>
   </testsuites>
 </phpunit>
