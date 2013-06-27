@@ -33,7 +33,7 @@ class ReaderBuffer extends _ReaderBuffer
         }
         else {
             // Complete the pair.
-            $record["int"] = $this->_buffer["int"];
+            $record['int'] = $this->_buffer['int'];
             $this->_output[] = $record;
             $this->_buffer = null;
         }
@@ -81,7 +81,7 @@ class WriterBuffer extends _WriterBuffer
         }
         else {
             // Complete the pair.
-            $record["int"] = $this->_buffer["int"];
+            $record['int'] = $this->_buffer['int'];
             $this->_output[] = $record;
             $this->_buffer = null;
         }
@@ -121,9 +121,9 @@ class MockWriter
  */
 abstract class _BufferTest extends PHPUnit_Framework_TestCase
 {   
-    static function reject_filter($record)
+    static public function reject_filter($record)
     {
-        return $record["int"] != 123 ? $record : null;
+        return $record['int'] != 123 ? $record : null;
     }
     
     protected $input;
@@ -140,13 +140,13 @@ abstract class _BufferTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->input = array(
-            array("int" => 123, "arr" => array(array("x" => "abc", "y" => "def"))),
-            array("int" => 456, "arr" => array(array("x" => "ghi", "y" => "jkl"))),
-            array("int" => 789, "arr" => array(array("x" => "mno", "y" => "pqr"))),
+            array('int' => 123, 'arr' => array(array('x' => 'abc', 'y' => 'def'))),
+            array('int' => 456, 'arr' => array(array('x' => 'ghi', 'y' => 'jkl'))),
+            array('int' => 789, 'arr' => array(array('x' => 'mno', 'y' => 'pqr'))),
         );
         $this->output = array(
-            array("int" => 123, "arr" => array(array("x" => "ghi", "y" => "jkl"))),
-            array("int" => 789, "arr" => array(array("x" => "mno", "y" => "pqr"))),
+            array('int' => 123, 'arr' => array(array('x' => 'ghi', 'y' => 'jkl'))),
+            array('int' => 789, 'arr' => array(array('x' => 'mno', 'y' => 'pqr'))),
         );
         return;
     }

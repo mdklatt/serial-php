@@ -8,6 +8,10 @@
 require_once 'dtype.php';
 
 
+/**
+ * Unit testing for data type classes.
+ *
+ */
 abstract class _DataTypeTest extends PHPUnit_Framework_TestCase
 {    
     protected $dtype;
@@ -15,7 +19,7 @@ abstract class _DataTypeTest extends PHPUnit_Framework_TestCase
     protected $value;
     protected $default_dtype;
     protected $default_token;
-    protected $defualt_value;
+    protected $default_value;
     
     /**
      * Test the decode() method.
@@ -83,8 +87,18 @@ abstract class _DataTypeTest extends PHPUnit_Framework_TestCase
 }
 
 
+/**
+ * Unit testing for the IntType class.
+ *
+ */
 class IntTypeTest extends _DataTypeTest
 {
+    /**
+     * Set up the test fixture.
+     *
+     * This is called before each test is run so that they are isolated from 
+     * any side effects.
+     */
     protected function setUp()
     {
         $fmt = '%4d';
@@ -99,8 +113,18 @@ class IntTypeTest extends _DataTypeTest
 }
 
 
+/**
+ * Unit testing for the FloatType class.
+ *
+ */
 class FloatTypeTest extends _DataTypeTest
 {
+    /**
+     * Set up the test fixture.
+     *
+     * This is called before each test is run so that they are isolated from 
+     * any side effects.
+     */
     protected function setUp()
     {
         $fmt = '%6.3f';
@@ -115,8 +139,18 @@ class FloatTypeTest extends _DataTypeTest
 }
 
 
+/**
+ * Unit testing for the StringType class.
+ *
+ */
 class StringTypeTest extends _DataTypeTest
 {
+    /**
+     * Set up the test fixture.
+     *
+     * This is called before each test is run so that they are isolated from 
+     * any side effects.
+     */
     protected function setUp()
     {
         $fmt = '%4s';
@@ -131,6 +165,10 @@ class StringTypeTest extends _DataTypeTest
         return;
     }
     
+    /**
+     * Test the decode() method for an quoted string.
+     *
+     */
     public function testDecodeQuote()
     {
         $value = $this->quote_dtype->decode($this->quote_token);
@@ -138,6 +176,10 @@ class StringTypeTest extends _DataTypeTest
         return;
     }
 
+    /**
+     * Test the encode() method for a quoted string.
+     *
+     */
     public function testEncodeQuote()
     {
         $quote_token = $this->quote_dtype->encode($this->value);
@@ -157,8 +199,18 @@ class StringTypeTest extends _DataTypeTest
 }
 
 
+/**
+ * Unit testing for the ConstType class.
+ *
+ */
 class ConstTypeTest extends _DataTypeTest
 {
+    /**
+     * Set up the test fixture.
+     *
+     * This is called before each test is run so that they are isolated from 
+     * any side effects.
+     */
     protected function setUp()
     {
         $this->value = 9999;
@@ -192,8 +244,18 @@ class ConstTypeTest extends _DataTypeTest
 }
 
 
+/**
+ * Unit testing for the DateTimeType class.
+ *
+ */
 class DateTimeTypeTest extends _DataTypeTest
 {
+    /**
+     * Set up the test fixture.
+     *
+     * This is called before each test is run so that they are isolated from 
+     * any side effects.
+     */
     protected function setUp()
     {
         $this->value = DateTime::createFromFormat('Ymd', '20121231');
@@ -207,22 +269,32 @@ class DateTimeTypeTest extends _DataTypeTest
 }
 
 
+/**
+ * Unit testing for the ArrayType class.
+ *
+ */
 class ArrayTypeTest extends _DataTypeTest
 {
+    /**
+     * Set up the test fixture.
+     *
+     * This is called before each test is run so that they are isolated from 
+     * any side effects.
+     */
     protected function setUp()
     {
         $fields = array(
-            "str" => array(0, new StringType()),
-            "int" => array(1, new IntType())
+            'str' => array(0, new StringType()),
+            'int' => array(1, new IntType())
         );
         $this->value = array(
-            array("str" => "abc", "int" => 123),
-            array("str" => "def", "int" => 456),
+            array('str' => 'abc', 'int' => 123),
+            array('str' => 'def', 'int' => 456),
         );
-        $this->token = array("abc", "123", "def", "456");
+        $this->token = array('abc', '123', 'def', '456');
         $this->dtype = new ArrayType($fields);
-        $this->default_value = array(array("str" => "xyz", "int" => -999));
-        $this->default_token = array("xyz", "-999");
+        $this->default_value = array(array('str' => 'xyz', 'int' => -999));
+        $this->default_token = array('xyz', '-999');
         $this->default_dtype = new ArrayType($fields, $this->default_value);
         return;
     }
