@@ -120,7 +120,12 @@ class MockWriter
  *
  */
 abstract class _BufferTest extends PHPUnit_Framework_TestCase
-{    
+{   
+    static function reject_filter($record)
+    {
+        return $record["int"] != 123 ? $record : null;
+    }
+    
     protected $input;
     protected $output;
     protected $reader;
@@ -143,8 +148,6 @@ abstract class _BufferTest extends PHPUnit_Framework_TestCase
             array("int" => 123, "arr" => array(array("x" => "ghi", "y" => "jkl"))),
             array("int" => 789, "arr" => array(array("x" => "mno", "y" => "pqr"))),
         );
-        $this->reader = new ArrayIterator($this->input);
-        $this->writer = new MockWriter();
         return;
     }
 }
@@ -156,14 +159,42 @@ abstract class _BufferTest extends PHPUnit_Framework_TestCase
  */
 class ReaderBufferTest extends _BufferTest
 {
+    protected $buffer;
+    
+    /**
+     * Set up the test fixture.
+     *
+     * This is called before each test is run so that they are isolated from 
+     * any side effects.
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $reader = new ArrayIterator($this->input);
+        $this->buffer = new ReaderBuffer($reader);
+        return;
+    }
+
     /**
      * Test the iterator interface.
      *
      */
     public function test_iter()
     {
-        $buffer = new ReaderBuffer($this->reader);
-        $this->assertEquals($this->output, iterator_to_array($buffer, false));
+        $output = iterator_to_array($this->buffer, false);
+        $this->assertEquals($this->output, $output);
+        return;
+    }
+
+    /**
+     * Test the filter() method.
+     *
+     */
+    public function test_filter()
+    {
+        $this->buffer->filter('ReaderBufferTest::reject_filter');
+        array_splice($this->output, 0, 1);
+        $this->test_iter();
         return;
     }
 }
@@ -186,12 +217,13 @@ class WriterBufferTest extends _BufferTest
     protected function setUp()
     {
         parent::setUp();
+        $this->writer = new MockWriter();
         $this->buffer = new WriterBuffer($this->writer);
         return;
     }
 
     /**
-     * Test the write method.
+     * Test the write() method.
      *
      */
     public function test_write()
@@ -205,13 +237,25 @@ class WriterBufferTest extends _BufferTest
     }
 
     /**
-     * Test the dump method.
+     * Test the dump() method.
      *
      */
-    // public function test_dump()
-    // {
-    //     $this->buffer->dump($this->input);
-    //     $this->assertEquals($this->output, $this->writer->output);
-    //     return;
-    // }
+    public function test_dump()
+    {
+        $this->buffer->dump($this->input);
+        $this->assertEquals($this->output, $this->writer->output);
+        return;
+    }
+    
+    /**
+     * Test the filter() method.
+     *
+     */
+    public function test_filter()
+    {
+        $this->buffer->filter('_BufferTest::reject_filter');
+        array_splice($this->output, 0, 1);
+        $this->test_dump();
+        return;
+    }
 }

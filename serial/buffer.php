@@ -3,14 +3,14 @@
  * Buffer classes.
  *
  */
-
+require_once 'reader.php';
+require_once 'writer.php';
 
 /**
  * A buffer for Readers
  * 
  */
-abstract class _ReaderBuffer
-implements Iterator
+abstract class _ReaderBuffer extends _Reader
 {
     protected $_output = array();  // FIFO
     
@@ -22,25 +22,8 @@ implements Iterator
         return;
     }
 
-    /**
-     * Iterator: Reset the buffer.
-     *
-     * Not all readers are rewindable, in which case this does nothing.
-     */
-    public function rewind()
+    protected function _get()
     {
-        @rewind($this->_reader);
-        $this->next();
-        return;
-    }
-    
-    /**
-     * Iterator: Advance to the next record in the output queue.
-     *
-     */
-    public function next()
-    {
-        array_shift($this->_output);
         while (!$this->_output && $this->_reader) {
             // Retrieve input from the reader until a record is available for
             // output or the reader is exhausted.
@@ -54,33 +37,8 @@ implements Iterator
             $this->_queue($this->_reader->current());
             $this->_reader->next();
         }
-        return;
+        return array_shift($this->_output);
     }
-    
-    /**
-     * Iterator: Return true if the output queue is not empty.
-     *
-     */
-    public function valid()
-    {
-        return $this->_output;
-    }
-    
-    /**
-     * Return the first record in the output queue.
-     *
-     */
-    public function current()
-    {
-        return $this->_output[0];
-    }
-    
-    public function key()
-    {
-        // Not implmented for streams.
-        return;
-    }
-
     
     abstract protected function _queue($record);
 
@@ -95,7 +53,7 @@ implements Iterator
  * A buffer for Writers.
  * 
  */
-abstract class _WriterBuffer
+abstract class _WriterBuffer extends _Writer
 {
     protected $_output = array();  // FIFO
     
@@ -111,17 +69,16 @@ abstract class _WriterBuffer
     {
         $this->_queue($record);
         foreach ($this->_output as $record) {
-            $this->_writer->write($record);
+            // Base class applies filters.
+            parent::write($record);
         }
         $this->_output = array();
         return;           
     }
-    
+       
     public function dump($records)
     {
-        foreach($records as $record) {
-            $this->write($record);
-        }
+        parent::dump($records);
         $this->close();
         return;
     }
@@ -130,11 +87,18 @@ abstract class _WriterBuffer
     {
         $this->_flush();
         foreach ($this->_output as $record) {
-            $this->_writer->write($record);
+            // Base class applies filters.
+            parent::write($record);
         }
-        $this->_output = array();
+        $this->_output = null;
         $this->_writer = null;
         return;
+    }
+    
+    protected function _put($record)
+    {
+        // At this point the record as already been buffered and filtered.
+        $this->_writer->write($record);
     }
     
     abstract protected function _queue($record);
