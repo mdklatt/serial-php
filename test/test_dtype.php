@@ -110,6 +110,30 @@ class IntTypeTest extends _DataTypeTest
         $this->default_dtype = new IntType($fmt, $this->default_value);
         return;
     }
+
+    /**
+     * Test decoding for zero.
+     *
+     * Zeroes are false-y, so need to make sure they aren't decoded as a null.
+     */
+    public function testDecodeZero()
+    {
+        // Make sure to use assertSame() so that === is used for the test.
+        $this->assertSame(0, $this->dtype->decode('0'));
+        return;
+    }
+
+    /**
+     * Test encoding for zero.
+     *
+     * Zeros are false-y, so need to make sure they aren't encoded as a null.
+     */
+    public function testEncodeZero()
+    {
+        // Make sure to use assertSame() so that === is used for the test.
+        $this->assertSame('   0', $this->dtype->encode(0));
+        return;
+    }
 }
 
 
@@ -134,6 +158,30 @@ class FloatTypeTest extends _DataTypeTest
         $this->default_value = -9.999;
         $this->default_token = '-9.999';
         $this->default_dtype = new FloatType($fmt, $this->default_value);
+        return;
+    }
+
+    /**
+     * Test decoding for zero.
+     *
+     * Zeros are false-y, so need to make sure they aren't decoded as a null.
+     */
+    public function testDecodeZero()
+    {
+        // Make sure to use assertSame() so that === is used for the test.
+        $this->assertSame(0., $this->dtype->decode('0'));
+        return;
+    }
+
+    /**
+     * Test encoding for zero.
+     *
+     * Zeros are false-y, so need to make sure they aren't encoded as a null.
+     */
+    public function testEncodeZero()
+    {
+        // Make sure to use assertSame() so that === is used for the test.
+        $this->assertSame(' 0.000', $this->dtype->encode(0));
         return;
     }
 }

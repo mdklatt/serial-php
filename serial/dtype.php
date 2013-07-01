@@ -26,7 +26,7 @@ abstract class _DataType
     
     public function decode($token)
     {
-        if (!($token = trim($token))) {
+        if (($token = trim($token)) === '') {
             $value = $this->_default;
         }
         else {
