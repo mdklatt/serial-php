@@ -58,6 +58,17 @@ abstract class _TabularReaderTest extends PHPUnit_Framework_TestCase
         );
         return;
     }
+
+    /**
+     * Tear down the test fixture.
+     *
+     * This is called after every test is run.
+     */
+    protected function tearDown()
+    {
+        @fclose($this->stream);
+        return;
+    }
     
     /**
      * Test the iterator interface.
