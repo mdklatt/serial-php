@@ -9,7 +9,7 @@ require_once('_util.php');
  * Base class for all writers.
  *
  */
-abstract class _Writer
+abstract class Serial_Writer
 {
     private $_filters = array();
     
@@ -64,7 +64,7 @@ abstract class _Writer
 }
 
 
-abstract class _TabularWriter extends _Writer
+abstract class Serial_TabularWriter extends Serial_Writer
 {
     protected $_stream;
     protected $_fields;
@@ -74,7 +74,7 @@ abstract class _TabularWriter extends _Writer
         $this->_stream = $stream;
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
-            $this->_fields[$name] = new Field($pos, $dtype);
+            $this->_fields[$name] = new Serial_Field($pos, $dtype);
         }
         $this->_endl = $endl;
         return;
@@ -104,7 +104,7 @@ abstract class _TabularWriter extends _Writer
 }
 
 
-class DelimitedWriter extends _TabularWriter
+class Serial_DelimitedWriter extends Serial_TabularWriter
 {
     private $_delim;
     
@@ -122,7 +122,7 @@ class DelimitedWriter extends _TabularWriter
 }
 
 
-class FixedWidthWriter extends DelimitedWriter
+class Serial_FixedWidthWriter extends Serial_DelimitedWriter
 {
     public function __construct($stream, $fields, $endl=PHP_EOL)
     {

@@ -11,7 +11,7 @@ require_once 'buffer.php';
  * Concrete implemenation of _ReaderBuffer for testing.
  *
  */
-class ReaderBuffer extends _ReaderBuffer
+class ReaderBuffer extends Serial_ReaderBuffer
 {
     private $_buffer = null;
     
@@ -59,7 +59,7 @@ class ReaderBuffer extends _ReaderBuffer
  * Concrete implemenation of _WriterBuffer for testing.
  *
  */
-class WriterBuffer extends _WriterBuffer
+class WriterBuffer extends Serial_WriterBuffer
 {
     private $_buffer = null;
     

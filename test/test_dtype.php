@@ -9,10 +9,10 @@ require_once 'dtype.php';
 
 
 /**
- * Unit testing for data type classes.
+ * Base class for data type tests (private).
  *
  */
-abstract class _DataTypeTest extends PHPUnit_Framework_TestCase
+abstract class DataTypeTest extends PHPUnit_Framework_TestCase
 {    
     protected $dtype;
     protected $token;
@@ -91,7 +91,7 @@ abstract class _DataTypeTest extends PHPUnit_Framework_TestCase
  * Unit testing for the IntType class.
  *
  */
-class IntTypeTest extends _DataTypeTest
+class IntTypeTest extends DataTypeTest
 {
     /**
      * Set up the test fixture.
@@ -104,10 +104,10 @@ class IntTypeTest extends _DataTypeTest
         $fmt = '%4d';
         $this->value = 123;
         $this->token = ' 123';
-        $this->dtype = new IntType($fmt);
+        $this->dtype = new Serial_IntType($fmt);
         $this->default_value = -999;
         $this->default_token = '-999';
-        $this->default_dtype = new IntType($fmt, $this->default_value);
+        $this->default_dtype = new Serial_IntType($fmt, $this->default_value);
         return;
     }
 
@@ -141,7 +141,7 @@ class IntTypeTest extends _DataTypeTest
  * Unit testing for the FloatType class.
  *
  */
-class FloatTypeTest extends _DataTypeTest
+class Serial_FloatTypeTest extends DataTypeTest
 {
     /**
      * Set up the test fixture.
@@ -154,10 +154,10 @@ class FloatTypeTest extends _DataTypeTest
         $fmt = '%6.3f';
         $this->value = 1.23;
         $this->token = ' 1.230';
-        $this->dtype = new FloatType($fmt);
+        $this->dtype = new Serial_FloatType($fmt);
         $this->default_value = -9.999;
         $this->default_token = '-9.999';
-        $this->default_dtype = new FloatType($fmt, $this->default_value);
+        $this->default_dtype = new Serial_FloatType($fmt, $this->default_value);
         return;
     }
 
@@ -191,7 +191,7 @@ class FloatTypeTest extends _DataTypeTest
  * Unit testing for the StringType class.
  *
  */
-class StringTypeTest extends _DataTypeTest
+class Serial_StringTypeTest extends DataTypeTest
 {
     /**
      * Set up the test fixture.
@@ -204,12 +204,12 @@ class StringTypeTest extends _DataTypeTest
         $fmt = '%4s';
         $this->value = 'abc';
         $this->token = ' abc';
-        $this->dtype = new StringType($fmt);
+        $this->dtype = new Serial_StringType($fmt);
         $this->default_value = 'xyz';
         $this->default_token = ' xyz';
-        $this->default_dtype = new StringType($fmt, '', $this->default_value);
+        $this->default_dtype = new Serial_StringType($fmt, '', $this->default_value);
         $this->quote_token = '"abc"';
-        $this->quote_dtype = new StringType('%s', '"');
+        $this->quote_dtype = new Serial_StringType('%s', '"');
         return;
     }
     
@@ -251,7 +251,7 @@ class StringTypeTest extends _DataTypeTest
  * Unit testing for the ConstType class.
  *
  */
-class ConstTypeTest extends _DataTypeTest
+class Serial_ConstTypeTest extends DataTypeTest
 {
     /**
      * Set up the test fixture.
@@ -263,7 +263,7 @@ class ConstTypeTest extends _DataTypeTest
     {
         $this->value = 9999;
         $this->token = ' 9999';
-        $this->dtype = new ConstType($this->value, '%5d');
+        $this->dtype = new Serial_ConstType($this->value, '%5d');
         $this->default_value = $this->value;
         $this->default_token = $this->token;
         $this->default_dtype = $this->dtype;
@@ -296,7 +296,7 @@ class ConstTypeTest extends _DataTypeTest
  * Unit testing for the DateTimeType class.
  *
  */
-class DateTimeTypeTest extends _DataTypeTest
+class Serial_DateTimeTypeTest extends DataTypeTest
 {
     /**
      * Set up the test fixture.
@@ -308,10 +308,10 @@ class DateTimeTypeTest extends _DataTypeTest
     {
         $this->value = DateTime::createFromFormat('Ymd', '20121231');
         $this->token = '20121231';
-        $this->dtype = new DateTimeType('Ymd');
+        $this->dtype = new Serial_DateTimeType('Ymd');
         $this->default_value = DateTime::createFromFormat('Ymd', '19010101');
         $this->default_token = '19010101';
-        $this->default_dtype = new DateTimeType('Ymd', $this->default_value);
+        $this->default_dtype = new Serial_DateTimeType('Ymd', $this->default_value);
         return;
     }
 }
@@ -321,7 +321,7 @@ class DateTimeTypeTest extends _DataTypeTest
  * Unit testing for the ArrayType class.
  *
  */
-class ArrayTypeTest extends _DataTypeTest
+class Serial_ArrayTypeTest extends DataTypeTest
 {
     /**
      * Set up the test fixture.
@@ -332,18 +332,18 @@ class ArrayTypeTest extends _DataTypeTest
     protected function setUp()
     {
         $fields = array(
-            'str' => array(0, new StringType()),
-            'int' => array(1, new IntType())
+            'str' => array(0, new Serial_StringType()),
+            'int' => array(1, new Serial_IntType())
         );
         $this->value = array(
             array('str' => 'abc', 'int' => 123),
             array('str' => 'def', 'int' => 456),
         );
         $this->token = array('abc', '123', 'def', '456');
-        $this->dtype = new ArrayType($fields);
+        $this->dtype = new Serial_ArrayType($fields);
         $this->default_value = array(array('str' => 'xyz', 'int' => -999));
         $this->default_token = array('xyz', '-999');
-        $this->default_dtype = new ArrayType($fields, $this->default_value);
+        $this->default_dtype = new Serial_ArrayType($fields, $this->default_value);
         return;
     }
     

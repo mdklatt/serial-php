@@ -1,6 +1,10 @@
 <?php
+/**
+ * Internal utility classes and functions.
+ *
+ */
 
-class Field
+class Serial_Field
 {
     public $pos;
     public $dtype;
@@ -16,14 +20,13 @@ class Field
 }
 
 
-class Sequence
+class Serial_Sequence
 implements Countable
 {
     private $_data;
     private $_count;
     private $_slice;  // function alias
-    
-    
+       
     public function __construct($data)
     {
         $this->_data = $data;

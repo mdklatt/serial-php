@@ -56,7 +56,7 @@ abstract class _FilterTest extends PHPUnit_Framework_TestCase
  * Unit testing for the BlacklistFilter class.
  *
  */
-class BlacklistFilterTest extends _FilterTest
+class Serial_BlacklistFilterTest extends _FilterTest
 {
     /**
      * Set up the test fixture.
@@ -67,7 +67,7 @@ class BlacklistFilterTest extends _FilterTest
     protected function setUp()
     {
         parent::setUp();
-        $this->filter = new BlacklistFilter('test', array('uvw', 'xyz'));
+        $this->filter = new Serial_BlacklistFilter('test', array('uvw', 'xyz'));
         return;
     }
 }
@@ -77,7 +77,7 @@ class BlacklistFilterTest extends _FilterTest
  * Unit testing for the WhitelistFilter class.
  *
  */
-class WhitelistFilterTest extends _FilterTest
+class Serial_WhitelistFilterTest extends _FilterTest
 {   
     /**
      * Set up the test fixture.
@@ -88,7 +88,7 @@ class WhitelistFilterTest extends _FilterTest
     protected function setUp()
     {
         parent::setUp();
-        $this->filter = new WhitelistFilter('test', array('abc', 'def'));
+        $this->filter = new Serial_WhitelistFilter('test', array('abc', 'def'));
         return;
     }
 }

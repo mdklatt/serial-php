@@ -10,7 +10,7 @@ require_once('_util.php');
  * Base class for all readers.
  *
  */
-abstract class _Reader
+abstract class Serial_Reader
 implements Iterator
 {
     const STOP_ITERATION = 0;  // false-y but not null
@@ -104,7 +104,7 @@ implements Iterator
 }
 
 
-abstract class _TabularReader extends _Reader
+abstract class Serial_TabularReader extends Serial_Reader
 {
     protected $_stream;
     protected $_fields;
@@ -114,7 +114,7 @@ abstract class _TabularReader extends _Reader
         $this->_stream = $stream;
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
-            $this->_fields[$name] = new Field($pos, $dtype);
+            $this->_fields[$name] = new Serial_Field($pos, $dtype);
         }
         $this->_endl = $endl;
         return;
@@ -138,7 +138,7 @@ abstract class _TabularReader extends _Reader
 }
 
 
-class FixedWidthReader extends _TabularReader
+class Serial_FixedWidthReader extends Serial_TabularReader
 {
     protected function _split($line)
     {
@@ -155,7 +155,7 @@ class FixedWidthReader extends _TabularReader
 }
 
 
-class DelimitedReader extends _TabularReader
+class Serial_DelimitedReader extends Serial_TabularReader
 {
     private $_delim;
     

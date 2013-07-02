@@ -10,7 +10,7 @@ require_once 'writer.php';
  * A buffer for Readers
  * 
  */
-abstract class _ReaderBuffer extends _Reader
+abstract class Serial_ReaderBuffer extends Serial_Reader
 {
     protected $_output = array();  // FIFO
     
@@ -53,7 +53,7 @@ abstract class _ReaderBuffer extends _Reader
  * A buffer for Writers.
  * 
  */
-abstract class _WriterBuffer extends _Writer
+abstract class Serial_WriterBuffer extends Serial_Writer
 {
     protected $_output = array();  // FIFO
     
