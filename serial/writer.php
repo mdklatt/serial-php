@@ -3,7 +3,7 @@
  * Writer types.
  *
  */
-require_once('_util.php');
+
 
 /**
  * Base class for all writers.

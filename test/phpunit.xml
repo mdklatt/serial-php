@@ -1,5 +1,5 @@
 <!-- PHPUnit configuration file for the serial test suite. -->
-<phpunit bootstrap="_env.php">
+<phpunit bootstrap="env.php">
   <testsuites>
     <testsuite name="serial">
       <file>test_dtype.php</file>

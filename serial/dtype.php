@@ -5,9 +5,7 @@
  * Client code defines the Serial_DataType for each input/ouput field, but the 
  * _Reader and _Writer classes are responsible for calling decode() and 
  * encode().
- */
-require_once('_util.php'); 
- 
+ */ 
   
 abstract class Serial_DataType
 {

@@ -4,7 +4,7 @@
  *
  * Readers parse lines of text into data records.
  */
-require_once('_util.php');
+
 
 /**
  * Base class for all readers.

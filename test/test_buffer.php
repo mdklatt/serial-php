@@ -5,7 +5,7 @@
  * The tests can be executed using a PHPUnit test runner, e.g. the phpunit
  * command.
  */
-require_once 'buffer.php';
+
 
 /**
  * Concrete implemenation of _ReaderBuffer for testing.

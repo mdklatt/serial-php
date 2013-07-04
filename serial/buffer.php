@@ -3,9 +3,7 @@
  * Buffer classes.
  *
  */
-require_once 'reader.php';
-require_once 'writer.php';
-
+    
 /**
  * A buffer for Readers
  * 

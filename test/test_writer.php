@@ -5,8 +5,7 @@
  * The tests can be executed using a PHPUnit test runner, e.g. the phpunit
  * command.
  */
-require_once 'dtype.php';
-require_once 'writer.php';
+
 
 /**
  * Unit testing for tabular data writer classes.
