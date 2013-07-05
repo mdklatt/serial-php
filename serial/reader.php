@@ -17,7 +17,7 @@ implements Iterator
         
     private $_filters = array();
     private $_current = null;
-    
+        
     /**
      * Clear all filters (default) or add filters to this reader.
      *
@@ -47,13 +47,16 @@ implements Iterator
     }
 
     /**
-     * Iterator: Reset position to the first record.
+     * Iterator: Position the iterator at the first valid record.
      *
-     * Not all stream types are rewindable, in which case this does nothing.
      */
     public function rewind()
     {
-        @rewind($this->_stream);
+        // This is not a true rewind, but rather a one-time initialization to
+        // support the iterator protocol, e.g. a foreach statement. Derived
+        // classes which support rewinding should override this, being sure
+        // to call next() once the rewound stream is positioned at the first
+        // data record.
         $this->next();
         return;
     }
