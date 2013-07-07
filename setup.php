@@ -7,7 +7,7 @@
 require_once 'serial/version.php';
 
 
-// The packages-specific configuration array.
+// The package-specific configuration array.
 
 $PACKAGE_CONFIG = array(
     "name" => "serial",
@@ -19,7 +19,7 @@ $PACKAGE_CONFIG = array(
 // Execute the script.
 
 $_DEBUG = false;  // should be command-line setting
-$_COMMANDS = array('test' => 'TestCommand', 'archive' => 'ArchiveCommand');
+$_COMMANDS = array('test' => 'TestCommand', 'dist' => 'DistCommand');
 
 try {
     if ($argc == 1) {
@@ -103,10 +103,10 @@ class TestCommand extends Command
 
 
 /**
- * Create a PHP Archive (.phar) file for this package.
+ * Create a PHP Archive (.phar) file for distribution.
  *
  */
-class ArchiveCommand extends Command
+class DistCommand extends Command
 {
     /** 
      * Execute the command.
