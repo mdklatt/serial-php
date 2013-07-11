@@ -10,13 +10,12 @@
  * Base class for all readers.
  *
  */
-abstract class Serial_Reader
-implements Iterator
+abstract class Serial_Reader implements Iterator
 {
     const STOP_ITERATION = 0;  // false-y but not null
         
-    private $_filters = array();
-    private $_current = null;
+    private $filters = array();
+    private $current = null;
         
     /**
      * Clear all filters (default) or add filters to this reader.
@@ -32,15 +31,15 @@ implements Iterator
     {
         if (func_num_args() == 0) {
             // Default: clear all filters.
-            $this->_filters = array();
+            $this->filters = array();
             return;
         }
         foreach (func_get_args() as $callback) {
             if (is_array($callback)) {
-                $this->_filters = array_merge($this->_filters, $callback);
-            }
+                $this->filters = array_merge($this->filters, $callback);
+            } 
             else {
-                $this->_filters[] = $callback;
+                $this->filters[] = $callback;
             }            
         }
         return;
@@ -67,34 +66,34 @@ implements Iterator
      */
     public function next()
     {
-        $this->_current = null;
-        while (!$this->_current) {
+        $this->current = null;
+        while (!$this->current) {
             // Repeat until a record succesfully passes through all filters.
-            if (!($record = $this->_get())) {
+            if (!($record = $this->get())) {
                 break;  // EOF
             }
-            foreach ($this->_filters as $callback) {
+            foreach ($this->filters as $callback) {
                 // Pass this record through each filter.
                 if (!($record = call_user_func($callback, $record))) {
                     break;
                 }
             }
-            if ($this->_current === self::STOP_ITERATION) {
+            if ($this->current === self::STOP_ITERATION) {
                 break;
             }
-            $this->_current = $record;
+            $this->current = $record;
          }
         return;        
     }
     
     public function valid()
     {
-        return $this->_current == true;  // want implicit bool conversion
+        return $this->current == true;  // want implicit bool conversion
     }
     
     public function current()
     {
-        return $this->_current;
+        return $this->current;
     }
     
     public function key()
@@ -103,50 +102,50 @@ implements Iterator
         return;
     }
         
-    abstract protected function _get();  // return null on EOF  
+    abstract protected function get();  // return null on EOF  
 }
 
 
 abstract class Serial_TabularReader extends Serial_Reader
 {
-    protected $_stream;
-    protected $_fields;
+    protected $stream;
+    protected $fields;
     
     public function __construct($stream, $fields, $endl="\n")
     {
-        $this->_stream = $stream;
+        $this->stream = $stream;
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
-            $this->_fields[$name] = new Serial_Field($pos, $dtype);
+            $this->fields[$name] = new Serial_Field($pos, $dtype);
         }
-        $this->_endl = $endl;
+        $this->endl = $endl;
         return;
     }
     
-    protected function _get()
+    protected function get()
     {
-        if (!($line = @fgets($this->_stream))) {
+        if (!($line = @fgets($this->stream))) {
             return null;
         }
-        $tokens = $this->_split(rtrim($line, $this->_endl));
+        $tokens = $this->split(rtrim($line, $this->endl));
         $record = array();
         $pos = 0;
-        foreach ($this->_fields as $name => $field) {
+        foreach ($this->fields as $name => $field) {
             $record[$name] = $field->dtype->decode($tokens[$pos++]);
         }
         return $record;
     }
     
-    abstract protected function _split($line);
+    abstract protected function split($line);
 }
 
 
 class Serial_FixedWidthReader extends Serial_TabularReader
 {
-    protected function _split($line)
+    protected function split($line)
     {
         $tokens = array();
-        foreach ($this->_fields as $field) {
+        foreach ($this->fields as $field) {
             list($beg, $len) = $field->pos;
             if ($len === null) {
                 $len = strlen($line);
@@ -160,20 +159,20 @@ class Serial_FixedWidthReader extends Serial_TabularReader
 
 class Serial_DelimitedReader extends Serial_TabularReader
 {
-    private $_delim;
+    private $delim;
     
     public function __construct($stream, $fields, $delim, $endl="\n")
     {
         parent::__construct($stream, $fields, $endl);
-        $this->_delim = $delim;
+        $this->delim = $delim;
         return;
     }
     
-    protected function _split($line)
+    protected function split($line)
     {
-        $line = explode($this->_delim, $line);
+        $line = explode($this->delim, $line);
         $tokens = array();
-        foreach ($this->_fields as $field) {
+        foreach ($this->fields as $field) {
             if (is_array($field->pos)) {
                 // Token is an array.
                 list($beg, $len) = $field->pos;

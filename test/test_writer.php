@@ -8,10 +8,10 @@
 
 
 /**
- * Unit testing for tabular data writer classes.
+ * Unit testing for tabular data writer classes (private).
  *
  */
-abstract class Serial_TabularWriterTest extends PHPUnit_Framework_TestCase
+abstract class TabularWriterTest extends PHPUnit_Framework_TestCase
 {
     static public function reject_filter($record)
     {
@@ -69,7 +69,7 @@ abstract class Serial_TabularWriterTest extends PHPUnit_Framework_TestCase
  * Unit testing for the DelimitedWriter class.
  *
  */
-class DelimitedWriterTest extends Serial_TabularWriterTest
+class DelimitedWriterTest extends TabularWriterTest
 {
     /**
      * Set up the test fixture.
@@ -99,8 +99,8 @@ class DelimitedWriterTest extends Serial_TabularWriterTest
      */
     public function test_filter()
     {
-        $this->writer->filter('Serial_TabularWriterTest::reject_filter', 
-                              'Serial_TabularWriterTest::modify_filter');
+        $this->writer->filter('TabularWriterTest::reject_filter', 
+                              'TabularWriterTest::modify_filter');
         $this->data = '912,ghi,jklX';
         $this->test_dump();
         return;
@@ -112,7 +112,7 @@ class DelimitedWriterTest extends Serial_TabularWriterTest
  * Unit testing for the FixedWidthWriter class.
  *
  */
-class FixedWidthWriterTest extends Serial_TabularWriterTest
+class FixedWidthWriterTest extends TabularWriterTest
 {   
     /**
      * Set up the test fixture.
@@ -142,8 +142,8 @@ class FixedWidthWriterTest extends Serial_TabularWriterTest
      */
     public function test_filter()
     {
-        $this->writer->filter('Serial_TabularWriterTest::reject_filter', 
-                              'Serial_TabularWriterTest::modify_filter');
+        $this->writer->filter('TabularWriterTest::reject_filter', 
+                              'TabularWriterTest::modify_filter');
         $this->data = '912ghijklX';
         $this->test_dump();        
         return;

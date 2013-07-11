@@ -13,7 +13,7 @@
  */
 class ReaderBuffer extends Serial_ReaderBuffer
 {
-    private $_buffer = null;
+    private $buffer = null;
     
     public function __construct($reader)
     {
@@ -25,17 +25,17 @@ class ReaderBuffer extends Serial_ReaderBuffer
      * Merge every two records.
      *
      */
-    protected function _queue($record)
+    protected function queue($record)
     {
-        if (!$this->_buffer) {
+        if (!$this->buffer) {
             // First record in a pair.
-            $this->_buffer = $record;
+            $this->buffer = $record;
         }
         else {
             // Complete the pair.
-            $record['int'] = $this->_buffer['int'];
-            $this->_output[] = $record;
-            $this->_buffer = null;
+            $record['int'] = $this->buffer['int'];
+            $this->output[] = $record;
+            $this->buffer = null;
         }
         return;
     }
@@ -44,11 +44,11 @@ class ReaderBuffer extends Serial_ReaderBuffer
      * Flush a partial pair to the output queue.
      *
      */
-    protected function _flush()
+    protected function flush()
     {
-        if ($this->_buffer) {
+        if ($this->buffer) {
             // No more input, so output the last record as-is.
-            $this->_output[] = $this->_buffer;
+            $this->output[] = $this->buffer;
         }
         return;
     }
@@ -61,7 +61,7 @@ class ReaderBuffer extends Serial_ReaderBuffer
  */
 class WriterBuffer extends Serial_WriterBuffer
 {
-    private $_buffer = null;
+    private $buffer = null;
     
     public function __construct($writer)
     {
@@ -73,17 +73,17 @@ class WriterBuffer extends Serial_WriterBuffer
      * Merge every two records.
      *
      */
-    protected function _queue($record)
+    protected function queue($record)
     {
-        if (!$this->_buffer) {
+        if (!$this->buffer) {
             // First record in a pair.
-            $this->_buffer = $record;
+            $this->buffer = $record;
         }
         else {
             // Complete the pair.
-            $record['int'] = $this->_buffer['int'];
-            $this->_output[] = $record;
-            $this->_buffer = null;
+            $record['int'] = $this->buffer['int'];
+            $this->output[] = $record;
+            $this->buffer = null;
         }
         return;
     }
@@ -92,11 +92,11 @@ class WriterBuffer extends Serial_WriterBuffer
      * Flush a partial pair to the output queue.
      *
      */
-    protected function _flush()
+    protected function flush()
     {
-        if ($this->_buffer) {
+        if ($this->buffer) {
             // No more input, so output the last record as-is.
-            $this->_output[] = $this->_buffer;
+            $this->output[] = $this->buffer;
         }
         return;
     }
@@ -119,7 +119,7 @@ class MockWriter
  * Unit testing for buffer classes.
  *
  */
-abstract class _BufferTest extends PHPUnit_Framework_TestCase
+abstract class BufferTest extends PHPUnit_Framework_TestCase
 {   
     static public function reject_filter($record)
     {
@@ -157,7 +157,7 @@ abstract class _BufferTest extends PHPUnit_Framework_TestCase
  * Unit testing for the ReaderBuffer class.
  *
  */
-class ReaderBufferTest extends _BufferTest
+class ReaderBufferTest extends BufferTest
 {
     protected $buffer;
     
@@ -204,7 +204,7 @@ class ReaderBufferTest extends _BufferTest
  * Unit testing for the WriterBuffer class.
  *
  */
-class WriterBufferTest extends _BufferTest
+class WriterBufferTest extends BufferTest
 {
     protected $buffer;
     
@@ -253,7 +253,7 @@ class WriterBufferTest extends _BufferTest
      */
     public function test_filter()
     {
-        $this->buffer->filter('_BufferTest::reject_filter');
+        $this->buffer->filter('BufferTest::reject_filter');
         array_splice($this->output, 0, 1);
         $this->test_dump();
         return;

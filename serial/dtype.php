@@ -9,26 +9,26 @@
   
 abstract class Serial_DataType
 {
-    protected $_fmt;
-    protected $_default;
+    protected $fmt;
+    protected $default;
     
-    private $_callback;
+    private $callback;
     
     public function __construct($callback, $fmt, $default)
     {
-        $this->_callback = $callback;
-        $this->_fmt = $fmt;
-        $this->_default = $default;
+        $this->callback = $callback;
+        $this->fmt = $fmt;
+        $this->default = $default;
         return;
     }
     
     public function decode($token)
     {
         if (($token = trim($token)) === '') {
-            $value = $this->_default;
+            $value = $this->default;
         }
         else {
-            $value = call_user_func($this->_callback, $token);
+            $value = call_user_func($this->callback, $token);
         }
         return $value;
     }
@@ -36,9 +36,9 @@ abstract class Serial_DataType
     public function encode($value)
     {
         if ($value === null) {
-            $value = $this->_default;
+            $value = $this->default;
         }
-        return $value !== null ? sprintf($this->_fmt, $value) : "";
+        return $value !== null ? sprintf($this->fmt, $value) : "";
     }
 } 
 
@@ -68,14 +68,14 @@ class Serial_StringType extends Serial_DataType
     public function __construct($fmt='%s', $quote='', $default=null)
     {
         parent::__construct(null, $fmt, $default);
-        $this->_quote = $quote;
+        $this->quote = $quote;
         return;
     }
     
     public function decode($token)
     {
-        if (!($value = trim(trim($token), $this->_quote))) {
-            $value = $this->_default;
+        if (!($value = trim(trim($token), $this->quote))) {
+            $value = $this->default;
         }
         return $value;
     }
@@ -83,9 +83,9 @@ class Serial_StringType extends Serial_DataType
     public function encode($value)
     {
         if ($value === null) {
-            $value = $this->_default !== null ? $this->_default : '';
+            $value = $this->default !== null ? $this->default : '';
         }
-        return $this->_quote.sprintf($this->_fmt, $value).$this->_quote;
+        return $this->quote.sprintf($this->fmt, $value).$this->quote;
     }
 }
 
@@ -101,45 +101,45 @@ class Serial_ConstType extends Serial_DataType
     public function decode($token)
     {
         // Token is ignored.
-        return $this->_default;
+        return $this->default;
     }
 
     public function encode($value)
     {
         // Value is ignored.
-        return sprintf($this->_fmt, $this->_default);
+        return sprintf($this->fmt, $this->default);
     }
 }
 
 
 class Serial_DateTimeType extends Serial_DataType
 {
-    private $_timefmt;
+    private $timefmt;
     
     public function __construct($timefmt, $default=null)
     {
         parent::__construct(null, '%s', $default);
-        $this->_timefmt = $timefmt;
+        $this->timefmt = $timefmt;
         return;
     }
     
     public function decode($token)
     {
         if (!($token = trim($token))) {
-            return $this->_default;
+            return $this->default;
         }
-        return DateTime::createFromFormat($this->_timefmt, $token);
+        return DateTime::createFromFormat($this->timefmt, $token);
     }
     
     public function encode($value)
     {
         if ($value === null) {
-            if ($this->_default === null) {
+            if ($this->default === null) {
                 return '';
             }
-            $value = $this->_default;
+            $value = $this->default;
         }
-        return $value->format($this->_timefmt);
+        return $value->format($this->timefmt);
     }
 }
 
@@ -147,8 +147,8 @@ class Serial_DateTimeType extends Serial_DataType
 class Serial_ArrayType extends Serial_DataType
 {
     public $width;
-    private $_fields = array();
-    private $_stride = 0;
+    private $fields = array();
+    private $stride = 0;
 
     public function __construct($fields, $default=array())
     {
@@ -156,8 +156,8 @@ class Serial_ArrayType extends Serial_DataType
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
             $field = new Serial_Field($pos, $dtype);
-            $this->_fields[$name] = $field;
-            $this->_stride += $field->width;
+            $this->fields[$name] = $field;
+            $this->stride += $field->width;
         }
         return;
     }
@@ -166,27 +166,27 @@ class Serial_ArrayType extends Serial_DataType
     {
         $token_array = new Serial_Sequence($token_array);
         $value_array = array();
-        for ($beg = 0; $beg < count($token_array); $beg += $this->_stride) {
-            $elem = new Serial_Sequence($token_array->get(array($beg, $this->_stride)));
+        for ($beg = 0; $beg < count($token_array); $beg += $this->stride) {
+            $elem = new Serial_Sequence($token_array->get(array($beg, $this->stride)));
             $value = array();
-            foreach ($this->_fields as $name => $field) {
+            foreach ($this->fields as $name => $field) {
                 $value[$name] = $field->dtype->decode($elem->get($field->pos));
             }
             $value_array[] = $value;
         }
-        $this->width = count($value_array) * $this->_stride;
-        return $value_array ? $value_array : $this->_default;
+        $this->width = count($value_array) * $this->stride;
+        return $value_array ? $value_array : $this->default;
     }
     
     public function encode($value_array)
     {
         if (!$value_array) {
-            $value_array = $this->_default;
+            $value_array = $this->default;
         }
-        $this->width = count($value_array) * $this->_stride;        
+        $this->width = count($value_array) * $this->stride;        
         $token_array = array();
         foreach ($value_array as $elem) {
-            foreach ($this->_fields as $name => $field) {
+            foreach ($this->fields as $name => $field) {
                 $token_array[] = $field->dtype->encode($elem[$name]);
             }
         }

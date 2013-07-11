@@ -10,37 +10,37 @@
  */
 abstract class Serial_ReaderBuffer extends Serial_Reader
 {
-    protected $_output = array();  // FIFO
+    protected $output = array();  // FIFO
     
-    private $_reader;
+    private $reader;
     
     public function __construct($reader)
     {
-        $this->_reader = $reader;
+        $this->reader = $reader;
         return;
     }
 
-    protected function _get()
+    protected function get()
     {
-        while (!$this->_output && $this->_reader) {
+        while (!$this->output && $this->reader) {
             // Retrieve input from the reader until a record is available for
             // output or the reader is exhausted.
-            if (!$this->_reader->valid()) {
+            if (!$this->reader->valid()) {
                 // The reader is exhausted, but there may still be some records
                 // in the buffer.
-                $this->_reader = null;
-                $this->_flush();
+                $this->reader = null;
+                $this->flush();
                 break;
             }
-            $this->_queue($this->_reader->current());
-            $this->_reader->next();
+            $this->queue($this->reader->current());
+            $this->reader->next();
         }
-        return array_shift($this->_output);
+        return array_shift($this->output);
     }
     
-    abstract protected function _queue($record);
+    abstract protected function queue($record);
 
-    protected function _flush()
+    protected function flush()
     {
         return;
     }
@@ -53,24 +53,24 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
  */
 abstract class Serial_WriterBuffer extends Serial_Writer
 {
-    protected $_output = array();  // FIFO
+    protected $output = array();  // FIFO
     
-    private $_writer;
+    private $writer;
     
     public function __construct($writer)
     {
-        $this->_writer = $writer;
+        $this->writer = $writer;
         return;
     }
     
     public function write($record)
     {
-        $this->_queue($record);
-        foreach ($this->_output as $record) {
+        $this->queue($record);
+        foreach ($this->output as $record) {
             // Base class applies filters.
             parent::write($record);
         }
-        $this->_output = array();
+        $this->output = array();
         return;           
     }
        
@@ -83,25 +83,25 @@ abstract class Serial_WriterBuffer extends Serial_Writer
     
     public function close()
     {
-        $this->_flush();
-        foreach ($this->_output as $record) {
+        $this->flush();
+        foreach ($this->output as $record) {
             // Base class applies filters.
             parent::write($record);
         }
-        $this->_output = null;
-        $this->_writer = null;
+        $this->output = null;
+        $this->writer = null;
         return;
     }
     
-    protected function _put($record)
+    protected function put($record)
     {
         // At this point the record as already been buffered and filtered.
-        $this->_writer->write($record);
+        $this->writer->write($record);
     }
     
-    abstract protected function _queue($record);
+    abstract protected function queue($record);
 
-    protected function _flush()
+    protected function flush()
     {
         return;
     }

@@ -20,23 +20,22 @@ class Serial_Field
 }
 
 
-class Serial_Sequence
-implements Countable
+class Serial_Sequence implements Countable
 {
-    private $_data;
-    private $_count;
-    private $_slice;  // function alias
+    private $data;
+    private $count;
+    private $slice;  // function alias
        
     public function __construct($data)
     {
-        $this->_data = $data;
+        $this->data = $data;
         if (is_string($data)) {
-            $this->_count = strlen($data);
-            $this->_slice = 'substr';
+            $this->count = strlen($data);
+            $this->slice = 'substr';
         }
         else {
-            $this->_count = count($data);
-            $this->_slice = 'array_slice';
+            $this->count = count($data);
+            $this->slice = 'array_slice';
         }
         return;
     }
@@ -45,9 +44,9 @@ implements Countable
         if (is_array($pos)) {
             // Slice notation.
             list($beg, $len) = $pos;
-            return call_user_func($this->_slice, $this->_data, $beg, $len);
+            return call_user_func($this->slice, $this->data, $beg, $len);
         }
-        return $this->_data[$pos];
+        return $this->data[$pos];
     }
       
     /**
@@ -56,6 +55,6 @@ implements Countable
      */
     public function count()
     {
-        return $this->_count;
+        return $this->count;
     }
 }

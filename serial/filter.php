@@ -7,19 +7,19 @@
 
 class Serial_BlacklistFilter
 {
-    private $_field;
-    private $_reject;
+    private $field;
+    private $reject;
     
     public function __construct($field, $reject)
     {
-        $this->_field = $field;
-        $this->_reject = $reject;
+        $this->field = $field;
+        $this->reject = $reject;
         return;
     }
     
     public function __invoke($record)
     {
-        if (array_search($record[$this->_field], $this->_reject) !== false) {
+        if (array_search($record[$this->field], $this->reject) !== false) {
             return null;
         }
         return $record;
@@ -29,19 +29,19 @@ class Serial_BlacklistFilter
 
 class Serial_WhitelistFilter
 {
-    private $_field;
-    private $_accept;
+    private $field;
+    private $accept;
     
     public function __construct($field, $accept)
     {
-        $this->_field = $field;
-        $this->_accept = $accept;
+        $this->field = $field;
+        $this->accept = $accept;
         return;
     }
     
     public function __invoke($record)
     {
-        if (array_search($record[$this->_field], $this->_accept) === false) {
+        if (array_search($record[$this->field], $this->accept) === false) {
             return null;
         }
         return $record;

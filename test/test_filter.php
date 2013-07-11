@@ -8,10 +8,10 @@
 
 
 /**
- * Unit testing for filter classes.
+ * Unit testing for filter classes (private).
  *
  */
-abstract class _FilterTest extends PHPUnit_Framework_TestCase
+abstract class FilterTest extends PHPUnit_Framework_TestCase
 {
     protected $accept;
     protected $reject;
@@ -56,7 +56,7 @@ abstract class _FilterTest extends PHPUnit_Framework_TestCase
  * Unit testing for the BlacklistFilter class.
  *
  */
-class Serial_BlacklistFilterTest extends _FilterTest
+class BlacklistFilterTest extends FilterTest
 {
     /**
      * Set up the test fixture.
@@ -77,7 +77,7 @@ class Serial_BlacklistFilterTest extends _FilterTest
  * Unit testing for the WhitelistFilter class.
  *
  */
-class Serial_WhitelistFilterTest extends _FilterTest
+class WhitelistFilterTest extends FilterTest
 {   
     /**
      * Set up the test fixture.

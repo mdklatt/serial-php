@@ -11,7 +11,7 @@
  */
 abstract class Serial_Writer
 {
-    private $_filters = array();
+    private $filters = array();
     
     /**
      * Clear all filters (default) or add a filter to this writer.
@@ -26,15 +26,15 @@ abstract class Serial_Writer
     {
         if (func_num_args() == 0) {
             // Default: clear all filters.
-            $this->_filters = array();
+            $this->filters = array();
             return;
         }
         foreach (func_get_args() as $callback) {
             if (is_array($callback)) {
-                $this->_filters = array_merge($this->_filters, $callback);
+                $this->filters = array_merge($this->filters, $callback);
             }
             else {
-                $this->_filters[] = $callback;
+                $this->filters[] = $callback;
             }            
         }
         return;
@@ -43,12 +43,12 @@ abstract class Serial_Writer
 
     public function write($record)
     {   
-        foreach ($this->_filters as $callback) {
+        foreach ($this->filters as $callback) {
             if (!($record = call_user_func($callback, $record))) {
                 return;
             }
         }
-        $this->_put($record);
+        $this->put($record);
         return;
     }
 
@@ -60,30 +60,30 @@ abstract class Serial_Writer
         return;
     }
         
-    abstract protected function _put($record); 
+    abstract protected function put($record); 
 }
 
 
 abstract class Serial_TabularWriter extends Serial_Writer
 {
-    protected $_stream;
-    protected $_fields;
+    protected $stream;
+    protected $fields;
     
     public function __construct($stream, $fields, $endl=PHP_EOL)
     {
-        $this->_stream = $stream;
+        $this->stream = $stream;
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
-            $this->_fields[$name] = new Serial_Field($pos, $dtype);
+            $this->fields[$name] = new Serial_Field($pos, $dtype);
         }
-        $this->_endl = $endl;
+        $this->endl = $endl;
         return;
     }
     
-    protected function _put($record)
+    protected function put($record)
     {
         $tokens = array();
-        foreach ($this->_fields as $name => &$field) {
+        foreach ($this->fields as $name => &$field) {
             $token = $field->dtype->encode(@$record[$name]);
             if (is_array($token)) {
                 // An array of tokens; expand inline and update the field width
@@ -96,28 +96,28 @@ abstract class Serial_TabularWriter extends Serial_Writer
                 $tokens[] = $token;
             } 
         }
-        fwrite($this->_stream, $this->_join($tokens).$this->_endl);
-        return $this->_join($tokens);
+        fwrite($this->stream, $this->join($tokens).$this->endl);
+        return $this->join($tokens);
     }
     
-    abstract protected function _join($tokens);
+    abstract protected function join($tokens);
 }
 
 
 class Serial_DelimitedWriter extends Serial_TabularWriter
 {
-    private $_delim;
+    private $delim;
     
     public function __construct($stream, $fields, $delim, $endl=PHP_EOL)
     {
         parent::__construct($stream, $fields, $endl);
-        $this->_delim = $delim;
+        $this->delim = $delim;
         return;
     }
     
-    protected function _join($tokens)
+    protected function join($tokens)
     {
-        return implode($this->_delim, $tokens);
+        return implode($this->delim, $tokens);
     }
 }
 

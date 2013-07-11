@@ -11,7 +11,7 @@
  * Unit testing for the tabular data reader classes.
  *
  */
-abstract class _TabularReaderTest extends PHPUnit_Framework_TestCase
+abstract class TabularReaderTest extends PHPUnit_Framework_TestCase
 {
     static public function reject_filter($record)
     {
@@ -88,8 +88,8 @@ abstract class _TabularReaderTest extends PHPUnit_Framework_TestCase
     {
         $this->records = array_slice($this->records, 1);
         $this->records[0]['int'] = 912;
-        $this->reader->filter('_TabularReaderTest::reject_filter', 
-                              '_TabularReaderTest::modify_filter');
+        $this->reader->filter('TabularReaderTest::reject_filter', 
+                              'TabularReaderTest::modify_filter');
         $this->test_iter();
         return;
     }
@@ -101,14 +101,14 @@ abstract class _TabularReaderTest extends PHPUnit_Framework_TestCase
     public function test_filter_stop()
     {
         $this->records = array_slice($this->records, 0, 1);
-        $this->reader->filter('_TabularReaderTest::stop_filter');
+        $this->reader->filter('TabularReaderTest::stop_filter');
         $this->test_iter();
         return;        
     }
 }
 
 
-class Serial_FixedWidthReaderTest extends _TabularReaderTest
+class Serial_FixedWidthReaderTest extends TabularReaderTest
 {   
     /**
      * Set up the test fixture.
@@ -134,7 +134,7 @@ class Serial_FixedWidthReaderTest extends _TabularReaderTest
 }
 
 
-class Serial_DelimitedReaderTest extends _TabularReaderTest
+class Serial_DelimitedReaderTest extends TabularReaderTest
 {
     /**
      * Set up the test fixture.

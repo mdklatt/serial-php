@@ -18,8 +18,8 @@ $PACKAGE_CONFIG = array(
 
 // Execute the script.
 
-$_DEBUG = false;  // should be command-line setting
-$_COMMANDS = array('test' => 'TestCommand', 'dist' => 'DistCommand');
+$DEBUG = false;  // should be command-line setting
+$COMMANDS = array('test' => 'TestCommand', 'dist' => 'DistCommand');
 
 try {
     if ($argc == 1) {
@@ -29,7 +29,7 @@ try {
     exit(main($PACKAGE_CONFIG, $argv)); 
 }
 catch (Exception $ex) {
-    if ($_DEBUG) {
+    if ($DEBUG) {
         throw $ex;  // force a stack trace
     }
     echo $ex->getMessage().PHP_EOL;
@@ -46,9 +46,9 @@ function main($config, $argv)
     // Configuration values and command-line options are blended together into
     // a single array with command-line options taking precedence in the case
     // of duplicates.
-    global $_COMMANDS;
+    global $COMMANDS;
     foreach (array_slice($argv, 1) as $cmdname) {
-        if (!($cmdclass = @$_COMMANDS[$cmdname])) {
+        if (!($cmdclass = @$COMMANDS[$cmdname])) {
             $message = "unknown command name: {$cmdname}";
             throw new InvalidArgumentException($message);
         }
@@ -125,7 +125,7 @@ class DistCommand extends Command
         @unlink($path);  // always create new archive
         $phar = new Phar($path, 0, $name);
         $phar->buildFromDirectory($config['path'], '/\.php/'); 
-        $phar->setStub($this->_stub($config['init']));
+        $phar->setStub($this->stub($config['init']));
         printf("%d file(s) added to archive {$path}".PHP_EOL, $phar->count());
         return 0;        
     }
@@ -134,7 +134,7 @@ class DistCommand extends Command
      * Generate the stub code for this archive.
      *
      */
-    private function _stub($init)
+    private function stub($init)
     {
         $template = file_get_contents('bootstrap.template');
         $stub = str_replace('{{init}}', "'{$init}'", $template);
