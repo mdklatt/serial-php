@@ -27,20 +27,16 @@ abstract class Serial_Reader implements Iterator
      * 3. Return a new/modified record.
      * 4. Return STOP_ITERATION to signal the end of input.
      */
-    public function filter(/* variadic: $callbacks */)
+    public function filter(/* variadic */)
     {
-        if (func_num_args() == 0) {
+        $callbacks = func_get_args();
+        if (!$callbacks) {
             // Default: clear all filters.
             $this->filters = array();
             return;
         }
         foreach (func_get_args() as $callback) {
-            if (is_array($callback)) {
-                $this->filters = array_merge($this->filters, $callback);
-            } 
-            else {
-                $this->filters[] = $callback;
-            }            
+            $this->filters[] = $callback;
         }
         return;
     }

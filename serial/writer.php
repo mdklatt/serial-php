@@ -22,20 +22,16 @@ abstract class Serial_Writer
      * 2. Return the data record as is.
      * 3. Return a new/modified record.
      */
-    public function filter(/* variadic: $callbacks */)
+    public function filter(/* variadic */)
     {
-        if (func_num_args() == 0) {
+        $callbacks = func_get_args();
+        if (!$callbacks) {
             // Default: clear all filters.
             $this->filters = array();
             return;
         }
         foreach (func_get_args() as $callback) {
-            if (is_array($callback)) {
-                $this->filters = array_merge($this->filters, $callback);
-            }
-            else {
-                $this->filters[] = $callback;
-            }            
+            $this->filters[] = $callback;
         }
         return;
     }
