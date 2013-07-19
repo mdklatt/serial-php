@@ -181,7 +181,7 @@ class ReaderBufferTest extends BufferTest
      */
     public function test_iter()
     {
-        $output = iterator_to_array($this->buffer, false);
+        $output = iterator_to_array($this->buffer);
         $this->assertEquals($this->output, $output);
         return;
     }

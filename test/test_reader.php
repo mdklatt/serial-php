@@ -75,7 +75,7 @@ abstract class TabularReaderTest extends PHPUnit_Framework_TestCase
      */
     public function test_iter()
     {
-        $records = iterator_to_array($this->reader, false);
+        $records = iterator_to_array($this->reader);
         $this->assertEquals($this->records, $records);
         return;
     }

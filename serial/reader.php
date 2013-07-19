@@ -15,7 +15,8 @@ abstract class Serial_Reader implements Iterator
     const STOP_ITERATION = 0;  // false-y but not null
         
     private $filters = array();
-    private $current = null;
+    private $record;
+    private $index = -1;
         
     /**
      * Clear all filters (default) or add filters to this reader.
@@ -27,7 +28,7 @@ abstract class Serial_Reader implements Iterator
      * 3. Return a new/modified record.
      * 4. Return STOP_ITERATION to signal the end of input.
      */
-    public function filter(/* variadic */)
+    public function filter(/* $callbacks */)
     {
         $callbacks = func_get_args();
         if (!$callbacks) {
@@ -60,8 +61,8 @@ abstract class Serial_Reader implements Iterator
      */
     public function next()
     {
-        $this->current = null;
-        while (!$this->current) {
+        $this->record = null;
+        while (!$this->record) {
             // Repeat until a record succesfully passes through all filters.
             if (!($record = $this->get())) {
                 break;  // EOF
@@ -72,11 +73,12 @@ abstract class Serial_Reader implements Iterator
                     break;
                 }
             }
-            if ($this->current === self::STOP_ITERATION) {
+            if ($this->record === self::STOP_ITERATION) {
                 break;
             }
-            $this->current = $record;
-         }
+            $this->record = $record;
+        }
+        ++$this->index;
         return;        
     }
     
@@ -86,7 +88,7 @@ abstract class Serial_Reader implements Iterator
      */
     public function valid()
     {
-        return $this->current == true;  // want implicit bool conversion
+        return $this->record == true;  // want implicit bool conversion
     }
     
     /**
@@ -95,13 +97,12 @@ abstract class Serial_Reader implements Iterator
      */
     public function current()
     {
-        return $this->current;
+        return $this->record;
     }
     
     public function key()
     {
-        // Not implmented for streams.
-        return;
+        return $this->index;
     }
     
     /**
