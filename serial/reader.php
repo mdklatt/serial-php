@@ -48,16 +48,14 @@ abstract class Serial_Reader implements Iterator
     public function rewind()
     {
         // This is not a true rewind, but rather a one-time initialization to
-        // support the iterator protocol, e.g. a foreach statement. Derived
-        // classes which support rewinding should override this, being sure
-        // to call next() once the rewound stream is positioned at the first
-        // data record.
+        // support the iterator protocol, e.g. a foreach statement. This can't
+        // be moved to __construct() because any filters aren't in place yet.
         $this->next();
         return;
     }
     
     /**
-     * Ierator: Advance position to the next valid record.
+     * Iterator: Advance position to the next valid record.
      *
      */
     public function next()
@@ -82,11 +80,19 @@ abstract class Serial_Reader implements Iterator
         return;        
     }
     
+    /**
+     * Iterator: Return true if the current iterator position is valid.
+     *
+     */
     public function valid()
     {
         return $this->current == true;  // want implicit bool conversion
     }
     
+    /**
+     * Iterator: Return the current record.
+     *
+     */
     public function current()
     {
         return $this->current;
@@ -97,8 +103,12 @@ abstract class Serial_Reader implements Iterator
         // Not implmented for streams.
         return;
     }
-        
-    abstract protected function get();  // return null on EOF  
+    
+    /**
+     * Return the next parsed record or null for EOF.
+     *
+     */   
+    abstract protected function get();
 }
 
 
@@ -121,6 +131,7 @@ abstract class Serial_TabularReader extends Serial_Reader
         else {
             $this->stream = new Serial_IStreamAdaptor($stream);
         }
+        $this->stream->rewind();
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
             $this->fields[$name] = new Serial_Field($pos, $dtype);

@@ -15,9 +15,9 @@
  */
 class Serial_IStreamAdaptor implements Iterator
 {
-    protected $index = -1;
     protected $stream;
     
+    private $index = -1;
     private $line;
     
     /**
@@ -28,7 +28,6 @@ class Serial_IStreamAdaptor implements Iterator
     public function __construct($stream)
     {
         $this->stream = $stream;
-        $this->next();
         return;
     }
     
@@ -43,15 +42,17 @@ class Serial_IStreamAdaptor implements Iterator
     }
         
     /**
-     * Iterator: Rewind the iterator.
+     * Iterator: Position the iterator at the first line.
      *
-     * IStreamAdaptors don't support rewinding, so this is defined solely to 
-     * satisfy the the Iterator interface.
      */
     public function rewind() 
     { 
-        // Think twice before implementing a rewind and note that next() is 
-        // called by __construct().
+        // This is not a true rewind, but rather a one-time initialization to
+        // support the iterator protocol, e.g. a foreach statement.
+        if ($this->index != -1) {
+            throw new RuntimeException('iterator cannot be rewound');
+        }
+        $this->next();
         return; 
     }
     
