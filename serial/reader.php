@@ -107,9 +107,20 @@ abstract class Serial_TabularReader extends Serial_Reader
     protected $stream;
     protected $fields;
     
+    /**
+     * Initialize this object.
+     *
+     * The input stream must be an instance of a Serial_IStreamAdaptor or a
+     * regular PHP stream that works with fgets().
+     */
     public function __construct($stream, $fields, $endl="\n")
     {
-        $this->stream = $stream;
+        if ($stream instanceof Serial_IStreamAdaptor) {
+            $this->stream = $stream;
+        }
+        else {
+            $this->stream = new Serial_IStreamAdaptor($stream);
+        }
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
             $this->fields[$name] = new Serial_Field($pos, $dtype);
@@ -118,21 +129,30 @@ abstract class Serial_TabularReader extends Serial_Reader
         return;
     }
     
+    /**
+     * Split a line of text into tokens.
+     *
+     */
+    abstract protected function split($line);
+
+    /**
+     * Retrieve the next parsed data record from the stream.
+     * 
+     */
     protected function get()
     {
-        if (!($line = @fgets($this->stream))) {
-            return null;
+        if (!$this->stream->valid()) {
+            return null;  // EOF
         }
-        $tokens = $this->split(rtrim($line, $this->endl));
+        $tokens = $this->split(rtrim($this->stream->current(), $this->endl));
+        $this->stream->next();
         $record = array();
         $pos = 0;
         foreach ($this->fields as $name => $field) {
             $record[$name] = $field->dtype->decode($tokens[$pos++]);
         }
         return $record;
-    }
-    
-    abstract protected function split($line);
+    }    
 }
 
 
