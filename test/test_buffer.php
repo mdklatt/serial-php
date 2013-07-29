@@ -44,11 +44,12 @@ class ReaderBuffer extends Serial_ReaderBuffer
      * Flush a partial pair to the output queue.
      *
      */
-    protected function flush()
+    protected function uflow()
     {
         if ($this->buffer) {
             // No more input, so output the last record as-is.
             $this->output[] = $this->buffer;
+            $this->buffer = null;
         }
         return;
     }

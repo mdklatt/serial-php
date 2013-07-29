@@ -22,14 +22,13 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
 
     protected function get()
     {
-        while (!$this->output && $this->reader) {
+        while (!$this->output) {
             // Retrieve input from the reader until a record is available for
             // output or the reader is exhausted.
-            if (!$this->reader->valid()) {
-                // The reader is exhausted, but there may still be some records
-                // in the buffer.
+            if (!($this->reader && $this->reader->valid())) {
+                // Reader is exhausted, call uflow(). 
                 $this->reader = null;
-                $this->flush();
+                $this->uflow();
                 break;
             }
             $this->queue($this->reader->current());
@@ -40,7 +39,7 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
     
     abstract protected function queue($record);
 
-    protected function flush()
+    protected function uflow()
     {
         return;
     }
