@@ -17,6 +17,7 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
     public function __construct($reader)
     {
         $this->reader = $reader;
+        $this->reader->rewind();
         return;
     }
 
