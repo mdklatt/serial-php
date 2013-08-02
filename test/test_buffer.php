@@ -51,7 +51,7 @@ class ReaderBuffer extends Serial_ReaderBuffer
             $this->output[] = $this->buffer;
             $this->buffer = null;
         }
-        return;
+        return false;
     }
 }
 

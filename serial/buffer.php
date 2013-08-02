@@ -21,28 +21,46 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
         return;
     }
 
+    /**
+     * Return the next buffered record.
+     *
+     */
     protected function get()
     {
         while (!$this->output) {
-            // Retrieve input from the reader until a record is available for
-            // output or the reader is exhausted.
-            if (!($this->reader && $this->reader->valid())) {
-                // Reader is exhausted, call uflow(). 
-                $this->reader = null;
-                $this->uflow();
-                break;
+            if ($this->reader && $this->reader->valid()) {
+                $this->queue($this->reader->current());
+                $this->reader->next();                
             }
-            $this->queue($this->reader->current());
-            $this->reader->next();
+            else {
+                // Underflow condition.
+                $this->reader = null;
+                if (!$this->uflow()) {
+                    break;
+                }
+            }
         }
-        return array_shift($this->output);
+        return array_shift($this->output); 
     }
     
+    /**
+     * Process each incoming record.
+     *
+     * This is called for each record that is read from the input reader.
+     */
     abstract protected function queue($record);
 
+    /**
+     * Handle an underflow condition.
+     *
+     * This is called if the output queue is empty and the input reader is no
+     * longer valid. Derived classes should override it as necessary.
+     */
     protected function uflow()
     {
-        return;
+        // Return true if the next call to get() will succeed or false to 
+        // signal the end of input.
+        return false;
     }
 }
 
