@@ -40,6 +40,9 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
                 }
             }
         }
+        if (!$this->output) {
+            return self::EOF;
+        }
         return array_shift($this->output); 
     }
     

@@ -12,7 +12,7 @@
  */
 abstract class Serial_Reader implements Iterator
 {
-    const STOP_ITERATION = 0;  // false-y but not null
+    const EOF = 0;  // must be false-y but can't be null
         
     private $filters = array();
     private $record;
@@ -26,7 +26,7 @@ abstract class Serial_Reader implements Iterator
      * 1. Return null to reject the record (the iterator will drop it).
      * 2. Return the data record as is.
      * 3. Return a new/modified record.
-     * 4. Return STOP_ITERATION to signal the end of input.
+     * 4. Return Serial_Reader::EOF to signal the end of input.
      */
     public function filter(/* $args */)
     {
@@ -54,25 +54,22 @@ abstract class Serial_Reader implements Iterator
      */
     public function next()
     {
-        $this->record = null;
-        while (!$this->record) {
-            // Repeat until a record succesfully passes through all filters.
-            if (!($record = $this->get())) {
-                break;  // EOF
-            }
+        while (($this->record = $this->get()) !== self::EOF) {
+            // Repeat until EOF or a record passes through all filters.
             foreach ($this->filters as $callback) {
-                // Pass this record through each filter.
-                if (!($record = call_user_func($callback, $record))) {
-                    break;
+                // Apply each filter to this record.
+                $this->record = call_user_func($callback, $this->record);
+                if (!$this->record) {
+                    // The record is null because it failed a filter so get 
+                    // the next record, or the record is EOF so stop.
+                    continue 2;
                 }
             }
-            if ($this->record === self::STOP_ITERATION) {
-                break;
-            }
-            $this->record = $record;
+            // The record passed all filters.
+            ++$this->index;
+            break;  
         }
-        ++$this->index;
-        return;        
+        return;
     }
     
     /**
@@ -93,13 +90,17 @@ abstract class Serial_Reader implements Iterator
         return $this->record;
     }
     
+    /**
+     * Iterator: Return a unique key for the current record.
+     *
+     */
     public function key()
     {
         return $this->index;
     }
     
     /**
-     * Return the next parsed record or null for EOF.
+     * Return the next parsed record or EOF.
      *
      */   
     abstract protected function get();
@@ -147,7 +148,7 @@ abstract class Serial_TabularReader extends Serial_Reader
     protected function get()
     {
         if (!$this->stream->valid()) {
-            return null;  // EOF
+            return self::EOF;
         }
         $tokens = $this->split(rtrim($this->stream->current(), $this->endl));
         $this->stream->next();

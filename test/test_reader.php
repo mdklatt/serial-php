@@ -26,7 +26,7 @@ abstract class TabularReaderTest extends PHPUnit_Framework_TestCase
 
     static public function stop_filter($record)
     {
-        return $record['int'] != 456 ? $record : Serial_DelimitedReader::STOP_ITERATION;
+        return $record['int'] != 456 ? $record : Serial_Reader::EOF;
     }
 
     protected $data;
