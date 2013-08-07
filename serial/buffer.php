@@ -12,7 +12,8 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
 {
     protected $output = array();  // FIFO
     
-    private $reader;
+    // TODO: Make this private when EofException is implemented.
+    protected $reader;
     
     public function __construct($reader)
     {
@@ -30,12 +31,16 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
         while (!$this->output) {
             if ($this->reader && $this->reader->valid()) {
                 $this->queue($this->reader->current());
-                $this->reader->next();                
+                if ($this->reader) {
+                    // queue() might set this to null to signal EOF so check
+                    // it again.
+                    $this->reader->next();
+                }
             }
             else {
                 // Underflow condition.
                 $this->reader = null;
-                if (!$this->uflow()) {
+                if (!$this->uflow()) {  // TODO: uflow returns EOF 
                     break;
                 }
             }
@@ -64,6 +69,7 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
         // Return true if the next call to get() will succeed or false to 
         // signal the end of input.
         return false;
+        // TODO: throw new EofException
     }
 }
 
