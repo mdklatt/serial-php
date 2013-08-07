@@ -6,13 +6,27 @@
  */
 
 
+class Serial_EofException extends Exception
+{
+    /**
+     * Initialize this object.
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct('EOF');
+        return;
+    }
+}
+
+
 /**
  * Base class for all readers.
  *
  */
 abstract class Serial_Reader implements Iterator
 {
-    const EOF = 0;  // must be false-y but can't be null
+    //const EOF = 0;  // must be false-y but can't be null
         
     private $filters = array();
     private $record;
@@ -54,20 +68,23 @@ abstract class Serial_Reader implements Iterator
      */
     public function next()
     {
-        while (($this->record = $this->get()) !== self::EOF) {
-            // Repeat until EOF or a record passes through all filters.
-            foreach ($this->filters as $callback) {
-                // Apply each filter to this record.
-                $this->record = call_user_func($callback, $this->record);
-                if (!$this->record) {
-                    // The record is null because it failed a filter so get 
-                    // the next record, or the record is EOF so stop.
-                    continue 2;
+        try {
+            while (true) {
+                // Repeat until a record successfully passes through all 
+                // filters or EOF.
+                $this->record = $this->get();  // throws EofException
+                foreach ($this->filters as $callback) {
+                    $this->record = call_user_func($callback, $this->record);
+                    if ($this->record === null) {
+                        continue 2;                        
+                    }
                 }
-            }
-            // The record passed all filters.
-            ++$this->index;
-            break;  
+                ++$this->index;
+                break;
+            }            
+        }
+        catch (Serial_EofException $ex) {
+            $this->record = null;
         }
         return;
     }
@@ -78,7 +95,7 @@ abstract class Serial_Reader implements Iterator
      */
     public function valid()
     {
-        return $this->record == true;  // want implicit bool conversion
+        return $this->record !== null;
     }
     
     /**
@@ -148,7 +165,7 @@ abstract class Serial_TabularReader extends Serial_Reader
     protected function get()
     {
         if (!$this->stream->valid()) {
-            return self::EOF;
+            throw new Serial_EofException();
         }
         $tokens = $this->split(rtrim($this->stream->current(), $this->endl));
         $this->stream->next();

@@ -47,11 +47,14 @@ class ReaderBuffer extends Serial_ReaderBuffer
     protected function uflow()
     {
         if ($this->buffer) {
-            // No more input, so output the last record as-is.
+            // No more input is coming, so output the last record as-is.
             $this->output[] = $this->buffer;
             $this->buffer = null;
         }
-        return false;
+        else {
+            throw new Serial_EofException();            
+        }
+        return;
     }
 }
 

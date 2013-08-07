@@ -12,8 +12,7 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
 {
     protected $output = array();  // FIFO
     
-    // TODO: Make this private when EofException is implemented.
-    protected $reader;
+    private $reader;
     
     public function __construct($reader)
     {
@@ -31,22 +30,13 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
         while (!$this->output) {
             if ($this->reader && $this->reader->valid()) {
                 $this->queue($this->reader->current());
-                if ($this->reader) {
-                    // queue() might set this to null to signal EOF so check
-                    // it again.
-                    $this->reader->next();
-                }
+                $this->reader->next();
             }
             else {
                 // Underflow condition.
                 $this->reader = null;
-                if (!$this->uflow()) {  // TODO: uflow returns EOF 
-                    break;
-                }
+                $this->uflow();  // throws EofException
             }
-        }
-        if (!$this->output) {
-            return self::EOF;
         }
         return array_shift($this->output); 
     }
@@ -55,6 +45,8 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
      * Process each incoming record.
      *
      * This is called for each record that is read from the input reader.
+     * An EofException can be used to signal an EOF condition prior to the
+     * normal end of input.
      */
     abstract protected function queue($record);
 
@@ -62,14 +54,12 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
      * Handle an underflow condition.
      *
      * This is called if the output queue is empty and the input reader is no
-     * longer valid. Derived classes should override it as necessary.
+     * longer valid. Derived classes should override it as necessary. 
      */
     protected function uflow()
     {
-        // Return true if the next call to get() will succeed or false to 
-        // signal the end of input.
-        return false;
-        // TODO: throw new EofException
+        // An EofException must be used to signal the end of input.
+        throw new Serial_EofException();
     }
 }
 
