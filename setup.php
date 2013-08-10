@@ -4,7 +4,7 @@
  *
  * This is based on python.distutils setup scripts.
  */
-require_once 'serial/version.php';
+require_once 'serial/core/version.php';
 
 
 // The package-specific configuration array.
