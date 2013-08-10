@@ -8,7 +8,7 @@
  * A buffer for Readers
  * 
  */
-abstract class Serial_ReaderBuffer extends Serial_Reader
+abstract class Serial_Core_ReaderBuffer extends Serial_Core_Reader
 {
     protected $output = array();  // FIFO
     
@@ -59,7 +59,7 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
     protected function uflow()
     {
         // An EofException must be used to signal the end of input.
-        throw new Serial_EofException();
+        throw new Serial_Core_EofException();
     }
 }
 
@@ -68,7 +68,7 @@ abstract class Serial_ReaderBuffer extends Serial_Reader
  * A buffer for Writers.
  * 
  */
-abstract class Serial_WriterBuffer extends Serial_Writer
+abstract class Serial_Core_WriterBuffer extends Serial_Core_Writer
 {
     protected $output = array();  // FIFO
     

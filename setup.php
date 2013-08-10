@@ -11,7 +11,7 @@ require_once 'serial/version.php';
 
 $PACKAGE_CONFIG = array(
     "name" => "serial",
-    "version" => SERIAL_VERSION,
+    "version" => SERIAL_CORE_VERSION,
 );
 
 

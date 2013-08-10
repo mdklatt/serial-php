@@ -11,7 +11,7 @@
  * Concrete implemenation of _ReaderBuffer for testing.
  *
  */
-class ReaderBuffer extends Serial_ReaderBuffer
+class ReaderBuffer extends Serial_Core_ReaderBuffer
 {
     private $buffer = null;
     
@@ -52,7 +52,7 @@ class ReaderBuffer extends Serial_ReaderBuffer
             $this->buffer = null;
         }
         else {
-            throw new Serial_EofException();            
+            throw new Serial_Core_EofException();            
         }
         return;
     }
@@ -63,7 +63,7 @@ class ReaderBuffer extends Serial_ReaderBuffer
  * Concrete implemenation of _WriterBuffer for testing.
  *
  */
-class WriterBuffer extends Serial_WriterBuffer
+class WriterBuffer extends Serial_Core_WriterBuffer
 {
     private $buffer = null;
     

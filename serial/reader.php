@@ -6,7 +6,7 @@
  */
 
 
-class Serial_EofException extends Exception
+class Serial_Core_EofException extends Exception
 {
     /**
      * Initialize this object.
@@ -24,7 +24,7 @@ class Serial_EofException extends Exception
  * Base class for all readers.
  *
  */
-abstract class Serial_Reader implements Iterator
+abstract class Serial_Core_Reader implements Iterator
 {
     //const EOF = 0;  // must be false-y but can't be null
         
@@ -40,7 +40,7 @@ abstract class Serial_Reader implements Iterator
      * 1. Return null to reject the record (the iterator will drop it).
      * 2. Return the data record as is.
      * 3. Return a new/modified record.
-     * 4. Return Serial_Reader::EOF to signal the end of input.
+     * 4. Return Serial_Core_Reader::EOF to signal the end of input.
      */
     public function filter(/* $args */)
     {
@@ -83,7 +83,7 @@ abstract class Serial_Reader implements Iterator
                 break;
             }            
         }
-        catch (Serial_EofException $ex) {
+        catch (Serial_Core_EofException $ex) {
             $this->record = null;
         }
         return;
@@ -124,7 +124,7 @@ abstract class Serial_Reader implements Iterator
 }
 
 
-abstract class Serial_TabularReader extends Serial_Reader
+abstract class Serial_Core_TabularReader extends Serial_Core_Reader
 {
     protected $stream;
     protected $fields;
@@ -132,21 +132,21 @@ abstract class Serial_TabularReader extends Serial_Reader
     /**
      * Initialize this object.
      *
-     * The input stream must be an instance of a Serial_IStreamAdaptor or a
+     * The input stream must be an instance of a Serial_Core_IStreamAdaptor or a
      * regular PHP stream that works with fgets().
      */
     public function __construct($stream, $fields, $endl="\n")
     {
-        if ($stream instanceof Serial_IStreamAdaptor) {
+        if ($stream instanceof Serial_Core_IStreamAdaptor) {
             $this->stream = $stream;
         }
         else {
-            $this->stream = new Serial_IStreamAdaptor($stream);
+            $this->stream = new Serial_Core_IStreamAdaptor($stream);
         }
         $this->stream->rewind();
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
-            $this->fields[$name] = new Serial_Field($pos, $dtype);
+            $this->fields[$name] = new Serial_Core_Field($pos, $dtype);
         }
         $this->endl = $endl;
         return;
@@ -165,7 +165,7 @@ abstract class Serial_TabularReader extends Serial_Reader
     protected function get()
     {
         if (!$this->stream->valid()) {
-            throw new Serial_EofException();
+            throw new Serial_Core_EofException();
         }
         $tokens = $this->split(rtrim($this->stream->current(), $this->endl));
         $this->stream->next();
@@ -179,7 +179,7 @@ abstract class Serial_TabularReader extends Serial_Reader
 }
 
 
-class Serial_FixedWidthReader extends Serial_TabularReader
+class Serial_Core_FixedWidthReader extends Serial_Core_TabularReader
 {
     protected function split($line)
     {
@@ -196,7 +196,7 @@ class Serial_FixedWidthReader extends Serial_TabularReader
 }
 
 
-class Serial_DelimitedReader extends Serial_TabularReader
+class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
 {
     private $delim;
     

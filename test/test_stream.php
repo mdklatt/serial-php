@@ -23,7 +23,7 @@ class IStreamAdaptorTest extends PHPUnit_Framework_TestCase
         $this->stream = tmpfile();
         fwrite($this->stream, implode('', $this->lines));
         fseek($this->stream, 0);
-        $this->input = new Serial_IStreamAdaptor($this->stream);
+        $this->input = new Serial_Core_IStreamAdaptor($this->stream);
         return;
     }
 

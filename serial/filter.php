@@ -5,7 +5,7 @@
  */
 
 
-class Serial_BlacklistFilter
+class Serial_Core_BlacklistFilter
 {
     private $field;
     private $reject;
@@ -27,7 +27,7 @@ class Serial_BlacklistFilter
 }
 
 
-class Serial_WhitelistFilter
+class Serial_Core_WhitelistFilter
 {
     private $field;
     private $accept;

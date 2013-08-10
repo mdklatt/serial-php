@@ -4,7 +4,7 @@
  *
  */
 
-class Serial_Field
+class Serial_Core_Field
 {
     public $pos;
     public $dtype;
@@ -20,7 +20,7 @@ class Serial_Field
 }
 
 
-class Serial_Sequence implements Countable
+class Serial_Core_Sequence implements Countable
 {
     private $data;
     private $count;

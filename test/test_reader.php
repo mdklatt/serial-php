@@ -27,7 +27,7 @@ abstract class TabularReaderTest extends PHPUnit_Framework_TestCase
     static public function stop_filter($record)
     {
         if ($record['int'] == 456) {
-            throw new Serial_EofException();
+            throw new Serial_Core_EofException();
         }
         return $record;
     }
@@ -111,7 +111,7 @@ abstract class TabularReaderTest extends PHPUnit_Framework_TestCase
 }
 
 
-class Serial_FixedWidthReaderTest extends TabularReaderTest
+class Serial_Core_FixedWidthReaderTest extends TabularReaderTest
 {   
     /**
      * Set up the test fixture.
@@ -122,22 +122,22 @@ class Serial_FixedWidthReaderTest extends TabularReaderTest
     protected function setUp()
     {
         $array_fields = array(
-            'x' => array(array(0, 3), new Serial_StringType('%3s')),
-            'y' => array(array(3, 3), new Serial_StringType('%3s')),
+            'x' => array(array(0, 3), new Serial_Core_StringType('%3s')),
+            'y' => array(array(3, 3), new Serial_Core_StringType('%3s')),
         );
         $fields = array(
-            'int' => array(array(0, 3), new Serial_IntType('%3d')),
-            'arr' => array(array(3, null), new Serial_ArrayType($array_fields)), 
+            'int' => array(array(0, 3), new Serial_Core_IntType('%3d')),
+            'arr' => array(array(3, null), new Serial_Core_ArrayType($array_fields)), 
         );
         $this->data = "123abcdef\n456ghijkl\n";
         parent::setUp();
-        $this->reader = new Serial_FixedWidthReader($this->stream, $fields);        
+        $this->reader = new Serial_Core_FixedWidthReader($this->stream, $fields);        
         return;
     }
 }
 
 
-class Serial_DelimitedReaderTest extends TabularReaderTest
+class Serial_Core_DelimitedReaderTest extends TabularReaderTest
 {
     /**
      * Set up the test fixture.
@@ -148,16 +148,16 @@ class Serial_DelimitedReaderTest extends TabularReaderTest
     protected function setUp()
     {
         $array_fields = array(
-            'x' => array(0, new Serial_StringType()),
-            'y' => array(1, new Serial_StringType()),
+            'x' => array(0, new Serial_Core_StringType()),
+            'y' => array(1, new Serial_Core_StringType()),
         );
         $fields = array(
-            'int' => array(0, new Serial_IntType()),
-            'arr' => array(array(1, null), new Serial_ArrayType($array_fields)), 
+            'int' => array(0, new Serial_Core_IntType()),
+            'arr' => array(array(1, null), new Serial_Core_ArrayType($array_fields)), 
         );
         $this->data = "123, abc, def\n456, ghi, jkl\n";
         parent::setUp();
-        $this->reader = new Serial_DelimitedReader($this->stream, $fields, ',');
+        $this->reader = new Serial_Core_DelimitedReader($this->stream, $fields, ',');
         return;
     }
 }

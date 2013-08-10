@@ -80,15 +80,15 @@ class DelimitedWriterTest extends TabularWriterTest
     protected function setUp()
     {
         $array_fields = array(
-            'x' => array(0, new Serial_StringType()),
-            'y' => array(1, new Serial_StringType()),
+            'x' => array(0, new Serial_Core_StringType()),
+            'y' => array(1, new Serial_Core_StringType()),
         );
         $fields = array(
-            'int' => array(0, new Serial_IntType()),
-            'arr' => array(array(1, null), new Serial_ArrayType($array_fields)), 
+            'int' => array(0, new Serial_Core_IntType()),
+            'arr' => array(array(1, null), new Serial_Core_ArrayType($array_fields)), 
         );
         parent::setUp();
-        $this->writer = new Serial_DelimitedWriter($this->stream, $fields, ',', 'X');
+        $this->writer = new Serial_Core_DelimitedWriter($this->stream, $fields, ',', 'X');
         $this->data = '123,abc,defX456,ghi,jklX';
         return;
     }
@@ -123,15 +123,15 @@ class FixedWidthWriterTest extends TabularWriterTest
     protected function setUp()
     {
         $array_fields = array(
-            'x' => array(array(0, 3), new Serial_StringType('%3s')),
-            'y' => array(array(3, 3), new Serial_StringType('%3s')),
+            'x' => array(array(0, 3), new Serial_Core_StringType('%3s')),
+            'y' => array(array(3, 3), new Serial_Core_StringType('%3s')),
         );
         $fields = array(
-            'int' => array(array(0, 3), new Serial_IntType('%3d')),
-            'arr' => array(array(3, null), new Serial_ArrayType($array_fields)), 
+            'int' => array(array(0, 3), new Serial_Core_IntType('%3d')),
+            'arr' => array(array(3, null), new Serial_Core_ArrayType($array_fields)), 
         );
         parent::setUp();
-        $this->writer = new Serial_FixedWidthWriter($this->stream, $fields, 'X');        
+        $this->writer = new Serial_Core_FixedWidthWriter($this->stream, $fields, 'X');        
         $this->data = '123abcdefX456ghijklX';
         return;
     }

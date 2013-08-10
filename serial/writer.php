@@ -9,7 +9,7 @@
  * Base class for all writers.
  *
  */
-abstract class Serial_Writer
+abstract class Serial_Core_Writer
 {
     private $filters = array();
     
@@ -60,7 +60,7 @@ abstract class Serial_Writer
 }
 
 
-abstract class Serial_TabularWriter extends Serial_Writer
+abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
 {
     protected $stream;
     protected $fields;
@@ -70,7 +70,7 @@ abstract class Serial_TabularWriter extends Serial_Writer
         $this->stream = $stream;
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
-            $this->fields[$name] = new Serial_Field($pos, $dtype);
+            $this->fields[$name] = new Serial_Core_Field($pos, $dtype);
         }
         $this->endl = $endl;
         return;
@@ -100,7 +100,7 @@ abstract class Serial_TabularWriter extends Serial_Writer
 }
 
 
-class Serial_DelimitedWriter extends Serial_TabularWriter
+class Serial_Core_DelimitedWriter extends Serial_Core_TabularWriter
 {
     private $delim;
     
@@ -118,7 +118,7 @@ class Serial_DelimitedWriter extends Serial_TabularWriter
 }
 
 
-class Serial_FixedWidthWriter extends Serial_DelimitedWriter
+class Serial_Core_FixedWidthWriter extends Serial_Core_DelimitedWriter
 {
     public function __construct($stream, $fields, $endl=PHP_EOL)
     {

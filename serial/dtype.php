@@ -2,12 +2,12 @@
 /**
  * Data types for translating text tokens to/from PHP types.
  *
- * Client code defines the Serial_DataType for each input/ouput field, but the 
+ * Client code defines the Serial_Core_DataType for each input/ouput field, but the 
  * _Reader and _Writer classes are responsible for calling decode() and 
  * encode().
  */ 
   
-abstract class Serial_DataType
+abstract class Serial_Core_DataType
 {
     protected $fmt;
     protected $default;
@@ -43,7 +43,7 @@ abstract class Serial_DataType
 } 
 
 
-class Serial_IntType extends Serial_DataType
+class Serial_Core_IntType extends Serial_Core_DataType
 {
     public function __construct($fmt='%d', $default=null)
     {
@@ -53,7 +53,7 @@ class Serial_IntType extends Serial_DataType
 }
 
 
-class Serial_FloatType extends Serial_DataType
+class Serial_Core_FloatType extends Serial_Core_DataType
 {
     public function __construct($fmt='%g', $default=null)
     {
@@ -63,7 +63,7 @@ class Serial_FloatType extends Serial_DataType
 }
 
 
-class Serial_StringType extends Serial_DataType
+class Serial_Core_StringType extends Serial_Core_DataType
 {
     public function __construct($fmt='%s', $quote='', $default=null)
     {
@@ -90,7 +90,7 @@ class Serial_StringType extends Serial_DataType
 }
 
 
-class Serial_ConstType extends Serial_DataType
+class Serial_Core_ConstType extends Serial_Core_DataType
 {
     public function __construct($value, $fmt='%s')
     {
@@ -112,7 +112,7 @@ class Serial_ConstType extends Serial_DataType
 }
 
 
-class Serial_DateTimeType extends Serial_DataType
+class Serial_Core_DateTimeType extends Serial_Core_DataType
 {
     private $timefmt;
     
@@ -144,7 +144,7 @@ class Serial_DateTimeType extends Serial_DataType
 }
 
 
-class Serial_ArrayType extends Serial_DataType
+class Serial_Core_ArrayType extends Serial_Core_DataType
 {
     public $width;
     private $fields = array();
@@ -155,7 +155,7 @@ class Serial_ArrayType extends Serial_DataType
         parent::__construct(null, '%s', $default);
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
-            $field = new Serial_Field($pos, $dtype);
+            $field = new Serial_Core_Field($pos, $dtype);
             $this->fields[$name] = $field;
             $this->stride += $field->width;
         }
@@ -164,10 +164,10 @@ class Serial_ArrayType extends Serial_DataType
     
     public function decode($token_array)
     {
-        $token_array = new Serial_Sequence($token_array);
+        $token_array = new Serial_Core_Sequence($token_array);
         $value_array = array();
         for ($beg = 0; $beg < count($token_array); $beg += $this->stride) {
-            $elem = new Serial_Sequence($token_array->get(array($beg, $this->stride)));
+            $elem = new Serial_Core_Sequence($token_array->get(array($beg, $this->stride)));
             $value = array();
             foreach ($this->fields as $name => $field) {
                 $value[$name] = $field->dtype->decode($elem->get($field->pos));

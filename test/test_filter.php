@@ -67,7 +67,7 @@ class BlacklistFilterTest extends FilterTest
     protected function setUp()
     {
         parent::setUp();
-        $this->filter = new Serial_BlacklistFilter('test', array('uvw', 'xyz'));
+        $this->filter = new Serial_Core_BlacklistFilter('test', array('uvw', 'xyz'));
         return;
     }
 }
@@ -88,7 +88,7 @@ class WhitelistFilterTest extends FilterTest
     protected function setUp()
     {
         parent::setUp();
-        $this->filter = new Serial_WhitelistFilter('test', array('abc', 'def'));
+        $this->filter = new Serial_Core_WhitelistFilter('test', array('abc', 'def'));
         return;
     }
 }

@@ -13,7 +13,7 @@
  * especially useful, but this interface is intended for new stream types that 
  * would otherwise require the overkill of creating a new PHP stream wrapper.
  */
-class Serial_IStreamAdaptor implements Iterator
+class Serial_Core_IStreamAdaptor implements Iterator
 {
     protected $stream;
     
