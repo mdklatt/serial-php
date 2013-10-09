@@ -10,8 +10,9 @@ require_once 'serial/core/version.php';
 // The package-specific configuration array.
 
 $PACKAGE_CONFIG = array(
-    "name" => "serial",
-    "version" => SERIAL_CORE_VERSION,
+    'name' => 'serial-core',
+    'path' => 'serial/core',
+    'version' => SERIAL_CORE_VERSION,
 );
 
 
@@ -118,7 +119,7 @@ class DistCommand extends Command
             $config['path'] = $config['name'];
         }
         if (!array_key_exists('init', $config)) {
-            $config['init'] = $config['name'].'.php';
+            $config['init'] = 'autoload.php';
         }
         $name = "{$config['name']}-{$config['version']}.phar";
         $path = $name;
