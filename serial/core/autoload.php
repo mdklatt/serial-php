@@ -60,5 +60,7 @@ class Serial_Core_Autoloader
     }
 }
 
-spl_autoload_register(new Serial_Core_Autoloader);
+// PHP 5.2 does not support callable objects so call __invoke explicitly.
+$loader = new Serial_Core_Autoloader();
+spl_autoload_register(array($loader, '__invoke'));
 
