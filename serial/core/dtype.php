@@ -55,10 +55,31 @@ class Serial_Core_IntType extends Serial_Core_DataType
 
 class Serial_Core_FloatType extends Serial_Core_DataType
 {
+    /**
+     * Initialize this object.
+     *
+     */
     public function __construct($fmt='%g', $default=null)
     {
         parent::__construct('floatval', $fmt, $default);
         return;
+    }
+
+    /**
+     * Encode a PHP value as a string.
+     *
+     */
+    public function encode($value)
+    {
+        if ($value === null) {
+            $value = $this->default;
+        }
+        if (is_nan($value)) {
+            // Workaround for s/printf() bug with NaN on some platforms.
+            // <https://bugs.php.net/bug.php?id=49244>
+            return 'NaN';
+        }
+        return $value !== null ? sprintf($this->fmt, $value) : "";
     }
 }
 

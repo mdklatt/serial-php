@@ -53,7 +53,7 @@ abstract class DataTypeTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * Test the encode method.
+     * Test the encode() method.
      *
      */
     public function testEncode()
@@ -111,7 +111,7 @@ class IntTypeTest extends DataTypeTest
     }
 
     /**
-     * Test decoding for zero.
+     * Test the decode() method for zero.
      *
      * Zeroes are false-y, so need to make sure they aren't decoded as a null.
      */
@@ -123,7 +123,7 @@ class IntTypeTest extends DataTypeTest
     }
 
     /**
-     * Test encoding for zero.
+     * Test the encode() method for zero.
      *
      * Zeros are false-y, so need to make sure they aren't encoded as a null.
      */
@@ -161,7 +161,7 @@ class Serial_Core_FloatTypeTest extends DataTypeTest
     }
 
     /**
-     * Test decoding for zero.
+     * Test the decode() method for zero.
      *
      * Zeros are false-y, so need to make sure they aren't decoded as a null.
      */
@@ -173,7 +173,7 @@ class Serial_Core_FloatTypeTest extends DataTypeTest
     }
 
     /**
-     * Test encoding for zero.
+     * Test the encode() method for zero.
      *
      * Zeros are false-y, so need to make sure they aren't encoded as a null.
      */
@@ -181,6 +181,16 @@ class Serial_Core_FloatTypeTest extends DataTypeTest
     {
         // Make sure to use assertSame() so that === is used for the test.
         $this->assertSame(' 0.000', $this->dtype->encode(0));
+        return;
+    }
+
+    /**
+     * Test the encode() method for NaN.
+     *
+     */
+    public function testEncodeNan()
+    {
+        $this->assertSame('NaN', $this->dtype->encode(NAN));
         return;
     }
 }
