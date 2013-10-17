@@ -12,25 +12,45 @@ abstract class Serial_Core_DataType
     protected $fmt;
     protected $default;
     
-    private $callback;
-    
-    public function __construct($callback, $fmt, $default)
+    /**
+     * Initialize this object.
+     *
+     */
+    public function __construct($fmt, $default)
     {
-        $this->callback = $callback;
         $this->fmt = $fmt;
         $this->default = $default;
         return;
     }
     
+    /**
+     * Convert a string to a PHP value.
+     *
+     */
+    abstract public function decode($token);
+    
+    /**
+     * Convert a PHP to a string.
+     *
+     */
+    abstract public function encode($value);
+} 
+
+
+class Serial_Core_IntType extends Serial_Core_DataType
+{
+    public function __construct($fmt='%d', $default=null)
+    {
+        parent::__construct($fmt, $default);
+        return;
+    }
+
     public function decode($token)
     {
         if (($token = trim($token)) === '') {
-            $value = $this->default;
+            return $this->default;
         }
-        else {
-            $value = call_user_func($this->callback, $token);
-        }
-        return $value;
+        return intval($token);
     }
     
     public function encode($value)
@@ -39,16 +59,6 @@ abstract class Serial_Core_DataType
             $value = $this->default;
         }
         return $value !== null ? sprintf($this->fmt, $value) : "";
-    }
-} 
-
-
-class Serial_Core_IntType extends Serial_Core_DataType
-{
-    public function __construct($fmt='%d', $default=null)
-    {
-        parent::__construct('intval', $fmt, $default);
-        return;
     }
 }
 
@@ -63,13 +73,13 @@ class Serial_Core_FloatType extends Serial_Core_DataType
      */
     public function __construct($fmt='%g', $default=null)
     {
-        parent::__construct('floatval', $fmt, $default);
-        $this->special[''] = $default;
+        parent::__construct($fmt, $default);
+        $this->special[''] = $this->default;
         return;
     }
 
     /**
-     * Decode a string as a PHP value.
+     * Convert a string to a PHP value.
      *
      */
     public function decode($token)
@@ -82,7 +92,7 @@ class Serial_Core_FloatType extends Serial_Core_DataType
     }
     
     /**
-     * Encode a PHP value as a string.
+     * Convert a PHP value to a string.
      *
      */
     public function encode($value)
@@ -104,7 +114,7 @@ class Serial_Core_StringType extends Serial_Core_DataType
 {
     public function __construct($fmt='%s', $quote='', $default=null)
     {
-        parent::__construct(null, $fmt, $default);
+        parent::__construct($fmt, $default);
         $this->quote = $quote;
         return;
     }
@@ -131,7 +141,7 @@ class Serial_Core_ConstType extends Serial_Core_DataType
 {
     public function __construct($value, $fmt='%s')
     {
-        parent::__construct(null, $fmt, $value);
+        parent::__construct($fmt, $value);
         return;
     }
 
@@ -155,7 +165,7 @@ class Serial_Core_DateTimeType extends Serial_Core_DataType
     
     public function __construct($timefmt, $default=null)
     {
-        parent::__construct(null, '%s', $default);
+        parent::__construct('%s', $default);
         $this->timefmt = $timefmt;
         return;
     }
@@ -189,7 +199,7 @@ class Serial_Core_ArrayType extends Serial_Core_DataType
 
     public function __construct($fields, $default=array())
     {
-        parent::__construct(null, '%s', $default);
+        parent::__construct('%s', $default);
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
             $field = new Serial_Core_Field($pos, $dtype);
