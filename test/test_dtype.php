@@ -185,6 +185,18 @@ class Serial_Core_FloatTypeTest extends DataTypeTest
     }
 
     /**
+     * Test the decode() method for NaN.
+     *
+     */
+    public function testDecodeNan()
+    {
+        foreach (array('NaN', 'nan', 'NAN') as $nan) {
+            $this->assertTrue(is_nan($this->dtype->decode($nan)));            
+        }
+        return;
+    }
+
+    /**
      * Test the encode() method for NaN.
      *
      */

@@ -55,6 +55,8 @@ class Serial_Core_IntType extends Serial_Core_DataType
 
 class Serial_Core_FloatType extends Serial_Core_DataType
 {
+    private $special = array('nan' => NAN);
+    
     /**
      * Initialize this object.
      *
@@ -62,9 +64,23 @@ class Serial_Core_FloatType extends Serial_Core_DataType
     public function __construct($fmt='%g', $default=null)
     {
         parent::__construct('floatval', $fmt, $default);
+        $this->special[''] = $default;
         return;
     }
 
+    /**
+     * Decode a string as a PHP value.
+     *
+     */
+    public function decode($token)
+    {
+        $token = strtolower(trim($token));
+        if (isset($this->special[$token])) {
+            return $this->special[$token];
+        }
+        return floatval($token);
+    }
+    
     /**
      * Encode a PHP value as a string.
      *
