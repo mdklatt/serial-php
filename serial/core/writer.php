@@ -22,15 +22,15 @@ abstract class Serial_Core_Writer
      * 2. Return the data record as is.
      * 3. Return a new/modified record.
      */
-    public function filter(/* variadic */)
+    public function filter(/* $args */)
     {
-        $callbacks = func_get_args();
-        if (!$callbacks) {
-            // Default: clear all filters.
-            $this->filters = array();
-            return;
-        }
-        foreach (func_get_args() as $callback) {
+        $this->filters = array();
+        foreach (func_get_args() as $callback) {            
+            // PHP 5.2 workaround: Check for callable objects and call __invoke
+            // explicitly.
+            if (method_exists($callback, '__invoke')) {
+                $callback = array($callback, '__invoke');
+            }
             $this->filters[] = $callback;
         }
         return;

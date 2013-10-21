@@ -44,8 +44,15 @@ abstract class Serial_Core_Reader implements Iterator
      */
     public function filter(/* $args */)
     {
-        $args = func_get_args();
-        $this->filters = $args ? array_merge($this->filters, $args) : array();
+        $this->filters = array();
+        foreach (func_get_args() as $callback) {            
+            // PHP 5.2 workaround: Check for callable objects and call __invoke
+            // explicitly.
+            if (method_exists($callback, '__invoke')) {
+                $callback = array($callback, '__invoke');
+            }
+            $this->filters[] = $callback;
+        }
         return;
     }
 
