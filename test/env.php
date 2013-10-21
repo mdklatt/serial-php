@@ -3,7 +3,7 @@
  * Set up the test environment.
  * 
  */
-define('LIB_HEADER', 'serial/autoload.php');
+define('LIB_HEADER', 'serial/core/autoload.php');
 define('TEST_PATH', dirname(__FILE__));
 
 require dirname(TEST_PATH).DIRECTORY_SEPARATOR.LIB_HEADER;
