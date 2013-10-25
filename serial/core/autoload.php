@@ -4,7 +4,7 @@
  *
  */
 
-// Global functions and constants have cannot be autoloaded.
+// Global functions and constants cannot be autoloaded.
 
 include 'version.php';
 include 'util.php';
@@ -16,10 +16,11 @@ include 'util.php';
  */
 class Serial_Core_Autoloader
 {
+    // This is a compromise between putting every class in its own file
+    // and loading the entire library. Classes are grouped into modules
+    // that are loaded on demand.
+
     private $classes = array(
-        // This is a compromise between putting every class in its own file
-        // and loading the entire library. Classes are grouped into modules
-        // that are loaded on demand.
         'ArrayType' => 'dtype.php',
         'ConstType' => 'dtype.php',
         'DataType' => 'dtype.php',
@@ -39,8 +40,7 @@ class Serial_Core_Autoloader
         'TabularReader' => 'reader.php',
         'TabularWriter' => 'writer.php',
         'Writer' => 'writer.php',
-        'BlacklistFilter' => 'filter.php',
-        'WhitelistFilter' => 'filter.php',
+        'FieldFilter' => 'filter.php',
     );
     
     /**

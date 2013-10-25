@@ -7,14 +7,12 @@
  */
 
 
-/**
- * Unit testing for filter classes (private).
- *
- */
-abstract class FilterTest extends PHPUnit_Framework_TestCase
+
+class FieldFilterTest extends PHPUnit_Framework_TestCase
 {
-    protected $accept;
-    protected $reject;
+    private $whitelist;
+    private $blacklist;
+    private $data;
     
     /**
      * Set up the test fixture.
@@ -24,71 +22,62 @@ abstract class FilterTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->accept = array(array('test' => 'abc'), array('test' => 'def'));
-        $this->reject = array(array('test' => 'uvw'), array('test' => 'xyz'));
+        $values = array('abc', 'def');
+        $this->whitelist = new Serial_Core_FieldFilter('test', $values);
+        $this->blacklist = new Serial_Core_FieldFilter('test', $values, false);
+        $this->data = array();
+        $values[] = 'ghi';
+        foreach ($values as $value) {
+            $this->data[] = array('test' => $value);
+        }
         return;
     }
     
-    /** 
-     * Test for accepted records.
-     *
-     */
-    public function test_accept()
-    {
-        $output = array_map($this->filter, $this->accept);
-        $this->assertEquals($this->accept, $output);
-        return;
-    }
-
-    /** 
-     * Test for rejected records.
-     *
-     */
-    public function test_reject()
-    {
-        $output = array_map($this->filter, $this->reject);
-        $this->assertEquals(array(null, null), $output);
-        return;
-    }
-}
-
-/**
- * Unit testing for the BlacklistFilter class.
- *
- */
-class BlacklistFilterTest extends FilterTest
-{
     /**
-     * Set up the test fixture.
+     * Test the filter for whitelisting.
      *
-     * This is called before each test is run so that they are isolated from 
-     * any side effects.
      */
-    protected function setUp()
+    public function test_whitelist()
     {
-        parent::setUp();
-        $this->filter = new Serial_Core_BlacklistFilter('test', array('uvw', 'xyz'));
+        $filtered = array_slice($this->data, 0, 2);
+        $filtered[] = null;
+        $this->assertEquals($filtered, array_map($this->whitelist, $this->data));
         return;
     }
-}
 
-
-/**
- * Unit testing for the WhitelistFilter class.
- *
- */
-class WhitelistFilterTest extends FilterTest
-{   
     /**
-     * Set up the test fixture.
+     * Test the filter for whitelisting with a missing field.
      *
-     * This is called before each test is run so that they are isolated from 
-     * any side effects.
      */
-    protected function setUp()
+    public function test_whitelist_missing()
     {
-        parent::setUp();
-        $this->filter = new Serial_Core_WhitelistFilter('test', array('abc', 'def'));
+        $this->data = array(array('not_test' => 'xyz'));
+        $filtered = array(null);
+        $this->assertEquals($filtered, array_map($this->whitelist, $this->data));
         return;
     }
+
+    /**
+     * Test the filter for blacklisting.
+     *
+     */
+    public function test_blacklist()
+    {
+        $filtered = array(null, null);
+        $filtered[] = $this->data[2];
+        $this->assertEquals($filtered, array_map($this->blacklist, $this->data));
+        return;
+    }
+
+    /**
+     * Test the filter for blacklisting with a missing field.
+     *
+     */
+    public function test_blacklist_missing()
+    {
+        $this->data = array(array('not_test' => 'xyz'));
+        $filtered = $this->data;
+        $this->assertEquals($filtered, array_map($this->blacklist, $this->data));
+        return;
+    }  
 }
