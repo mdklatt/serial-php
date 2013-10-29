@@ -42,6 +42,7 @@ class Serial_Core_Autoloader
         'Writer' => 'writer.php',
         'FilterProtocol' => 'stream.php',
         'FieldFilter' => 'filter.php',
+        'TextFilter' => 'filter.php',
     );
     
     /**
