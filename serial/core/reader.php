@@ -46,8 +46,7 @@ abstract class Serial_Core_Reader implements Iterator
     {
         $this->filters = array();
         foreach (func_get_args() as $callback) {            
-            // PHP 5.2 workaround: Check for callable objects and call __invoke
-            // explicitly.
+            // PHP 5.2 workaround for callable objects.
             if (method_exists($callback, '__invoke')) {
                 $callback = array($callback, '__invoke');
             }
@@ -144,13 +143,7 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
      */
     public function __construct($stream, $fields, $endl="\n")
     {
-        if ($stream instanceof Serial_Core_IStreamAdaptor) {
-            $this->stream = $stream;
-        }
-        else {
-            $this->stream = new Serial_Core_IStreamAdaptor($stream);
-        }
-        $this->stream->rewind();
+        $this->stream = $stream;
         foreach ($fields as $name => $field) {
             list($pos, $dtype) = $field;
             $this->fields[$name] = new Serial_Core_Field($pos, $dtype);
@@ -171,11 +164,10 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
      */
     protected function get()
     {
-        if (!$this->stream->valid()) {
+        if (($line = fgets($this->stream)) === false) {
             throw new Serial_Core_EofException();
         }
-        $tokens = $this->split(rtrim($this->stream->current(), $this->endl));
-        $this->stream->next();
+        $tokens = $this->split(rtrim($line), $this->endl);
         $record = array();
         $pos = 0;
         foreach ($this->fields as $name => $field) {

@@ -32,7 +32,6 @@ class Serial_Core_Autoloader
         'FixedWidthWriter' => 'writer.php',
         'FloatType' => 'dtype.php',
         'IntType' => 'dtype.php',
-        'IStreamAdaptor' => 'stream.php',
         'Reader' => 'reader.php',
         'ReaderBuffer' => 'buffer.php',
         'Sequence' => 'util.php',
