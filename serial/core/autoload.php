@@ -40,6 +40,7 @@ class Serial_Core_Autoloader
         'TabularReader' => 'reader.php',
         'TabularWriter' => 'writer.php',
         'Writer' => 'writer.php',
+        'FilterProtocol' => 'stream.php',
         'FieldFilter' => 'filter.php',
     );
     
