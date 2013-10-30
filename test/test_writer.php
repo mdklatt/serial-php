@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for writer.php.
+ * Unit tests for writer classes.
  *
  * The tests can be executed using a PHPUnit test runner, e.g. the phpunit
  * command.

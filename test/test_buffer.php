@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for buffer.php.
+ * Unit tests for reader and writer buffers.
  *
  * The tests can be executed using a PHPUnit test runner, e.g. the phpunit
  * command.
@@ -8,10 +8,10 @@
 
 
 /**
- * Concrete implemenation of _ReaderBuffer for testing.
+ * Concrete implemenation of ReaderBuffer for testing.
  *
  */
-class ReaderBuffer extends Serial_Core_ReaderBuffer
+class MockReaderBuffer extends Serial_Core_ReaderBuffer
 {
     private $buffer = null;
     
@@ -60,10 +60,10 @@ class ReaderBuffer extends Serial_Core_ReaderBuffer
 
 
 /**
- * Concrete implemenation of _WriterBuffer for testing.
+ * Concrete implemenation of WriterBuffer for testing.
  *
  */
-class WriterBuffer extends Serial_Core_WriterBuffer
+class MockWriterBuffer extends Serial_Core_WriterBuffer
 {
     private $buffer = null;
     
@@ -175,7 +175,7 @@ class ReaderBufferTest extends BufferTest
     {
         parent::setUp();
         $reader = new ArrayIterator($this->input);
-        $this->buffer = new ReaderBuffer($reader);
+        $this->buffer = new MockReaderBuffer($reader);
         return;
     }
 
@@ -222,7 +222,7 @@ class WriterBufferTest extends BufferTest
     {
         parent::setUp();
         $this->writer = new MockWriter();
-        $this->buffer = new WriterBuffer($this->writer);
+        $this->buffer = new MockWriterBuffer($this->writer);
         return;
     }
 

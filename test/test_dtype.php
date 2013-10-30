@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for dtype.php.
+ * Unit tests for data type classes.
  *
  * The tests can be executed using a PHPUnit test runner, e.g. the phpunit
  * command.

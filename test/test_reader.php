@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for reader.php.
+ * Unit tests for reader classes.
  *
  * The tests can be executed using a PHPUnit test runner, e.g. the phpunit
  * command.

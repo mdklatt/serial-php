@@ -1,10 +1,5 @@
 <?php
 /**
- * Tools for working with streams.
- *
- */
-
-/**
  * Apply line-based filtering to a stream.
  *
  * The user interface consists of the attach() static method. Users do not need

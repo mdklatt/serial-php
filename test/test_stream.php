@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for stream.php.
+ * Unit tests for stream classes.
  *
  * The tests can be executed using a PHPUnit test runner, e.g. the phpunit
  * command.

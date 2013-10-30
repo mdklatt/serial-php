@@ -1,6 +1,6 @@
 <?php
 /**
- * Unit tests for filter.php.
+ * Unit tests for filter classes.
  *
  * The tests can be executed using a PHPUnit test runner, e.g. the phpunit
  * command.

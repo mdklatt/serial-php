@@ -5,4 +5,3 @@
  * This library uses the Semantic Versioning scheme: <http://semver.org>.
  */
 define('SERIAL_CORE_VERSION', '0.1.0dev');
-
