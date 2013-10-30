@@ -17,7 +17,7 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
      * The input stream must be an instance of a Serial_Core_IStreamAdaptor or 
      * a regular PHP stream that works with fgets().
      */
-    public function __construct($stream, $fields, $endl="\n")
+    public function __construct($stream, $fields, $endl=PHP_EOL)
     {
         $this->stream = $stream;
         foreach ($fields as $name => $field) {
@@ -43,7 +43,7 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
         if (($line = fgets($this->stream)) === false) {
             throw new Serial_Core_EofException();
         }
-        $tokens = $this->split(rtrim($line), $this->endl);
+        $tokens = $this->split(rtrim($line, $this->endl));
         $record = array();
         $pos = 0;
         foreach ($this->fields as $name => $field) {
