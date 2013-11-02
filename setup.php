@@ -4,15 +4,15 @@
  *
  * This is based on python.distutils setup scripts.
  */
-require_once 'serial/core/version.php';
+require_once 'Serial/Core/autoload.php';
 
 
 // The package-specific configuration array.
 
 $PACKAGE_CONFIG = array(
     'name' => 'serial-core',
-    'path' => 'serial/core',
-    'version' => SERIAL_CORE_VERSION,
+    'path' => 'Serial/Core',
+    'version' => Serial_Core::VERSION,
 );
 
 
