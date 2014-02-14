@@ -5,7 +5,7 @@
  * This is based on python.distutils setup scripts.
  */
 require_once 'Serial/Core/autoload.php';
-
+require_once 'Test/autoload.php';
 
 // The package-specific configuration array.
 
@@ -97,8 +97,7 @@ class TestCommand extends Command
      */
     public function __invoke($config)
     {
-        system('php -f test/run_tests.php', $status);
-        return $status;
+        return Test::run();
     }
 }
 

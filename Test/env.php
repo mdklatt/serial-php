@@ -5,7 +5,6 @@
  */
 define('LIB_HEADER', 'Serial/Core/autoload.php');
 define('TEST_PATH', dirname(__FILE__));
-
 require dirname(TEST_PATH).DIRECTORY_SEPARATOR.LIB_HEADER;
-chdir(TEST_PATH);
+require 'autoload.php';
 date_default_timezone_set('UTC');  // stop DateTime from complaining

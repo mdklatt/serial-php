@@ -1,16 +1,9 @@
 <?php
 /**
- * Unit tests for stream classes.
- *
- * The tests can be executed using a PHPUnit test runner, e.g. the phpunit
- * command.
- */
-
-/**
  * Unit tests for the FilterProtocol class.
  *
  */
-class FilterProtocolTest extends PHPUnit_Framework_TestCase
+class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
 {
     protected $data;
     protected $stream;
@@ -62,7 +55,7 @@ class FilterProtocolTest extends PHPUnit_Framework_TestCase
     public function testAttachMethod()
     {
         
-        $filter = new MockFilterClass();
+        $filter = new FilterProtocolTest_MockFilterClass();
         Serial_Core_FilterProtocol::attach($this->stream, $filter, STREAM_FILTER_READ);
         $filtered = stream_get_contents($this->stream);
         $this->assertEquals("nop\nqrs\ntuv", $filtered);
@@ -70,8 +63,11 @@ class FilterProtocolTest extends PHPUnit_Framework_TestCase
     }
 }
 
-
-class MockFilterClass
+/**
+ * Filter class for testing.
+ *
+ */
+class FilterProtocolTest_MockFilterClass
 {
     /**
      * Execute the filter.
@@ -82,3 +78,4 @@ class MockFilterClass
         return str_rot13($line);
     }
 }
+
