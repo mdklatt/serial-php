@@ -19,8 +19,6 @@ class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
         $this->data = "abc\ndef\nghi";  // test without trailing \n
         $this->filtered = "ABC\nDEF\nGHI";
         $this->stream = tmpfile();
-        fwrite($this->stream, $this->data);
-        fseek($this->stream, 0);
         return;
     }
 
@@ -42,6 +40,8 @@ class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
      */
     public function testInputFunction()
     {
+        fwrite($this->stream, $this->data);
+        fseek($this->stream, 0);
         Serial_Core_FilterProtocol::attach($this->stream, 'strtoupper', 
             STREAM_FILTER_READ);
         $filtered = stream_get_contents($this->stream);
@@ -55,9 +55,43 @@ class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
      */
     public function testInputMethod()
     {
+        fwrite($this->stream, $this->data);
+        fseek($this->stream, 0);
         
         $filter = new FilterProtocolTest_MockFilterClass();
-        Serial_Core_FilterProtocol::attach($this->stream, $filter, STREAM_FILTER_READ);
+        Serial_Core_FilterProtocol::attach($this->stream, $filter, 
+            STREAM_FILTER_READ);
+        $filtered = stream_get_contents($this->stream);
+        $this->assertEquals($this->filtered, $filtered);
+        return;
+    }
+
+    /**
+     * Test output stream filtering with a function.
+     *
+     */
+    public function testOutputFunction()
+    {
+        Serial_Core_FilterProtocol::attach($this->stream, 'strtoupper', 
+            STREAM_FILTER_WRITE);
+        fwrite($this->stream, $this->data);
+        fseek($this->stream, 0);
+        $filtered = stream_get_contents($this->stream);
+        $this->assertEquals($this->filtered, $filtered);
+        return;
+    }
+
+    /**
+     * Test output stream filtering with a class method.
+     *
+     */
+    public function testOutputMethod()
+    {
+        $filter = new FilterProtocolTest_MockFilterClass();
+        Serial_Core_FilterProtocol::attach($this->stream, $filter, 
+            STREAM_FILTER_WRITE);
+        fwrite($this->stream, $this->data);
+        fseek($this->stream, 0);
         $filtered = stream_get_contents($this->stream);
         $this->assertEquals($this->filtered, $filtered);
         return;
