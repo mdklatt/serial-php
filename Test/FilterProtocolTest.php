@@ -16,9 +16,10 @@ class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $lines = array("abc\n", "def\n", "ghi");  // test no trailing newline
+        $this->data = "abc\ndef\nghi";  // test without trailing \n
+        $this->filtered = "ABC\nDEF\nGHI";
         $this->stream = tmpfile();
-        fwrite($this->stream, implode('', $lines));
+        fwrite($this->stream, $this->data);
         fseek($this->stream, 0);
         return;
     }
@@ -36,29 +37,29 @@ class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test stream filtering with a function.
+     * Test input stream filtering with a function.
      *
      */
-    public function testAttachFunction()
+    public function testInputFunction()
     {
         Serial_Core_FilterProtocol::attach($this->stream, 'strtoupper', 
             STREAM_FILTER_READ);
         $filtered = stream_get_contents($this->stream);
-        $this->assertEquals("ABC\nDEF\nGHI", $filtered);
+        $this->assertEquals($this->filtered, $filtered);
         return;
     }
 
     /**
-     * Test stream filtering with a class method.
+     * Test input stream filtering with a class method.
      *
      */
-    public function testAttachMethod()
+    public function testInputMethod()
     {
         
         $filter = new FilterProtocolTest_MockFilterClass();
         Serial_Core_FilterProtocol::attach($this->stream, $filter, STREAM_FILTER_READ);
         $filtered = stream_get_contents($this->stream);
-        $this->assertEquals("nop\nqrs\ntuv", $filtered);
+        $this->assertEquals($this->filtered, $filtered);
         return;
     }
 }
@@ -75,7 +76,7 @@ class FilterProtocolTest_MockFilterClass
      */
     public function __invoke($line)
     {
-        return str_rot13($line);
+        return strtoupper($line);
     }
 }
 
