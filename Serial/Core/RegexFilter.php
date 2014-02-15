@@ -3,7 +3,7 @@
  * Filter lines using a regular expression.
  *
  */
-class Serial_Core_TextFilter
+class Serial_Core_RegexFilter
 {
     private $regex;
     private $whitelist;

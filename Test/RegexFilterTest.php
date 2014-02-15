@@ -1,9 +1,9 @@
 <?php
 /**
- * Unit testing for the TextFilter class.
+ * Unit testing for the RegexFilter class.
  *
  */
-class Test_TextFilterTest extends PHPUnit_Framework_TestCase
+class Test_RegexFilterTest extends PHPUnit_Framework_TestCase
 {
     private $whitelist;
     private $blacklist;
@@ -18,8 +18,8 @@ class Test_TextFilterTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $regex = '/abc|def/';
-        $this->whitelist = new Serial_Core_TextFilter($regex);
-        $this->blacklist = new Serial_Core_TextFilter($regex, false);
+        $this->whitelist = new Serial_Core_RegexFilter($regex);
+        $this->blacklist = new Serial_Core_RegexFilter($regex, false);
         $this->data = array("abc\n", "def\n", "ghi\n");
         return;
     }
