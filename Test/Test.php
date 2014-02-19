@@ -14,7 +14,7 @@ class Test
         echo 'Test: '.$name.PHP_EOL;
         $path = dirname(__FILE__).DIRECTORY_SEPARATOR;
         if ($name) {
-            $path.= "{$name}Test.php";
+            $path.= "{$name}.php";
         }
         // system('phpunit --configuration Test/phpunit.xml '.$path, $status);
         system('phpunit --bootstrap Test/env.php '.$path, $status);
