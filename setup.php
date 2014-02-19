@@ -20,7 +20,7 @@ $PACKAGE_CONFIG = array(
 // Execute the script.
 
 $DEBUG = false;  // should be command-line setting
-$COMMANDS = array('test' => 'TestCommand', 'dist' => 'DistCommand');
+$COMMANDS = array('test' => 'TestCommand', 'phar' => 'PharCommand');
 
 try {
     if ($argc == 1) {
@@ -106,7 +106,7 @@ class TestCommand extends Command
  * Create a PHP Archive (.phar) file.
  *
  */
-class DistCommand extends Command
+class PharCommand extends Command
 {
     /** 
      * Execute the command.
