@@ -103,7 +103,7 @@ class TestCommand extends Command
 
 
 /**
- * Create a PHP Archive (.phar) file for distribution.
+ * Create a PHP Archive (.phar) file.
  *
  */
 class DistCommand extends Command
@@ -114,9 +114,6 @@ class DistCommand extends Command
      */
     public function __invoke($config)
     {
-        if (!array_key_exists('path', $config)) {
-            $config['path'] = $config['name'];
-        }
         if (!array_key_exists('init', $config)) {
             $config['init'] = 'autoload.php';
         }
@@ -127,7 +124,8 @@ class DistCommand extends Command
         $phar->buildFromDirectory($config['path'], '/\.php/'); 
         $phar->setStub($this->stub($config['init']));
         printf("%d file(s) added to archive {$path}".PHP_EOL, $phar->count());
-        return 0;        
+        // TODO: Make verification a command-line option.
+        return $this->verify($path);        
     }
     
     /**
@@ -141,5 +139,19 @@ class DistCommand extends Command
         $length = strlen($stub) - strlen('{{length}}');
         $length += (strlen($length + strlen($length))); 
         return str_replace('{{length}}', $length, $stub);        
+    }
+    
+    /** 
+     * Verify the archive by running the test suite on it.
+     *
+     */
+    private function verify($path)
+    {
+        $env = "PHPUNIT_TEST_SOURCE";
+        putenv("{$env}={$path}");
+        echo "verifying {$path}".PHP_EOL;
+        $status = Test::run();
+        putenv("{$env}=");  // unset variable
+        return $status;
     }
 }
