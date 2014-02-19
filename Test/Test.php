@@ -15,7 +15,7 @@ class Test
         if ($name) {
             $path.= "{$name}.php";
         }
-        system('phpunit --bootstrap Test/env.php '.$path, $status);
+        system('phpunit --bootstrap Test/bootstrap.php '.$path, $status);
         return $status;
     }
 }

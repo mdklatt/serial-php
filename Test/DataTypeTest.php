@@ -1,6 +1,4 @@
 <?php
-require_once 'env.php';
-
 /**
  * Base class for data type unit tests.
  *
