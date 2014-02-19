@@ -1,9 +1,9 @@
 <?php
 /**
- * Unit tests for the FilterProtocol class.
+ * Unit testing for the StreamFilterManager class.
  *
  */
-class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
+class Test_StreamFilterManagerTest extends PHPUnit_Framework_TestCase
 {
     protected $data;
     protected $stream;
@@ -45,7 +45,7 @@ class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
     {
         file_put_contents($this->tmpname, $this->data);
         $stream = fopen($this->tmpname, 'r');
-        Serial_Core_FilterProtocol::attach($stream, 'strtoupper'); 
+        Serial_Core_StreamFilterManager::attach($stream, 'strtoupper'); 
         $filtered = stream_get_contents($stream);
         $this->assertEquals($this->filtered, $filtered);
         return;
@@ -59,8 +59,8 @@ class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
     {
         file_put_contents($this->tmpname, $this->data);
         $stream = fopen($this->tmpname, 'r');
-        $filter = new FilterProtocolTest_MockFilterClass();
-        Serial_Core_FilterProtocol::attach($stream, $filter); 
+        $filter = new StreamFilterManagerTest_MockFilter();
+        Serial_Core_StreamFilterManager::attach($stream, $filter); 
         $filtered = stream_get_contents($stream);
         $this->assertEquals($this->filtered, $filtered);
         return;
@@ -73,7 +73,7 @@ class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
     public function testOutputFunction()
     {
         $stream = fopen($this->tmpname, 'w');
-        Serial_Core_FilterProtocol::attach($stream, 'strtoupper'); 
+        Serial_Core_StreamFilterManager::attach($stream, 'strtoupper'); 
         fwrite($stream, $this->data);
         fclose($stream);
         $filtered = file_get_contents($this->tmpname);
@@ -88,8 +88,8 @@ class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
     public function testOutputMethod()
     {
         $stream = fopen($this->tmpname, 'w');
-        $filter = new FilterProtocolTest_MockFilterClass();
-        Serial_Core_FilterProtocol::attach($stream, $filter); 
+        $filter = new StreamFilterManagerTest_MockFilter();
+        Serial_Core_StreamFilterManager::attach($stream, $filter); 
         fwrite($stream, $this->data);
         fclose($stream);
         $filtered = file_get_contents($this->tmpname);
@@ -102,7 +102,7 @@ class Test_FilterProtocolTest extends PHPUnit_Framework_TestCase
  * Filter class for testing.
  *
  */
-class FilterProtocolTest_MockFilterClass
+class StreamFilterManagerTest_MockFilter
 {
     /**
      * Execute the filter.

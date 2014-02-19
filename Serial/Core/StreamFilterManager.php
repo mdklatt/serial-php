@@ -6,7 +6,7 @@
  * to create an instance of this class. The public instance methods are used by 
  * the PHP stream filter protocol. 
  */
-class Serial_Core_FilterProtocol extends php_user_filter
+class Serial_Core_StreamFilterManager extends php_user_filter
 {    
     const READ = STREAM_FILTER_READ;
     const WRITE = STREAM_FILTER_WRITE;
@@ -19,7 +19,7 @@ class Serial_Core_FilterProtocol extends php_user_filter
      *
      * A filter is a function or callable object that will be applied to each
      * line of stream input or ouput for a stream. The filter takes a single 
-     * line of text as an argument and takes on of the following three actions
+     * line of text as an argument and takes one of the following three actions
      * on it:
      * 1. Return null to ignore the line.
      * 2. Return the line as is.
