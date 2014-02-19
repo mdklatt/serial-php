@@ -7,11 +7,15 @@
  * the PHP stream filter protocol. 
  */
 class Serial_Core_FilterProtocol extends php_user_filter
-{
+{    
+    const READ = STREAM_FILTER_READ;
+    const WRITE = STREAM_FILTER_WRITE;
+    const READWRITE = STREAM_FILTER_ALL;
+    
     private static $registry = array();
 
     /**
-     * Attach a filter to a stream.
+     * Attach a callback to a stream as a filter.
      *
      * A filter is a function or callable object that will be applied to each
      * line of stream input or ouput for a stream. The filter takes a single 
@@ -21,106 +25,105 @@ class Serial_Core_FilterProtocol extends php_user_filter
      * 2. Return the line as is.
      * 3. Return a new/modified line.
      */
-    public static function attach($stream, $callback, $mode, $prepend=false)
+    public static function attach($stream, $callback, $mode=null, $prepend=false)
     {
-        $key = self::register($callback);
-        if ($prepend) {
-            stream_filter_prepend($stream, $key, $mode);
-        }
-        else {
-            stream_filter_append($stream, $key, $mode);
-        }
-        return;   
-    }
-    
-    /**
-     * Register a callback to use as a filter.
-     *
-     */
-    private static function register($callback) 
-    {
+        // PHP identifies filters by class, not object. However, each class can
+        // be mapped to multiple filter names. Here, the filter name is used as
+        // a key to store data for each filter instance. 
+        // TODO: This uses the static class name to register each filter, which
+        // breaks inheritance. If PHP 5.2 support is no longer needed, take
+        // advantage of late static binding in PHP 5.3+ to fix this.
+        $uid = uniqid();
         if (method_exists($callback, '__invoke')) {
             // PHP 5.2 workaround for callable objects.
             $callback = array($callback, '__invoke');
         }
-        if (is_array($callback)) {
-            list($object, $method) = $callback;
-            $key = get_class($object).'::'.$method;
+        self::$registry[$uid] = array('endl' => PHP_EOL, 'callback' =>$callback);
+        stream_filter_register($uid, __CLASS__);
+        if ($prepend) {
+            stream_filter_prepend($stream, $uid, $mode);
         }
         else {
-            $key = $callback;
+            stream_filter_append($stream, $uid, $mode);
         }
-        stream_filter_register($key, __CLASS__);
-        self::$registry[$key] = $callback;
-        return $key;
+        return;
     }
+   
+    // Implement the php_user_filter interface. This is not part of the class
+    // user interface. NB: Filters are registered using the static class name
+    // (see attach() above), so overriding these methods in a derived class
+    // will have no effect.
     
     private $buffer;
-    private $bufpos;
+    private $bucket;
     
     /**
      * Initialize the filter.
      *
-     * This is used by the the PHP stream filter protocol and is not part of
-     * the user interface.
      */
     public function onCreate()
     {
-        // The class constructor is never called. Instead, this is called when
-        // the filter is bound to a stream, e.g. stream_filter_append().
-        $this->callback = self::$registry[$this->filtername];
+        // Class constructors are never called for a php_user_filter. Instead,
+        // this is called when the filter is bound to a stream, e.g.
+        // stream_filter_append(). The $filtername attribute specifies the
+        // name associated with this filter, which in this case uniquely
+        // identifies a filter instance.
+        $this->callback = self::$registry[$this->filtername]['callback'];
+        $this->buffer = '';
         return;
     }
 
     /**
      * Filter stream data.
      *
-     * This is used by the the PHP stream filter protocol and is not part of
-     * the user interface.
      */
     public function filter($in, $out, &$consumed, $closing)
     {
-        // This is called when reading and/or writing from the stream, c.f.
-        // stream_filter_append(). 
-        $this->buffer = '';
-        $this->bufpos = 0;
+        // With each pass through the filter a "bucket brigade" of bytes is
+        // processed. Multiple passes may be required to process an entire
+        // stream.
+        // TODO: Allow use of EOF|EofException to halt further processing.
+        $consumed = 0;
         while ($bucket = stream_bucket_make_writeable($in)) {
-            // Filter the data in each input bucket and pass it along as an
-            // output bucket.
-            // TODO: Allow use of EOF|EofException to halt further processing.
-            $this->buffer .= $bucket->data;
+            // Read each bucket. The brigade will be processed as a single
+            // string. Save a valid bucket for this stream so it can be
+            // written to later.
             $consumed += $bucket->datalen;
-            $filtered = array_map($this->callback, $this->lines());
-            $bucket->data = implode('', $filtered);
-            $bucket->datalen = strlen($bucket->data);
-            stream_bucket_append($out, $bucket);
+            $this->buffer .= $bucket->data;
+            $this->bucket = $bucket;
         }
-        if ($this->buffer) {
-            // Process the incomplete last line (no newline).
-            $filtered = call_user_func($this->callback, $this->buffer);
-            $bucket = stream_bucket_new($this->stream, $filtered);
-            stream_bucket_append($out, $bucket);
-        }            
+        if (!($lines = $this->lines($closing))) {
+            // No data to pass on.
+            return PSFS_FEED_ME;
+        }
+        $this->bucket->data = implode(PHP_EOL, $lines);
+        if (!$closing) {
+            // Add a trailing newline unless this is the last line. In that
+            // case, the output will mirror the presence of a trailing newline
+            // in the input.
+            $this->bucket->data.= PHP_EOL;
+        }
+        $this->bucket->datalen = strlen($this->bucket->data);
+        stream_bucket_append($out, $this->bucket);
         return PSFS_PASS_ON;
     }
     
     /**
-     * Split the buffer contents into complete lines.
+     * Parse buffered data into lines.
      *
      */
-    private function lines()
+    private function lines($closing)
     {
-        $lines = array();
-        while (($pos = strpos($this->buffer, PHP_EOL, $this->bufpos)) !== false) {
-            // Find each complete line. If the last line does not contain a 
-            // newline it is left in the buffer to await additional data.
-            $pos += 1;  // include newline with line
-            $len = $pos - $this->bufpos;
-            $lines[] = substr($this->buffer, $this->bufpos, $len);
-            $this->bufpos += $len;
+        // Lines may be split across buckets, so buffer the last token in
+        // anticipation of more data. If the buffer ends with a newline, the
+        // last token will be an empty string.
+        $tokens = explode(PHP_EOL, $this->buffer);
+        $lines = array_map($this->callback, array_slice($tokens, 0, -1));
+        $this->buffer = end($tokens);
+        if ($closing && $this->buffer !== '') {
+            // This is the last pass through the filter, so flush the buffer.
+            $lines[] = call_user_func($this->callback, $this->buffer);
         }
-        $this->buffer = substr($this->buffer, $this->bufpos);
-        $this->bufpos = 0;
         return $lines;
     }
 }    
