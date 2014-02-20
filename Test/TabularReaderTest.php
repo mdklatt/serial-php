@@ -19,7 +19,7 @@ abstract class Test_TabularReaderTest extends PHPUnit_Framework_TestCase
     static public function stop_filter($record)
     {
         if ($record['int'] == 456) {
-            throw new Serial_Core_EofException();
+            throw new Serial_Core_StopIteration();
         }
         return $record;
     }

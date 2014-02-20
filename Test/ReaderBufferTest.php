@@ -91,7 +91,7 @@ class ReaderBufferTest_MockReaderBuffer extends Serial_Core_ReaderBuffer
             $this->buffer = null;
         }
         else {
-            throw new Serial_Core_EofException();            
+            throw new Serial_Core_StopIteration();            
         }
         return;
     }

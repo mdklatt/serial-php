@@ -82,7 +82,7 @@ class Serial_Core_StreamFilterManager extends php_user_filter
         // With each pass through the filter a "bucket brigade" of bytes is
         // processed. Multiple passes may be required to process an entire
         // stream.
-        // TODO: Allow use of EOF|EofException to halt further processing.
+        // TODO: Allow use of StopIteration to halt further processing.
         $consumed = 0;
         while ($bucket = stream_bucket_make_writeable($in)) {
             // Read each bucket. The brigade will be processed as a single

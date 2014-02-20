@@ -41,7 +41,7 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
     protected function get()
     {
         if (($line = fgets($this->stream)) === false) {
-            throw new Serial_Core_EofException();
+            throw new Serial_Core_StopIteration();
         }
         $tokens = $this->split(rtrim($line, $this->endl));
         $record = array();

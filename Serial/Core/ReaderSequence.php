@@ -18,12 +18,11 @@ class Serial_Core_ReaderSequence extends Serial_Core_Reader
      * Each input stream is closed once it has been exhausted.
      *
      * Filtering is applied at the ReaderSequnce level, but for filters that
-     * throw an EofException this may not be the desired behavior. Throwing 
-     * an EofException at this level effects all remaining streams. If the 
-     * intent is to stop iteration on an individual stream, define the open
+     * throw a StopIteration exceptions this may not be the desired behavior. 
+     * Throwing StopIteration at this level effects all remaining streams. If 
+     * the intent is to stop iteration on an individual stream, define the open
      * function to return a Reader that already has the appropriate filter(s)
      * applied.
-     * 
      */
     public function __construct(/* $args */)
     {
@@ -70,7 +69,7 @@ class Serial_Core_ReaderSequence extends Serial_Core_Reader
     protected function get()
     {
         while (!$this->reader->valid()) {
-            $this->open();  // throws EofException on EOF
+            $this->open();  // throws StopIteration
         }
         $record = $this->reader->current();
         $this->reader->next();
@@ -88,7 +87,7 @@ class Serial_Core_ReaderSequence extends Serial_Core_Reader
             fclose(array_shift($this->input));
         }
         if (!$this->input) {
-            throw new Serial_Core_EofException();
+            throw new Serial_Core_StopIteration();
         }
         if (is_string($this->input[0])) {
             // Open a path as a plain text file.

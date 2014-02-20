@@ -30,7 +30,7 @@ abstract class Serial_Core_ReaderBuffer extends Serial_Core_Reader
             else {
                 // Underflow condition.
                 $this->reader = null;
-                $this->uflow();  // throws EofException
+                $this->uflow();  // throws StopIteration
             }
         }
         return array_shift($this->output); 
@@ -40,20 +40,20 @@ abstract class Serial_Core_ReaderBuffer extends Serial_Core_Reader
      * Process each incoming record.
      *
      * This is called for each record that is read from the input reader.
-     * An EofException can be used to signal an EOF condition prior to the
-     * normal end of input.
+     * A StopIteration exception can be used to signal the end of input prior
+     * to an EOF condition.
      */
     abstract protected function queue($record);
 
     /**
      * Handle an underflow condition.
      *
-     * This is called if the output queue is empty and the input reader is no
-     * longer valid. Derived classes should override it as necessary. 
+     * This is called if the output queue is empty and the input reader has
+     * been exhausted. Derived classes may override it as necessary. A
+     * StopIteration exception must be thrown when there is no more input.
      */
     protected function uflow()
     {
-        // An EofException must be used to signal the end of input.
-        throw new Serial_Core_EofException();
+        throw new Serial_Core_StopIteration();
     }
 }

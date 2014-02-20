@@ -1,33 +1,12 @@
 <?php
 /**
- * Reader types.
+ * Base class for all Readers.
  *
- * Readers parse lines of text into data records.
- */
-
-
-class Serial_Core_EofException extends Exception
-{
-    /**
-     * Initialize this object.
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct('EOF');
-        return;
-    }
-}
-
-
-/**
- * Base class for all readers.
- *
+ * Serial data consists of sequential records. A Reader iterates over serial
+ * data and allows for preprocessing of the data using filters.
  */
 abstract class Serial_Core_Reader implements Iterator
 {
-    //const EOF = 0;  // must be false-y but can't be null
-        
     private $filters = array();
     private $record;
     private $index = -1;
@@ -40,7 +19,7 @@ abstract class Serial_Core_Reader implements Iterator
      * 1. Return null to reject the record (the iterator will drop it).
      * 2. Return the data record as is.
      * 3. Return a new/modified record.
-     * 4. Return Serial_Core_Reader::EOF to signal the end of input.
+     * 4. Throw a Serial_Core_StopIteration exception to end input.
      */
     public function filter(/* $args */)
     {
@@ -77,8 +56,8 @@ abstract class Serial_Core_Reader implements Iterator
         try {
             while (true) {
                 // Repeat until a record successfully passes through all 
-                // filters or EOF.
-                $this->record = $this->get();  // throws EofException
+                // filters or a StopIteration exception is thrown.
+                $this->record = $this->get();
                 foreach ($this->filters as $callback) {
                     $this->record = call_user_func($callback, $this->record);
                     if ($this->record === null) {
@@ -89,7 +68,7 @@ abstract class Serial_Core_Reader implements Iterator
                 break;
             }            
         }
-        catch (Serial_Core_EofException $ex) {
+        catch (Serial_Core_StopIteration $ex) {
             $this->record = null;
         }
         return;
@@ -123,8 +102,25 @@ abstract class Serial_Core_Reader implements Iterator
     }
     
     /**
-     * Return the next parsed record or EOF.
+     * Return the next parsed record.
      *
+     * A StopIteration exception must be thrown when there is no more input.
      */   
     abstract protected function get();
 }
+
+
+class Serial_Core_StopIteration extends Exception
+{
+    /**
+     * Initialize this object.
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct('EOF');
+        return;
+    }
+}
+
+
