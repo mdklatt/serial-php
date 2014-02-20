@@ -108,19 +108,3 @@ abstract class Serial_Core_Reader implements Iterator
      */   
     abstract protected function get();
 }
-
-
-class Serial_Core_StopIteration extends Exception
-{
-    /**
-     * Initialize this object.
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct('EOF');
-        return;
-    }
-}
-
-
