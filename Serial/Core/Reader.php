@@ -53,24 +53,26 @@ abstract class Serial_Core_Reader implements Iterator
      */
     public function next()
     {
-        try {
-            while (true) {
-                // Repeat until a record successfully passes through all 
-                // filters or a StopIteration exception is thrown.
+        while (true) {
+            // Repeat until a record successfully passes through all filters or
+            // the end of input.
+            try {
                 $this->record = $this->get();
                 foreach ($this->filters as $callback) {
                     $this->record = call_user_func($callback, $this->record);
                     if ($this->record === null) {
+                        // This record failed a filter, try the next one.
                         continue 2;                        
                     }
                 }
                 ++$this->index;
-                break;
-            }            
-        }
-        catch (Serial_Core_StopIteration $ex) {
-            $this->record = null;
-        }
+            }
+            catch (Serial_Core_StopIteration $ex) {
+                // EOF or a filter signaled the end of valid input.
+                $this->record = null;
+            }
+            break;
+        }           
         return;
     }
     
