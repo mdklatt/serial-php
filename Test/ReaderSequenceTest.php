@@ -32,10 +32,10 @@ class Test_ReaderSequenceTest extends PHPUnit_Framework_TestCase
         $data = "abc, def\nghi, jkl\n";
         $stream1 = fopen('php://memory', 'rw');
         fwrite($stream1, $data);
-        fseek($stream1, 0);
+        rewind($stream1);
         $stream2 = fopen('php://memory', 'rw');
         fwrite($stream2, strtoupper($data));
-        fseek($stream2, 0);
+        rewind($stream2);
         $this->streams = array($stream1, $stream2);
         $this->records = array(
             array('x' => 'abc', 'y' => 'def'),
