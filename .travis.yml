@@ -1,17 +1,18 @@
 # Travis CI configuration for the serial-core PHP library.
 #
-# Travis CI is a continuous integration service for GitHub.
 # <http://travis-ci.org>
-
+#
 language: php
 php:
     - 5.2
     - 5.3
     - 5.4
 
-script: php -f setup.php test phar  # run test suite and verify phar creation 
-
 branches:
     only:
         - master
         - dev
+
+# Run the test suite against the source tree and create a phar distribution.
+# The phar file will automatically be verified against the test suite.
+script: php -f setup.php test phar 
