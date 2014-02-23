@@ -29,14 +29,16 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
     }
     
     /**
-     * Split a line of text into tokens.
+     * Split a line of text into an array of string tokens.
      *
      */
     abstract protected function split($line);
 
     /**
-     * Retrieve the next parsed data record from the stream.
-     * 
+     * Get the next parsed record from the input stream.
+     *
+     * This is called before any filters have been applied. A StopIteration 
+     * exception is thrown on EOF.
      */
     protected function get()
     {

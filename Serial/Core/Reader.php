@@ -57,7 +57,7 @@ abstract class Serial_Core_Reader implements Iterator
     }
     
     /**
-     * Advance to the next valid record while applying filters.
+     * Advance to the next valid record while applying filtering.
      *
      */
     public function next()
@@ -115,9 +115,11 @@ abstract class Serial_Core_Reader implements Iterator
     }
     
     /**
-     * Return the next parsed record.
+     * Get the next parsed record from the input stream.
      *
-     * A StopIteration exception must be thrown when there is no more input.
+     * This is called before any filters have been applied. The implementation 
+     * must raise a Serial_Core_StopIteration exception to signal when input 
+     * has been exhausted.
      */   
     abstract protected function get();
 }

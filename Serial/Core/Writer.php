@@ -43,7 +43,7 @@ abstract class Serial_Core_Writer
     }
 
     /**
-     * Write a record while applying filters.
+     * Write a record while applying filtering.
      *
      */
     public function write($record)

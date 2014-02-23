@@ -1,7 +1,9 @@
 <?php
 /**
- * A buffer for Readers
- * 
+ * Abstract base class for all Reader buffers.
+ *    
+ * A ReaderBuffer applies postprocessing to records being read from another 
+ * Reader.
  */
 abstract class Serial_Core_ReaderBuffer extends Serial_Core_Reader
 {
@@ -9,6 +11,10 @@ abstract class Serial_Core_ReaderBuffer extends Serial_Core_Reader
     
     private $reader;
     
+    /**
+     * Initialize this object.
+     *
+     */
     public function __construct($reader)
     {
         $this->reader = $reader;
@@ -17,8 +23,10 @@ abstract class Serial_Core_ReaderBuffer extends Serial_Core_Reader
     }
 
     /**
-     * Return the next buffered record.
+     * Read the next record from the input reader.
      *
+     * This is called before any of this buffer's filters have been applied, 
+     * but the input reader will have already applied its own filters.
      */
     protected function get()
     {
@@ -37,7 +45,7 @@ abstract class Serial_Core_ReaderBuffer extends Serial_Core_Reader
     }
     
     /**
-     * Process each incoming record.
+     * Process an incoming record.
      *
      * This is called for each record that is read from the input reader.
      * A StopIteration exception can be used to signal the end of input prior
@@ -48,9 +56,10 @@ abstract class Serial_Core_ReaderBuffer extends Serial_Core_Reader
     /**
      * Handle an underflow condition.
      *
-     * This is called if the output queue is empty and the input reader has
-     * been exhausted. Derived classes may override it as necessary. A
-     * StopIteration exception must be thrown when there is no more input.
+     * This is called to retrieve additional records if the output queue is 
+     * empty and the input reader has been exhausted. Derived classes can 
+     * override this as necessary. A StopIteration exception must be thrown
+     * to signal that there are no more records in the buffer. 
      */
     protected function uflow()
     {

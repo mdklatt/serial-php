@@ -38,6 +38,6 @@ class Serial_Core_IntType extends Serial_Core_DataType
         if ($value === null) {
             $value = $this->default;
         }
-        return $value !== null ? sprintf($this->fmt, $value) : "";
+        return $value !== null ? sprintf($this->fmt, $value) : '';
     }
 }

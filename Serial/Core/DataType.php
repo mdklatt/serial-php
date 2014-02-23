@@ -29,7 +29,7 @@ abstract class Serial_Core_DataType
     /**
      * Convert a PHP value to a string.
      *
-     * This is called by a Reader and does not need to be called by the user.
+     * This is called by a Writer and does not need to be called by the user.
      */
     abstract public function encode($value);
 } 

@@ -11,6 +11,10 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
     protected $stream;
     protected $fields;
     
+    /**
+     * Initialize this object.
+     *
+     */
     public function __construct($stream, $fields, $endl=PHP_EOL)
     {
         $this->stream = $stream;
@@ -22,10 +26,16 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
         return;
     }
     
+    /**
+     * Put a formatted record into the output stream.
+     * 
+     * This is called after the record has been passed through all filters.
+     */
     protected function put($record)
     {
         $tokens = array();
         foreach ($this->fields as $name => &$field) {
+            // Convert each field to a string token.
             $token = $field->dtype->encode(@$record[$name]);
             if (is_array($token)) {
                 // An array of tokens; expand inline and update the field width
@@ -39,8 +49,12 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
             } 
         }
         fwrite($this->stream, $this->join($tokens).$this->endl);
-        return $this->join($tokens);
+        return;
     }
     
+    /**
+     * Join an array of string tokens into a line of text.
+     *
+     */
     abstract protected function join($tokens);
 }

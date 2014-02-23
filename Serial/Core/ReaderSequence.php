@@ -1,6 +1,6 @@
 <?php
 /**
- * Iterate over a sequence of files/streams.
+ * Iterate over multiple input sources as a single sequence of records.
  *
  */
 class Serial_Core_ReaderSequence extends Serial_Core_Reader
@@ -13,16 +13,16 @@ class Serial_Core_ReaderSequence extends Serial_Core_Reader
      * Initialize this object.
      *
      * The first argument is required and is a function or callable object
-     * that takes a stream as an argument and returns a Reader. The remaining
-     * arguments are either open streams or paths to open as plain text files.
-     * Each input stream is closed once it has been exhausted.
+     * that takes a stream as an argument and returns a Reader to use on that
+     * stream. The remaining arguments are either open streams or paths to open
+     * as plain text files. Each stream is closed once it has been exhausted.
      *
      * Filtering is applied at the ReaderSequnce level, but for filters that
-     * throw a StopIteration exceptions this may not be the desired behavior. 
-     * Throwing StopIteration at this level effects all remaining streams. If 
-     * the intent is to stop iteration on an individual stream, define the open
-     * function to return a Reader that already has the appropriate filter(s)
-     * applied.
+     * throw a Serial_Core_StopIteration exception this may not be the desired 
+     * behavior. Throwing StopIteration from a ReaderSquence filter will halt
+     * input from all remaining streams in the sequence. If the intent is to 
+     * stop input on an individual stream, define the callback function to 
+     * return a Reader that already has the desired filter(s) applied.
      */
     public function __construct(/* $args */)
     {
@@ -43,7 +43,7 @@ class Serial_Core_ReaderSequence extends Serial_Core_Reader
                 $this->input[] = $expr;
             }
         }
-        $this->open();
+        //$this->open();
         return;
     }
     
@@ -63,8 +63,11 @@ class Serial_Core_ReaderSequence extends Serial_Core_Reader
     }
     
     /**
-     * Return the next parsed record from the sequence.
+     * Get the next parsed record from the sequence.
      *
+     * This is called before any filters have been applied. A StopIteration
+     * exception is thrown when all streams in the sequence have been
+     * exhausted.
      */
     protected function get()
     {
@@ -77,7 +80,7 @@ class Serial_Core_ReaderSequence extends Serial_Core_Reader
     }
     
     /**
-     * Initialize a reader for the next stream.
+     * Create a reader for the next stream in the sequence.
      *
      */
     private function open()

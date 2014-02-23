@@ -47,6 +47,6 @@ class Serial_Core_FloatType extends Serial_Core_DataType
             // <https://bugs.php.net/bug.php?id=49244>
             return 'NaN';
         }
-        return $value !== null ? sprintf($this->fmt, $value) : "";
+        return $value !== null ? sprintf($this->fmt, $value) : '';
     }
 }

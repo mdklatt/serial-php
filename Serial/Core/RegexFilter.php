@@ -2,6 +2,7 @@
 /**
  * Filter lines using a regular expression.
  *
+ * This is intended for use with Serial_Core_StreamFilterManager.
  */
 class Serial_Core_RegexFilter
 {
