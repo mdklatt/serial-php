@@ -2,13 +2,21 @@
 /**
  * Base class for all writers.
  *
+ * Serial data consists of sequential records. A Writer provides an interface
+ * interface for writing serial data and allows for postprocessing of the data
+ * using filters.
  */
 abstract class Serial_Core_Writer
 {
-    private $filters = array();
+    // Class filters are always applied after any user filters. Derived 
+    // classes can use these to do any final data manipulation before the
+    // record is written to the stream.
+
+    protected $classFilters = array();
+    private $userFilters = array();
     
     /**
-     * Clear all filters (default) or add a filter to this writer.
+     * Add filters to this writer or clear all filters (default).
      *
      * A filter is a callback that accepts a data record as its only argument.
      * Based on this record the filter can perform the following actions:
@@ -18,22 +26,31 @@ abstract class Serial_Core_Writer
      */
     public function filter(/* $args */)
     {
-        $this->filters = array();
+        // This does not affect class filters.
+        if (!($callbacks = func_get_args())) {
+            // Clear all filters.
+            $this->userFilters = array();
+            return;
+        }
         foreach (func_get_args() as $callback) {            
-            // PHP 5.2 workaround: Check for callable objects and call __invoke
-            // explicitly.
             if (method_exists($callback, '__invoke')) {
+                // PHP 5.2 workaround for callable objects.
                 $callback = array($callback, '__invoke');
             }
-            $this->filters[] = $callback;
+            $this->userFilters[] = $callback;
         }
         return;
     }
 
-
+    /**
+     * Write a record while applying filters.
+     *
+     */
     public function write($record)
     {   
-        foreach ($this->filters as $callback) {
+        # TODO: array_merge() probably doesn't need to be done with each write.
+        $filters = array_merge($this->userFilters, $this->classFilters);
+        foreach ($filters as $callback) {
             if (!($record = call_user_func($callback, $record))) {
                 return;
             }
@@ -42,6 +59,10 @@ abstract class Serial_Core_Writer
         return;
     }
 
+    /**
+     * Write all records while applying filters.
+     *
+     */
     public function dump($records)
     {
         foreach ($records as $record) {
@@ -49,6 +70,11 @@ abstract class Serial_Core_Writer
         }
         return;
     }
-        
+     
+    /**
+     * Put a formatted record into the output stream. 
+     *
+     * This is called after the record has passed through all filters.
+     */   
     abstract protected function put($record); 
 }
