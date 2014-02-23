@@ -62,6 +62,18 @@ class Test_ReaderSequenceTest extends PHPUnit_Framework_TestCase
     }
     
     /**
+     * Test the iterator protocol for an empty input sequence.
+     *
+     */
+    public function testIterEmpty()
+    {
+        $reader = 'Test_ReaderSequenceTest::reader';
+        $sequence = new Serial_Core_ReaderSequence($reader);
+        $this->assertEquals(array(), iterator_to_array($sequence));
+        return;
+    }
+
+    /**
      * Tear down the test fixture.
      *
      * This is called after every test is run.

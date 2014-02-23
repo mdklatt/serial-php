@@ -71,7 +71,7 @@ class Serial_Core_ReaderSequence extends Serial_Core_Reader
      */
     protected function get()
     {
-        while (!$this->reader->valid()) {
+        while (!$this->reader || !$this->reader->valid()) {
             $this->open();  // throws StopIteration
         }
         $record = $this->reader->current();
