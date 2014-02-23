@@ -357,19 +357,14 @@ on a line of text instead of a data record. Text filters can be chained.
         return $line[0] == '#' ? null : $line;
     }
     
-    function prcp_filter($line)
-    {
-        // Limit input to PRCP data. Filtering at the stream level can increase
-        // performance by reducing the amount of data that has to be parsed
-        // by the Reader.
-        return substr($line, 21, 4) == 'PRCP' ? $line : null;
-    }
-    
-    ...
+    // Limit input to PRCP data. Filtering at the stream level can increase
+    // performance by reducing the amount of data that has to be parsed
+    // by the Reader.
+    $prcp_filter = new Serial_Core_SubstrFilter(array(21, 4), array('PRCP'));
     
     $stream = fopen('data.txt', 'r');
     Serial_Core_StreamFilterManager::attach($stream, 'comment_filter');
-    Serial_Core_StreamFilterManager::attach($stream, 'prcp_filter');
+    Serial_Core_StreamFilterManager::attach($stream, $prcp_filter);
     $reader = new Serial_Core_FixedWidthReader($stream, $fields);
 
 
@@ -431,13 +426,13 @@ access them directly using the `classFilters` attribute.
             global $SAMPLE_FIELDS, $DELIM;
             parent::__construct($SAMPLE_FIELDS, SAMPLE_DELIM);
             $this->offset = "{$offset} minutes";  // offset from UTC
-            $this->class_filters[] = $this->timestamp_filter;  // applied first
+            $this->class_filters[] = $this->timestampFilter;  // applied first
             return;
         }
         
-        private function timestamp_filter($record)
+        private function timestampFilter($record)
         {
-            // Filter function for LST corrections.
+            // Filter function for timestamp corrections.
             $record['timestamp']->modify($this->offset);  // UTC to LST
             $record['timezone'] = 'LST';
             return $record;
@@ -463,13 +458,13 @@ access them directly using the `classFilters` attribute.
             global $SAMPLE_FIELDS, $DELIM;
             parent::__construct($SAMPLE_FIELDS, SAMPLE_DELIM);
             $this->offset = -$offset.' minutes';  // offset from LST to UTC
-            $this->class_filters[] = $this->timestamp_filter;  // applied last
+            $this->class_filters[] = $this->timestampFilter;  // applied last
             return;
         }
         
-        private function timestamp_filter($record)
+        private function timestampFilter($record)
         {
-            // Filter function for UTC corrections.
+            // Filter function for timestamp corrections.
             $record['timestamp']->modify($this->offset);  // LST to UTC
             $record['timezone'] = 'UTC';
             return $record;
@@ -569,7 +564,7 @@ override the `flush()` method to finalize processing.
             return;
         }
 
-        protected function _queue($record)
+        protected function queue($record)
         {
             // Process each outgoing record. 
             foreach ($record['data'] as $item) {
