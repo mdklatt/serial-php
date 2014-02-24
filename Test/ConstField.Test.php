@@ -1,9 +1,9 @@
 <?php
 /**
- * Unit testing for the ConstType class.
+ * Unit testing for the ConstField class.
  *
  */
-class Test_ConstTypeTest extends Test_DataTypeTest
+class Test_ConstFieldTest extends Test_FieldTest
 {
     /**
      * Set up the test fixture.
@@ -15,10 +15,10 @@ class Test_ConstTypeTest extends Test_DataTypeTest
     {
         $this->value = 9999;
         $this->token = ' 9999';
-        $this->dtype = new Serial_Core_ConstType($this->value, '%5d');
+        $this->field = new Serial_Core_ConstField('const', 0, $this->value, '%5d');
         $this->default_value = $this->value;
         $this->default_token = $this->token;
-        $this->default_dtype = $this->dtype;
+        $this->default_field = $this->field;
         return;
     }
 

@@ -1,9 +1,9 @@
 <?php
 /**
- * Unit testing for the DateTimeType class.
+ * Unit testing for the DateTimeField class.
  *
  */
-class Test_DateTimeTypeTest extends Test_DataTypeTest
+class Test_DateTimeFieldTest extends Test_FieldTest
 {
     /**
      * Set up the test fixture.
@@ -15,10 +15,10 @@ class Test_DateTimeTypeTest extends Test_DataTypeTest
     {
         $this->value = DateTime::createFromFormat('Ymd', '20121231');
         $this->token = '20121231';
-        $this->dtype = new Serial_Core_DateTimeType('Ymd');
+        $this->field = new Serial_Core_DateTimeField('date', 0, 'Ymd');
         $this->default_value = DateTime::createFromFormat('Ymd', '19010101');
         $this->default_token = '19010101';
-        $this->default_dtype = new Serial_Core_DateTimeType('Ymd', $this->default_value);
+        $this->default_field = new Serial_Core_DateTimeField('date', 0, 'Ymd', $this->default_value);
         return;
     }
 }

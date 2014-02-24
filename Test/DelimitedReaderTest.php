@@ -14,12 +14,12 @@ class Test_DelimitedReaderTest extends Test_TabularReaderTest
     protected function setUp()
     {
         $array_fields = array(
-            'x' => array(0, new Serial_Core_StringType()),
-            'y' => array(1, new Serial_Core_StringType()),
+            new Serial_Core_StringField('x', 0),
+            new Serial_Core_StringField('y', 1),
         );
         $fields = array(
-            'int' => array(0, new Serial_Core_IntType()),
-            'arr' => array(array(1, null), new Serial_Core_ArrayType($array_fields)), 
+            new Serial_Core_IntField('int', 0),
+            new Serial_Core_ArrayField('arr', array(1, null), $array_fields), 
         );
         $this->data = "123, abc, def\n456, ghi, jkl\n";
         parent::setUp();

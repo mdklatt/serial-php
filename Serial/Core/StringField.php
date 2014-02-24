@@ -3,15 +3,15 @@
  * Translate text tokens to/from string values.
  *
  */
-class Serial_Core_StringType extends Serial_Core_DataType
+class Serial_Core_StringField extends Serial_Core_Field
 {
     /**
      * Initialize this object.
      *
      */
-    public function __construct($fmt='%s', $quote='', $default=null)
+    public function __construct($name, $pos, $fmt='%s', $quote='', $default=null)
     {
-        parent::__construct($fmt, $default);
+        parent::__construct($name, $pos, $fmt, $default);
         $this->quote = $quote;
         return;
     }

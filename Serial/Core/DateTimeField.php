@@ -3,7 +3,7 @@
  * Translate text tokens to/from DateTime values.
  *
  */
-class Serial_Core_DateTimeType extends Serial_Core_DataType
+class Serial_Core_DateTimeField extends Serial_Core_Field
 {
     private $timefmt;
     
@@ -11,15 +11,14 @@ class Serial_Core_DateTimeType extends Serial_Core_DataType
      * Initialize this object.
      *
      */
-    public function __construct($timefmt, $default=null)
+    public function __construct($name, $pos, $fmt, $default=null)
     {
-        parent::__construct('%s', $default);
-        $this->timefmt = $timefmt;
+        parent::__construct($name, $pos, $fmt, $default);
         return;
     }
     
     /**
-     * Convert a string to a PHP value.
+     * Convert a string token to a PHP value.
      *
      * This is called by a Reader and does not need to be called by the user.
      */
@@ -28,11 +27,11 @@ class Serial_Core_DateTimeType extends Serial_Core_DataType
         if (!($token = trim($token))) {
             return $this->default;
         }
-        return DateTime::createFromFormat($this->timefmt, $token);
+        return DateTime::createFromFormat($this->fmt, $token);
     }
     
     /**
-     * Convert a PHP value to a string.
+     * Convert a PHP value to a string token.
      *
      * This is called by a Reader and does not need to be called by the user.
      */
@@ -44,6 +43,6 @@ class Serial_Core_DateTimeType extends Serial_Core_DataType
             }
             $value = $this->default;
         }
-        return $value->format($this->timefmt);
+        return $value->format($this->fmt);
     }
 }

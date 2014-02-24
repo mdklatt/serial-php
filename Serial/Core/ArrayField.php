@@ -3,7 +3,7 @@
  * Translate text tokens to/from an array of PHP values.
  *
  */
-class Serial_Core_ArrayType extends Serial_Core_DataType
+class Serial_Core_ArrayField extends Serial_Core_Field
 {
     public $width;
     private $fields = array();
@@ -13,13 +13,11 @@ class Serial_Core_ArrayType extends Serial_Core_DataType
      * Initialize this object.
      *
      */
-    public function __construct($fields, $default=array())
+    public function __construct($name, $pos, $fields, $default=array())
     {
-        parent::__construct('%s', $default);
-        foreach ($fields as $name => $field) {
-            list($pos, $dtype) = $field;
-            $field = new Serial_Core_Field($pos, $dtype);
-            $this->fields[$name] = $field;
+        parent::__construct($name, $pos, '%s', $default);
+        $this->fields = $fields;    
+        foreach ($this->fields as $field) {
             $this->stride += $field->width;
         }
         return;
@@ -37,8 +35,8 @@ class Serial_Core_ArrayType extends Serial_Core_DataType
         for ($beg = 0; $beg < count($token_array); $beg += $this->stride) {
             $elem = new Serial_Core_Sequence($token_array->get(array($beg, $this->stride)));
             $value = array();
-            foreach ($this->fields as $name => $field) {
-                $value[$name] = $field->dtype->decode($elem->get($field->pos));
+            foreach ($this->fields as $field) {
+                $value[$field->name] = $field->decode($elem->get($field->pos));
             }
             $value_array[] = $value;
         }
@@ -59,8 +57,8 @@ class Serial_Core_ArrayType extends Serial_Core_DataType
         $this->width = count($value_array) * $this->stride;        
         $token_array = array();
         foreach ($value_array as $elem) {
-            foreach ($this->fields as $name => $field) {
-                $token_array[] = $field->dtype->encode($elem[$name]);
+            foreach ($this->fields as $field) {
+                $token_array[] = $field->encode($elem[$field->name]);
             }
         }
         return $token_array;

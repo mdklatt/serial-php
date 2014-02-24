@@ -3,7 +3,7 @@
  * Translate text tokens to/from floating point values.
  *
  */
-class Serial_Core_FloatType extends Serial_Core_DataType
+class Serial_Core_FloatField extends Serial_Core_Field
 {
     private $special = array('nan' => NAN);
     
@@ -11,15 +11,15 @@ class Serial_Core_FloatType extends Serial_Core_DataType
      * Initialize this object.
      *
      */
-    public function __construct($fmt='%g', $default=null)
+    public function __construct($name, $pos, $fmt='%g', $default=null)
     {
-        parent::__construct($fmt, $default);
+        parent::__construct($name, $pos, $fmt, $default);
         $this->special[''] = $this->default;
         return;
     }
 
     /**
-     * Convert a string to a PHP value.
+     * Convert a string token to a PHP value.
      *
      * This is called by a Reader and does not need to be called by the user.
      */
@@ -33,7 +33,7 @@ class Serial_Core_FloatType extends Serial_Core_DataType
     }
     
     /**
-     * Convert a PHP value to a string.
+     * Convert a PHP value to a string token.
      *
      * This is called by a Reader and does not need to be called by the user.
      */

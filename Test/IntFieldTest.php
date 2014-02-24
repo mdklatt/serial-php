@@ -1,9 +1,9 @@
 <?php
 /**
- * Unit testing for the IntType class.
+ * Unit testing for the IntField class.
  *
  */
-class Test_IntTypeTest extends Test_DataTypeTest
+class Test_IntFieldTest extends Test_FieldTest
 {
     /**
      * Set up the test fixture.
@@ -14,12 +14,13 @@ class Test_IntTypeTest extends Test_DataTypeTest
     protected function setUp()
     {
         $fmt = '%4d';
+        $this->pos = 
         $this->value = 123;
         $this->token = ' 123';
-        $this->dtype = new Serial_Core_IntType($fmt);
+        $this->field = new Serial_Core_IntField('int', 0, $fmt);
         $this->default_value = -999;
         $this->default_token = '-999';
-        $this->default_dtype = new Serial_Core_IntType($fmt, $this->default_value);
+        $this->default_field = new Serial_Core_IntField('int', 0, $fmt, $this->default_value);
         return;
     }
 
@@ -31,7 +32,7 @@ class Test_IntTypeTest extends Test_DataTypeTest
     public function testDecodeZero()
     {
         // Make sure to use assertSame() so that === is used for the test.
-        $this->assertSame(0, $this->dtype->decode('0'));
+        $this->assertSame(0, $this->field->decode('0'));
         return;
     }
 
@@ -43,7 +44,7 @@ class Test_IntTypeTest extends Test_DataTypeTest
     public function testEncodeZero()
     {
         // Make sure to use assertSame() so that === is used for the test.
-        $this->assertSame('   0', $this->dtype->encode(0));
+        $this->assertSame('   0', $this->field->encode(0));
         return;
     }
 }

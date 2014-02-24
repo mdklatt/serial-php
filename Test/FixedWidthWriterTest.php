@@ -14,12 +14,12 @@ class Test_FixedWidthWriterTest extends Test_TabularWriterTest
     protected function setUp()
     {
         $array_fields = array(
-            'x' => array(array(0, 3), new Serial_Core_StringType('%3s')),
-            'y' => array(array(3, 3), new Serial_Core_StringType('%3s')),
+            new Serial_Core_StringField('x', array(0, 3), '%3s'),
+            new Serial_Core_StringField('y', array(3, 3), '%3s'),
         );
         $fields = array(
-            'int' => array(array(0, 3), new Serial_Core_IntType('%3d')),
-            'arr' => array(array(3, null), new Serial_Core_ArrayType($array_fields)), 
+            new Serial_Core_IntField('int', array(0, 3), '%3d'),
+            new Serial_Core_ArrayField('arr', array(3, null), $array_fields), 
         );
         parent::setUp();
         $this->writer = new Serial_Core_FixedWidthWriter($this->stream, $fields, 'X');        

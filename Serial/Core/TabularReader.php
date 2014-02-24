@@ -20,10 +20,7 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
     public function __construct($stream, $fields, $endl=PHP_EOL)
     {
         $this->stream = $stream;
-        foreach ($fields as $name => $field) {
-            list($pos, $dtype) = $field;
-            $this->fields[$name] = new Serial_Core_Field($pos, $dtype);
-        }
+        $this->fields = $fields;
         $this->endl = $endl;
         return;
     }
@@ -48,8 +45,8 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
         $tokens = $this->split(rtrim($line, $this->endl));
         $record = array();
         $pos = 0;
-        foreach ($this->fields as $name => $field) {
-            $record[$name] = $field->dtype->decode($tokens[$pos++]);
+        foreach ($this->fields as $field) {
+            $record[$field->name] = $field->decode($tokens[$pos++]);
         }
         return $record;
     }    

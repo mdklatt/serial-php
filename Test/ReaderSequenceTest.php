@@ -12,8 +12,8 @@ class Test_ReaderSequenceTest extends PHPUnit_Framework_TestCase
     public static function reader($stream)
     {
         $fields = array(
-            'x' => array(0, new Serial_Core_StringType()),
-            'y' => array(1, new Serial_Core_StringType()),
+            new Serial_Core_StringField('x', 0),
+            new Serial_Core_StringField('y', 1),
         );
         return new Serial_Core_DelimitedReader($stream, $fields, ',');
     }

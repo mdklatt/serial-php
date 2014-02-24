@@ -1,9 +1,9 @@
 <?php
 /**
- * Unit testing for the FloatType class.
+ * Unit testing for the FloatField class.
  *
  */
-class Test_FloatTypeTest extends Test_DataTypeTest
+class Test_FloatFieldTest extends Test_FieldTest
 {
     /**
      * Set up the test fixture.
@@ -16,10 +16,10 @@ class Test_FloatTypeTest extends Test_DataTypeTest
         $fmt = '%6.3f';
         $this->value = 1.23;
         $this->token = ' 1.230';
-        $this->dtype = new Serial_Core_FloatType($fmt);
+        $this->field = new Serial_Core_FloatField('float', 0, $fmt);
         $this->default_value = -9.999;
         $this->default_token = '-9.999';
-        $this->default_dtype = new Serial_Core_FloatType($fmt, $this->default_value);
+        $this->default_field = new Serial_Core_FloatField('float', 0, $fmt, $this->default_value);
         return;
     }
 
@@ -31,7 +31,7 @@ class Test_FloatTypeTest extends Test_DataTypeTest
     public function testDecodeZero()
     {
         // Make sure to use assertSame() so that === is used for the test.
-        $this->assertSame(0., $this->dtype->decode('0'));
+        $this->assertSame(0., $this->field->decode('0'));
         return;
     }
 
@@ -43,7 +43,7 @@ class Test_FloatTypeTest extends Test_DataTypeTest
     public function testEncodeZero()
     {
         // Make sure to use assertSame() so that === is used for the test.
-        $this->assertSame(' 0.000', $this->dtype->encode(0));
+        $this->assertSame(' 0.000', $this->field->encode(0));
         return;
     }
 
@@ -54,7 +54,7 @@ class Test_FloatTypeTest extends Test_DataTypeTest
     public function testDecodeNan()
     {
         foreach (array('NaN', 'nan', 'NAN') as $nan) {
-            $this->assertTrue(is_nan($this->dtype->decode($nan)));            
+            $this->assertTrue(is_nan($this->field->decode($nan)));            
         }
         return;
     }
@@ -65,7 +65,7 @@ class Test_FloatTypeTest extends Test_DataTypeTest
      */
     public function testEncodeNan()
     {
-        $this->assertSame('NaN', $this->dtype->encode(NAN));
+        $this->assertSame('NaN', $this->field->encode(NAN));
         return;
     }
 }

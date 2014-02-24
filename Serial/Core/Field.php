@@ -1,23 +1,41 @@
 <?php
 /**
- * Tabular data field metadata.
+ * Base class for translating text tokens to/from PHP types.
  *
- */
-class Serial_Core_Field
+ */ 
+abstract class Serial_Core_Field
 {
+    public $name;
     public $pos;
-    public $dtype;
-    public $width;
-   
+    protected $width;
+    protected $fmt;
+    protected $default;
+    
     /**
      * Initialize this object.
      *
-     */ 
-    public function __construct($pos, $dtype)
+     */
+    public function __construct($name, $pos, $fmt='%s', $default=null)
     {
+        $this->name = $name;
         $this->pos = $pos;
-        $this->dtype = $dtype;
-        $this->width = is_array($pos) ? $pos[1] : 1;
+        $this->fmt = $fmt;
+        $this->default = $default;
+        $this->width = is_array($pos) ? $pos[1] : 1;        
         return;
     }
-}
+    
+    /**
+     * Convert a string token to a PHP value.
+     *
+     * This is called by a Reader and does not need to be called by the user.
+     */
+    abstract public function decode($token);
+    
+    /**
+     * Convert a PHP value to a string token.
+     *
+     * This is called by a Writer and does not need to be called by the user.
+     */
+    abstract public function encode($value);
+} 

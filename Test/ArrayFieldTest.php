@@ -1,9 +1,9 @@
 <?php
 /**
- * Unit testing for the ArrayType class.
+ * Unit testing for the ArrayField class.
  *
  */
-class Test_ArrayTypeTest extends Test_DataTypeTest
+class Test_ArrayFieldTest extends Test_FieldTest
 {
     /**
      * Set up the test fixture.
@@ -14,18 +14,18 @@ class Test_ArrayTypeTest extends Test_DataTypeTest
     protected function setUp()
     {
         $fields = array(
-            'str' => array(0, new Serial_Core_StringType()),
-            'int' => array(1, new Serial_Core_IntType())
+            new Serial_Core_StringField('str', 0),
+            new Serial_Core_IntField('int', 1),
         );
         $this->value = array(
             array('str' => 'abc', 'int' => 123),
             array('str' => 'def', 'int' => 456),
         );
         $this->token = array('abc', '123', 'def', '456');
-        $this->dtype = new Serial_Core_ArrayType($fields);
+        $this->field = new Serial_Core_ArrayField('array', array(0, 4), $fields);
         $this->default_value = array(array('str' => 'xyz', 'int' => -999));
         $this->default_token = array('xyz', '-999');
-        $this->default_dtype = new Serial_Core_ArrayType($fields, $this->default_value);
+        $this->default_field = new Serial_Core_ArrayField('array', array(0, 4), $fields, $this->default_value);
         return;
     }
     
@@ -35,7 +35,7 @@ class Test_ArrayTypeTest extends Test_DataTypeTest
      */
     public function testDecodeNull()
     {
-        $this->assertEquals(array(), $this->dtype->decode(array()));
+        $this->assertEquals(array(), $this->field->decode(array()));
         return;
     }
 
@@ -45,7 +45,7 @@ class Test_ArrayTypeTest extends Test_DataTypeTest
      */
     public function testDecodeDefault()
     {
-        $default_value = $this->default_dtype->decode(array());
+        $default_value = $this->default_field->decode(array());
         $this->assertEquals($this->default_value, $default_value);
         return;
     }
@@ -56,7 +56,7 @@ class Test_ArrayTypeTest extends Test_DataTypeTest
      */
     public function testEncodeNull()
     {
-        $this->assertSame(array(), $this->dtype->encode(array()));
+        $this->assertSame(array(), $this->field->encode(array()));
         return;
     }
 
@@ -66,7 +66,7 @@ class Test_ArrayTypeTest extends Test_DataTypeTest
      */
     public function testEncodeDefault()
     {
-        $default_token = $this->default_dtype->encode(array());
+        $default_token = $this->default_field->encode(array());
         $this->assertSame($this->default_token, $default_token);
         return;
     }    

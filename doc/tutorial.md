@@ -18,20 +18,20 @@ floating point value and an optional flag string.
 
 This data stream can be read using a `FixedWidthReader`. The reader must be
 initialized with an array of field definitions. Each field is defined by its
-name (the array key), position, and data type. For a fixed-width field the 
-position array is a substring specifier (beginning and length), inclusive of 
-any spaces between fields.
+name, position, and data type. For a fixed-width field the position array is a
+substring specifier (beg, len), inclusive of any spaces between fields.
 
     require 'Serial/Core/autoload.php';
 
     $fields = array(
-        "stid" => array(array(0, 6), new Serial_Core_StringType()),
-        "date" => array(array(6, 11), new Serial_Core_StringType()),
-        "time" => array(array(17, 6), new Serial_Core_StringType()),
-        "data1" => array(array(27, 8), new Serial_Core_FloatType()),
-        "flag1" => array(array(35, 1), new Serial_Core_StringType()),
-        "data2" => array(array(36, 8), new Serial_Core_FloatType()),
-        "flag2" => array(array(44, 1), new Serial_Core_StringType()),
+        // Ignoring time zone field. 
+        new Serial_Core_StringField('stid', array(0, 6)),
+        new Serial_Core_StringField('date', array(6, 11)),
+        new Serial_Core_StringField('time', arraay(17, 6)),
+        new Serial_Core_FloatField('data1', array(27, 8))),
+        new Serial_Core_StringField('flag1', array(35, 1)),
+        new Serial_Core_FloatField('data2' array(36, 8)),
+        new Serial_Core_StringField('flag2', array(44, 1)),
     );
 
     $stream = fopen("data.txt", "r");
@@ -47,23 +47,23 @@ these fields individually can be tedious. For the sample data the format of
 each sensor field is the same, so they can all be treated as a single array.
 Each array element will have a value and a flag.
 
-An `ArrayType` field must be initalized with the field definitions to use for
-each array element. The position of the array itself is relative to the entire
-input line, but the positions of the element fields are relative to an
-individual element.
+An `ArrayField` must be initalized with the field definitions to use for each
+array element. The position of the array itself is relative to the entire input
+line, but the positions of the element fields are relative to an individual
+element.
 
     $array_fields = array(
         // Define each data array element. The first field has a leading space.
-        'value' => array(array(0, 8), new Serial_Core_FloatType()),
-        'flag' => array(aray(8, 1), new Serial_Core_StringType()),
+        new Serial_Core_FloatField('value', array(0, 8)),
+        new Serial_Core_Stringfield('flag', array(8, 1)),
     );
 
     $sample_fields = array(
         // Ignoring time zone field.
-        'stid' => array(array(0, 6), new Serial_Core_StringType()),
-        'date' => array(array(6, 11), new Serial_Core_StringType()),
-        'time' => array(array(17, 6), new Serial_Core_StringType()),
-        'data' => array(array(27, 18), new Serial_Core_ArrayType($array_fields)),
+        new Serial_Core_StringField('stid', array(0, 6)),
+        new Serial_Core_StringField('date', array(6, 11)),
+        new Serial_Core_StringField('time', arraay(17, 6)),
+        new Serial_Core_ArrayField('data', array(27, 18), $array_fields)),
     );
 
     $stream = fopen('data.txt', 'r');
@@ -80,10 +80,10 @@ variable-length array is created by setting its length to `null`.
 *Variable-length arrays must be at the end of the record*.
 
     $sample_fields = array(
-        'stid' => array(array(0, 6), new Serial_Core_StringType()),
-        'date' => array(array(6, 11), new Serial_Core_StringType()),
-        'time' => array(array(17, 6), new Serial_Core_StringType()),
-        'data' => array(array(27, null), new Serial_Core_ArrayType($array_fields)),
+        new Serial_Core_StringField('stid', array(0, 6)),
+        new Serial_Core_StringField('date', array(6, 11)),
+        new Serial_Core_StringField('time', arraay(17, 6)),
+        new Serial_Core_ArrayField('data', array(27, null), $array_fields)),
     );
 
     ...
@@ -97,30 +97,30 @@ variable-length array is created by setting its length to `null`.
 
 ## DateTime Fields ##
 
-The `DateTimeType` can be used for converting data to a `DateTime` object. For
+A `DateTimeField` can be used for converting data to a `DateTime` object. For
 the sample data, the date and time fields can be treated as a single `DateTime`
-single field. A `DatetimeType` must be initialized with a PHP 
+single field. A `DatetimeField` must be initialized with a PHP 
 [date format string][1]. Make sure the default [time zone][2] has been set.
 
     date_default_timezone_set('UTC');
     $sample_fields = array(
         // Ignoring time zone field.
-        'stid' => array(array(0, 6), new Serial_Core_StringType()),
-        'timestamp' => array(array(6, 17), new Serial_Core_DateTimeType('Y-m-d H:i')),
-        'data' => array(array(27, null), new Serial_Core_ArrayType($array_fields)),
+        new Serial_Core_StringField('stid', array(0, 6)),
+        new Serial_Core_DateTimeField('timestamp', array(6, 17), 'Y-m-d H:i'),
+        new Serial_Core_ArrayField('data', array(27, 18), $array_fields)),
     );
 
 ## Default Values ##
 
 During input all fields in a record are assigned a value. If a field is blank
 it is given the default value assigned to that field (`null` by default). The 
-default value should be appropriate to that type, *e.g.* an `IntType` field 
+default value should be appropriate to that type, *e.g.* an `IntField` field 
 should not have a string as its default value.
 
     $array_fields = array(
         // Assign 'M' to all missing flag values.
-        'value' => array(array(0, 8), new Serial_Core_FloatType()),
-        'flag' => array(aray(8, 1), new Serial_Core_StringType('%s', '', 'M')),
+        new Serial_Core_FloatField('value', array(0, 8)),
+        new Serial_Core_Stringfield('flag', array(8, 1), '%1s', '', 'M'),
     );
 
 
@@ -145,7 +145,7 @@ A Writer will output a value for each of its fields with every data record. If
 a field is missing from a data record the Writer will use the default value for 
 that field (`null` is encoded as a blank field). For input a default value
 can be anything, but for output it should be type-compatible, e.g. ''M'' would
-be output as ''0'' for an `IntType`, which is probably not what is wanted.
+be output as ''0'' for an `IntField`, which is probably not what is wanted.
 Fields in the record that do not have a field definition are ignored.
 
 With some minor modifications the field definitions used for reading the sample
@@ -154,15 +154,15 @@ for reading the data, so a Reader and a Writer can be defined for a given data
 format using one set of field definitions.
 
     $array_fields = array(
-        'value' => array(array(0, 8), new Serial_Core_FloatType('%8.2f')),
-        'flag' => array(aray(8, 1), new Serial_Core_StringType('%1s')),
+        new Serial_Core_FloatField('value', array(0, 8), '%8.2f'),
+        new Serial_Core_Stringfield('flag', array(8, 1), '%1s'),
     );
 
     $sample_fields = array(
-        'stid' => array(array(0, 7), new Serial_Core_StringType('%6s')),
-        'timestamp' => array(array(7, 16), new Serial_Core_Serial_Core_DateTimeType('Y-m-d H:i')),
-        'timezone' => aray(array(23, 4), new Serial_Core_StringType('%4s', '', 'UTC')),
-        'data' => array(array(27, null), new Serial_Core_ArrayType($array_fields)),
+        new Serial_Core_StringField('stid', array(0, 7), '%7s'),
+        new Serial_Core_DateTimeField('timestamp', array(7, 16), 'Y-m-d H:i'),
+        new Serial_Core_StringField('timezone', array(23, 4), '%4s'),
+        new Serial_Core_ArrayField('data', array(27, null), $array_fields)),
     );
 
     // Copy 'data.txt' to 'copy.txt'.
@@ -186,19 +186,19 @@ writing delimited data, e.g. a CSV file.
 
 Delimited fields are defined in the same way as fixed-width fields except that
 scalar field positions are given by field number (starting at 0). Array fields
-still use a (begin, length) pair. The format string is optional for most field 
+still use a (beg, len) pair. The format string is optional for most field 
 types because a width is not required.
 
     $array_fields = array(
-        'value' => array(0, new Serial_Core_FloatType('%.2f')),  // precision only
-        'flag' => array(1, new Serial_Core_StringType()),
+        new Serial_Core_FloatField('value', 0, '%.2f'),  // precision only
+        new Serial_Core_Stringfield('flag', 1, '%1s'),
     );
 
     $sample_fields = array(
-        'stid' => array(0, new Serial_Core_StringType()),
-        'timestamp' => array(1, new Serial_Core_DateTimeType('Y-m-d H:i')),  // need format
-        'timezone' => aray(2, new Serial_Core_StringType('%s', '', 'UTC')),
-        'data' => array(array(3, null), new Serial_Core_ArrayType($array_fields)),
+        new Serial_Core_StringField('stid', 0),
+        new Serial_Core_DateTimeField('timestamp', 1, 'Y-m-d H:i'),  // format required
+        new Serial_Core_StringField('timezone', 2),
+        new Serial_Core_ArrayField('data', array(3, null), $array_fields)),
     );
 
     ...
@@ -396,16 +396,15 @@ access them directly using the `classFilters` attribute.
     define('SAMPLE_DELIM' ',');
 
     $SAMPLE_ARRAY_FIELDS = array(
-        'value' => array(0, new Serial_Core_FloatType('%.2f')),
-        'flag' => array(1, new Serial_Core_StringType()),
+        new Serial_Core_FloatField('value', 0, '%.2f'),
+        new Serial_Core_Stringfield('flag', 1, '%1s'),
     );
 
     $SAMPLE_FIELDS = array(
-        'stid' => array(0, new Serial_Core_StringType()),
-        'timestamp' => array(1, new Serial_Core_DateTimeType('Y-m-d H:i')),
-        'timezone' => aray(2, new Serial_Core_ConstType('UTC')),
-        'data' => array(array(3, null), 
-                        new Serial_Core_ArrayType($SAMPLE_ARRAY_FIELDS)),
+        new Serial_Core_StringField('stid', 0),
+        new Serial_Core_DateTimeField('timestamp', 1, 'Y-m-d H:i'),
+        new Serial_Core_ConstField('timezone', 'UTC'),
+        new Serial_Core_ArrayField('data', array(3, null), $SAMPLE_ARRAY_FIELDS)),
     );
 
 
@@ -592,10 +591,10 @@ override the `flush()` method to finalize processing.
 
 ## Quoted Strings ##
 
-The `StringType` data type can reade and write quoted string by initialiing
-it with the quote character to use.
+The `StringField` type can read and write quoted string by initializing it with
+the quote character to use.
 
-    new Serial_Core_StringType('%s', '"');  // double-quoted string
+    Serial_Core_StringField('name', 0, '%s', '"');  // double-quoted string
 
 ## Nonstandard Line Endings ##
 
@@ -618,14 +617,14 @@ line is read or written. For derived classes this is typically done by the
 
 ## Mixed-Type Data ##
 
-Mixed-type data fields must be defined as a `StringType` for stream input and
+Mixed-type data fields must be defined as a `StringField` for stream input and
 output, but filters can be used to convert to/from multiple PHP types based on
 the field value.
 
     function missing_filter($record)
     {
         // Input filter for numeric data that's "M" if missing. The input
-        // reader defines this field as a StringType.
+        // reader defines this field as a StringField.
         if (($value = $record['value']) == 'M') {
             $record['value'] = null;
         }

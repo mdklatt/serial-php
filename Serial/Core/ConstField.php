@@ -3,15 +3,15 @@
  * Translate text tokens to/from a constant value.
  *
  */
-class Serial_Core_ConstType extends Serial_Core_DataType
+class Serial_Core_ConstField extends Serial_Core_Field
 {
     /**
      * Initialize this object.
      *
      */
-    public function __construct($value, $fmt='%s')
+    public function __construct($name, $pos, $value, $fmt='%s')
     {
-        parent::__construct($fmt, $value);
+        parent::__construct($name, $pos, $fmt, $value);
         return;
     }
 

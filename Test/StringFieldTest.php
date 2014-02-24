@@ -1,9 +1,9 @@
 <?php
 /**
- * Unit testing for the StringType class.
+ * Unit testing for the StringField class.
  *
  */
-class Test_StringTypeTest extends Test_DataTypeTest
+class Test_StringFieldTest extends Test_FieldTest
 {
     /**
      * Set up the test fixture.
@@ -16,12 +16,12 @@ class Test_StringTypeTest extends Test_DataTypeTest
         $fmt = '%4s';
         $this->value = 'abc';
         $this->token = ' abc';
-        $this->dtype = new Serial_Core_StringType($fmt);
+        $this->field = new Serial_Core_StringField('str', 0, $fmt);
         $this->default_value = 'xyz';
         $this->default_token = ' xyz';
-        $this->default_dtype = new Serial_Core_StringType($fmt, '', $this->default_value);
+        $this->default_field = new Serial_Core_StringField('str', 0, $fmt, '', $this->default_value);
         $this->quote_token = '"abc"';
-        $this->quote_dtype = new Serial_Core_StringType('%s', '"');
+        $this->quote_field = new Serial_Core_StringField('str', 0, '%s', '"');
         return;
     }
     
@@ -31,7 +31,7 @@ class Test_StringTypeTest extends Test_DataTypeTest
      */
     public function testDecodeQuote()
     {
-        $value = $this->quote_dtype->decode($this->quote_token);
+        $value = $this->quote_field->decode($this->quote_token);
         $this->assertEquals($this->value, $value);
         return;
     }
@@ -42,7 +42,7 @@ class Test_StringTypeTest extends Test_DataTypeTest
      */
     public function testEncodeQuote()
     {
-        $quote_token = $this->quote_dtype->encode($this->value);
+        $quote_token = $this->quote_field->encode($this->value);
         $this->assertSame($this->quote_token, $quote_token);
         return;
     }
@@ -53,7 +53,7 @@ class Test_StringTypeTest extends Test_DataTypeTest
      */
     public function testEncodeNull()
     {
-        $this->assertSame(str_repeat(' ', 4), $this->dtype->encode(null));
+        $this->assertSame(str_repeat(' ', 4), $this->field->encode(null));
         return;
     }
 }

@@ -3,15 +3,15 @@
  * Translate text tokens to/from integer values.
  *
  */
-class Serial_Core_IntType extends Serial_Core_DataType
+class Serial_Core_IntField extends Serial_Core_Field
 {
     /**
      * Initialize this object.
      * 
      */
-    public function __construct($fmt='%d', $default=null)
+    public function __construct($name, $pos, $fmt='%d', $default=null)
     {
-        parent::__construct($fmt, $default);
+        parent::__construct($name, $pos, $fmt, $default);
         return;
     }
 
