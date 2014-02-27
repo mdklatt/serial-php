@@ -14,13 +14,13 @@ class Test_FixedWidthReaderTest extends Test_TabularReaderTest
     protected function setUp()
     {
         $this->fields = array(
-            new Serial_Core_IntField('int', array(0, 3), '%3d'),
-            new Serial_Core_ArrayField('arr', array(3, null), array(
-                new Serial_Core_StringField('x', array(0, 3), '%3s'),
-                new Serial_Core_StringField('y', array(3, 3), '%3s'),                
+            new Serial_Core_IntField('int', array(0, 4), '%3d'),
+            new Serial_Core_ArrayField('arr', array(4, null), array(
+                new Serial_Core_StringField('x', array(0, 4), '%3s'),
+                new Serial_Core_StringField('y', array(4, 4), '%3s'),                
             )), 
         );
-        $this->data = "123abcdef\n456ghijkl\n";
+        $this->data = " 123 abc def\n 456 ghi jkl\n";
         parent::setUp();
         $this->reader = new Serial_Core_FixedWidthReader($this->stream, 
                         $this->fields);        
