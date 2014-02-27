@@ -8,6 +8,37 @@
  */
 abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
 {
+    /**
+     * Create a writer with automatic stream handling.
+     *
+     * The first argument is a either an open stream or a path to use to open
+     * a text file. In either case, the output stream will automatically be
+     * closed when the writer object is destroyed. Any additional arguments are
+     * passed along to the writer's constructor.
+     */
+    public static function open(/* $args */)
+    {
+        // This is strictly for documention purposes. This should return a
+        // dynamic type, so derived classes must implement their own open()
+        // method if appropriate. Here is a sample implementation.
+        //
+        // if (!($args = func_get_args())) {
+        //     $message = "call to open() is missing required arguments";
+        //     throw new BadMethodCallException($message);
+        // }
+        // if (!is_resource($args[0])) {
+        //     // Assume this is a string to use as a file path.
+        //     $args[0] = fopen($path, 'w');
+        // }
+        // $class = new ReflectionClass('Derived_Class_Name_Goes_Here');
+        // $writer = $class->newInstanceArgs($args);
+        // $writer->closing = true;  // take responsiblity for closing stream
+        // return $rwriter;
+        $message = 'Serial_Core_TabularWriter::open() is not implemented';
+        throw new BadMethodCallException($message);
+    }
+    
+    protected $closing = false;
     protected $stream;
     protected $fields;
     
@@ -23,6 +54,20 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
         return;
     }
     
+    /**
+     * Object clean-up.
+     *
+     * If the $closing attribute is true, this object's stream is automatically
+     * closed; see the open() method.
+     */
+    public function __destruct()
+    {
+        if ($this->closing) {
+            @fclose($this->stream);
+        }
+        return;
+    }    
+
     /**
      * Put a formatted record into the output stream.
      * 
