@@ -19,6 +19,7 @@ abstract class Test_TabularWriterTest extends PHPUnit_Framework_TestCase
     protected $data;
     protected $records;
     protected $stream;
+    protected $fields;
     protected $writer;
     
     protected function setUp()

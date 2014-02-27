@@ -5,6 +5,9 @@
  */
 class Test_DelimitedWriterTest extends Test_TabularWriterTest
 {
+    const DELIM = ',';
+    const ENDL = 'X';
+    
     /**
      * Set up the test fixture.
      *
@@ -13,17 +16,33 @@ class Test_DelimitedWriterTest extends Test_TabularWriterTest
      */
     protected function setUp()
     {
-        $array_fields = array(
-            new Serial_Core_StringField('x', 0),
-            new Serial_Core_StringField('y', 1),
-        );
-        $fields = array(
+        $this->fields = array(
             new Serial_Core_IntField('int', 0),
-            new Serial_Core_ArrayField('arr', array(1, null), $array_fields),
+            new Serial_Core_ArrayField('arr', array(1, null), array(
+                new Serial_Core_StringField('x', 0),
+                new Serial_Core_StringField('y', 1),                
+            )),
         );
         parent::setUp();
-        $this->writer = new Serial_Core_DelimitedWriter($this->stream, $fields, ',', 'X');
+        $this->writer = new Serial_Core_DelimitedWriter($this->stream, 
+                        $this->fields, self::DELIM, self::ENDL);
         $this->data = '123,abc,defX456,ghi,jklX';
+        return;
+    }
+
+    /**
+     * Test the open() method.
+     * 
+     */
+    public function testOpen()
+    {
+        // TODO: This only tests an open stream; also need to test with a file
+        // path.
+        $this->writer = Serial_Core_DelimitedWriter::open($this->stream, 
+                        $this->fields, self::DELIM, self::ENDL);
+        $this->test_write();
+        unset($this->writer);  // close $this->stream
+        $this->assertFalse(is_resource($this->stream));
         return;
     }
 
