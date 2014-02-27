@@ -6,7 +6,6 @@
 class Test_DelimitedWriterTest extends Test_TabularWriterTest
 {
     const DELIM = ',';
-    const ENDL = 'X';
     
     /**
      * Set up the test fixture.

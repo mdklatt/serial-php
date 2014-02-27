@@ -13,7 +13,7 @@ class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
     // TODO: Add delimiter escaping.
     
     /**
-     * Open a DelimitedReader with automatic stream-handling.
+     * Open a DelimitedReader with automatic stream handling.
      *
      * The first argument is a either an open stream or a path to use to open
      * a text file. In either case, the input stream will automatically be
@@ -26,7 +26,7 @@ class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
         // returns the correct type of object.
         $args = func_get_args();
         if (count($args) < 3) {
-            $message = "call to open() is missing required arguments";
+            $message = 'call to open() is missing required arguments';
             throw new BadMethodCallException($message);
         }
         if (!is_resource($args[0])) {

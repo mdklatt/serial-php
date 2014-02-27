@@ -8,7 +8,7 @@
 class Serial_Core_FixedWidthReader extends Serial_Core_TabularReader
 {
     /**
-     * Open a FixedWidhtReader with automatic stream-handling.
+     * Open a FixedWidhtReader with automatic stream handling.
      *
      * The first argument is a either an open stream or a path to use to open
      * a text file. In either case, the input stream will automatically be

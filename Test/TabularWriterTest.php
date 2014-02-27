@@ -5,6 +5,8 @@
  */
 abstract class Test_TabularWriterTest extends PHPUnit_Framework_TestCase
 {
+    const ENDL = 'X';
+    
     static public function reject_filter($record)
     {
         return $record['int'] != 123 ? $record : null;

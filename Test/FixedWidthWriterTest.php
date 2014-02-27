@@ -5,8 +5,6 @@
  */
 class Test_FixedWidthWriterTest extends Test_TabularWriterTest
 {   
-    const ENDL = 'X';
-    
     /**
      * Set up the test fixture.
      *

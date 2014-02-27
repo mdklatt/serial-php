@@ -8,12 +8,8 @@
  */
 abstract class Serial_Core_TabularReader extends Serial_Core_Reader
 {
-    protected $closing = false;
-    protected $stream;
-    protected $fields;
-
     /**
-     * Create a reader with automatic stream-handling.
+     * Create a reader with automatic stream handling.
      *
      * The first argument is a either an open stream or a path to use to open
      * a text file. In either case, the input stream will automatically be
@@ -42,6 +38,10 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
         throw new BadMethodCallException($message);
     }
     
+    protected $closing = false;
+    protected $stream;
+    protected $fields;
+
     /**
      * Initialize this object.
      *
@@ -56,6 +56,20 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
         return;
     }
     
+    /**
+     * Object clean-up.
+     *
+     * If the $closing attribute is true, this object's stream is automatically
+     * closed; see the open() method.
+     */
+    public function __destruct()
+    {
+        if ($this->closing) {
+            @fclose($this->stream);
+        }
+        return;
+    }    
+
     /**
      * Split a line of text into an array of string tokens.
      *
@@ -81,18 +95,4 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
         }
         return $record;
     }
-    
-    /**
-     * Object clean-up.
-     *
-     * If the $closing attribute is true, this object's stream is automatically
-     * closed; see the open() method.
-     */
-    public function __destruct()
-    {
-        if ($this->closing) {
-            @fclose($this->stream);
-        }
-        return;
-    }    
 }
