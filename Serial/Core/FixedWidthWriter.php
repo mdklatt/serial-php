@@ -8,6 +8,33 @@
 class Serial_Core_FixedWidthWriter extends Serial_Core_TabularWriter
 {
     /**
+     * Open a FixedWidthWriter with automatic stream handling.
+     *
+     * The first argument is a either an open stream or a path to use to open
+     * a text file. In either case, the output stream will automatically be
+     * closed when the writer object is destroyed. Any additional arguments are
+     * passed along to the FixedWidthWriter constructor.
+     */
+    public static function open(/* $args */)
+    {
+        // Every derived class *MUST* implement its own open() method that
+        // returns the correct type of object.
+        $args = func_get_args();
+        if (count($args) < 2) {
+            $message = 'call to open() is missing required arguments';
+            throw new BadMethodCallException($message);
+        }
+        if (!is_resource($args[0])) {
+            // Assume this is a string to use as a file path.
+            $args[0] = fopen($path, 'w');
+        }
+        $class = new ReflectionClass('Serial_Core_FixedWidthWriter');
+        $writer = $class->newInstanceArgs($args);
+        $writer->closing = true;  // take responsiblity for closing stream
+        return $writer;
+    }
+    
+    /**
      * Join an array of string tokens into a line of text.
      *
      */       

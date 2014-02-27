@@ -5,6 +5,8 @@
  */
 class Test_FixedWidthWriterTest extends Test_TabularWriterTest
 {   
+    const ENDL = 'X';
+    
     /**
      * Set up the test fixture.
      *
@@ -13,17 +15,33 @@ class Test_FixedWidthWriterTest extends Test_TabularWriterTest
      */
     protected function setUp()
     {
-        $array_fields = array(
-            new Serial_Core_StringField('x', array(0, 4), '%4s'),
-            new Serial_Core_StringField('y', array(4, 4), '%4s'),
-        );
-        $fields = array(
+        $this->fields = array(
             new Serial_Core_IntField('int', array(0, 4), '%4d'),
-            new Serial_Core_ArrayField('arr', array(4, null), $array_fields), 
+            new Serial_Core_ArrayField('arr', array(4, null), array(
+                new Serial_Core_StringField('x', array(0, 4), '%4s'),
+                new Serial_Core_StringField('y', array(4, 4), '%4s'),                
+            )), 
         );
         parent::setUp();
-        $this->writer = new Serial_Core_FixedWidthWriter($this->stream, $fields, 'X');        
+        $this->writer = new Serial_Core_FixedWidthWriter($this->stream, 
+                        $this->fields, self::ENDL);        
         $this->data = ' 123 abc defX 456 ghi jklX';
+        return;
+    }
+
+    /**
+     * Test the open() method.
+     * 
+     */
+    public function testOpen()
+    {
+        // TODO: This only tests an open stream; also need to test with a file
+        // path.
+        $this->writer = Serial_Core_FixedWidthWriter::open($this->stream, 
+                        $this->fields, self::ENDL);
+        $this->test_write();
+        unset($this->writer);  // close $this->stream
+        $this->assertFalse(is_resource($this->stream));
         return;
     }
 
