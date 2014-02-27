@@ -12,6 +12,33 @@ class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
     // TODO: Add default delimiter to split on all whitespace.
     // TODO: Add delimiter escaping.
     
+    /**
+     * Open a DelimitedReader with automatic stream-handling.
+     *
+     * The first argument is a either an open stream or a path to use to open
+     * a text file. In either case, the input stream will automatically be
+     * closed when the reader object is destroyed. Any additional arguments are
+     * passed along to the DelimitedReader constructor.
+     */
+    public static function open(/* $args */)
+    {
+        // Every derived class *MUST* implement its own open() method that
+        // returns the correct type of object.
+        $args = func_get_args();
+        if (count($args) < 3) {
+            $message = "call to open() is missing required arguments";
+            throw new BadMethodCallException($message);
+        }
+        if (!is_resource($args[0])) {
+            // Assume this is a string to use as a file path.
+            $args[0] = fopen($path, 'r');
+        }
+        $class = new ReflectionClass('Serial_Core_DelimitedReader');
+        $reader = $class->newInstanceArgs($args);
+        $reader->closing = true;  // take responsiblity for closing stream
+        return $reader;
+    }
+    
     private $delim;
     
     /**

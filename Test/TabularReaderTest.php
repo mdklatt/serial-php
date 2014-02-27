@@ -27,6 +27,7 @@ abstract class Test_TabularReaderTest extends PHPUnit_Framework_TestCase
     protected $data;
     protected $records;
     protected $stream;
+    protected $fields;
     protected $reader;
     
     /**
