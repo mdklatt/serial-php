@@ -20,14 +20,23 @@ class Serial_Core_DateTimeField extends Serial_Core_Field
     /**
      * Convert a string token to a PHP value.
      *
-     * This is called by a Reader and does not need to be called by the user.
+     * CAUTION: This does *not* use the format string to parse the token into
+     * a DateTime; instead the token must be in a format that the DateTime
+     * constructor can correctly parse. This is called by a Reader and does not 
+     * need to be called by the user.
      */
     public function decode($token)
     {
+        // Can't use DateTime::createFromFormat() because of PHP 5.2, so rely 
+        // on the DateTime constructor. The legacy date/time interface is 
+        // pretty well worthless here (doesn't work the same on all platforms,
+        // doesn't reliably work for years before 1970, etc.), so this is the
+        // best that that can be done as long as PHP 5.2 compatibility is
+        // needed.
         if (!($token = trim($token))) {
             return $this->default;
         }
-        return DateTime::createFromFormat($this->fmt, $token);
+        return new DateTime($token);
     }
     
     /**

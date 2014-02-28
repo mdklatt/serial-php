@@ -96,10 +96,15 @@ variable-length array is created by setting its length to `null`.
 
 ## DateTime Fields ##
 
-A `DateTimeField` can be used for converting data to a `DateTime` object. For
-the sample data, the date and time fields can be treated as a single `DateTime`
-single field. A `DatetimeField` must be initialized with a PHP 
-[date format string][1]. Make sure the default [time zone][2] has been set.
+A `DateTimeField` can be used for converting data to a [`DateTime`][1] object. 
+For the sample data, the date and time fields can be treated as a combined 
+`DateTime` field. Make sure the default [time zone][2] has been set before 
+using any PHP date/time functions or classes.
+
+A `DatetimeField` must be initialized with a PHP [date format string][3] that
+will be used to format output. Due to PHP 5.2 limitations, this format is not 
+used to parse input; *all date/time input must be compatible with the DateTime 
+constructor*.
 
     date_default_timezone_set('UTC');
     $sample_fields = array(
@@ -679,6 +684,7 @@ multiple fields in the data record, or *vice versa*.
 
 
 <!-- REFERENCES -->
-[1]: http://www.php.net/manual/en/function.date.php "date formats"
+[1]: http://www.php.net/manual/en/class.datetime.php "DateTime class"
 [2]: http://www.php.net/manual/en/function.date-default-timezone-set.php "set time zone"
-[3]: http://www.php.net/manual/en/function.sprintf.php "format strings"
+[3]: http://www.php.net/manual/en/function.date.php "date formats"
+[4]: http://www.php.net/manual/en/function.sprintf.php "format strings"

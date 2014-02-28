@@ -13,12 +13,14 @@ class Test_DateTimeFieldTest extends Test_FieldTest
      */
     protected function setUp()
     {
-        $this->value = DateTime::createFromFormat('Ymd', '20121231');
-        $this->token = '20121231';
-        $this->field = new Serial_Core_DateTimeField('date', 0, 'Ymd');
-        $this->default_value = DateTime::createFromFormat('Ymd', '19010101');
-        $this->default_token = '19010101';
-        $this->default_field = new Serial_Core_DateTimeField('date', 0, 'Ymd', $this->default_value);
+        $fmt = 'Y-m-d\TH:i:s';
+        $this->token = '2104-02-28T15:28:47';  // needs to be DateTime parsable
+        $this->value = new DateTime($this->token);
+        $this->field = new Serial_Core_DateTimeField('date', 0, $fmt);
+        $this->default_token = '1801-01-01T00:00:00';  // check "old" dates
+        $this->default_value = new DateTime($this->default_token);
+        $this->default_field = new Serial_Core_DateTimeField('date', 0, $fmt, 
+                                   $this->default_value);
         return;
     }
 }
