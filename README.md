@@ -13,8 +13,10 @@ subdirectories.
 
 Requirements
 ------------
-* PHP 5.2 - 5.3 (5.4?)
+* PHP 5.3 - 5.4
 * [PHPUnit][4] (optional; required to run test suite)
+
+*PHP 5.2 support coming soon.*
 
 
 Installation
