@@ -13,16 +13,16 @@ subdirectories.
 
 Requirements
 ------------
-* PHP 5.3 - 5.4
-* [PHPUnit][4] (optional; required to run test suite)
-
-*PHP 5.2 support coming soon.*
+* PHP 5.2 - 5.4
+* [Phar extension][4] (optional; required to create *phar* files with PHP 5.2)
+* [PHPUnit][5] (optional; required to run test suite)
 
 
 Installation
 ------------
-Place the [Serial][5] directory anywhere in the PHP [include path][6], or
-use the [setup script][7] to create a self-contained *phar* file.
+Place the [Serial][6] directory anywhere in the PHP [include path][7], or use
+a self-contained *phar* file downloaded from GitHub or created using the
+[`setup.php`][8] script (requires PHP 5.3+ or the `Phar` extension).
 
     php -f setup.php phar
 
@@ -34,16 +34,16 @@ Include the package autoloader or the appropriate *phar* file.
     require 'Serial/Core/autoload.php';
     require 'serial-core-0.1.0.phar';
 
-The [tutorial][8] has examples of how to use and extend this library.
-
+The [tutorial][9] has examples of how to use and extend this library.
 
 
 <!-- REFERENCES -->
 [1]: https://travis-ci.org/mdklatt/serial-php.png?branch=master "Travis build status"
 [2]: https://travis-ci.org/mdklatt/serial-php "Travis-CI"
 [3]: http://github.com/mdklatt/serial-php "GitHub/serial-php"
-[4]: http://pear.phpunit.de "PHPUnit PEAR package"
-[5]: http://github.com/mdklatt/serial-php/tree/master/Serial "Serial tree"
-[6]: http://www.php.net/manual/en/ini.core.php#ini.include-path  "PHP include path"
-[7]: https://github.com/mdklatt/serial-php/blob/master/setup.php "setup.php"
-[8]: http://github.com/mdklatt/serial-php/blob/master/doc/tutorial.md "tutorial.md"
+[4]: http://pecl.php.net/package/phar "Phar extension"
+[5]: http://pear.phpunit.de "PHPUnit PEAR package"
+[6]: http://github.com/mdklatt/serial-php/tree/master/Serial "Serial tree"
+[7]: http://www.php.net/manual/en/ini.core.php#ini.include-path  "PHP include path"
+[8]: https://github.com/mdklatt/serial-php/blob/master/setup.php "setup.php"
+[9]: http://github.com/mdklatt/serial-php/blob/master/doc/tutorial.md "tutorial.md"

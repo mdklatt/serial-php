@@ -4,7 +4,7 @@
 #
 language: php
 php:
-    #- 5.2
+    - 5.2
     - 5.3
     - 5.4
 
@@ -15,4 +15,6 @@ branches:
 
 # Run the test suite against the source tree and create a phar distribution.
 # The phar file will automatically be verified against the test suite.
+
+before_script: pecl install phar
 script: php -f setup.php test phar 

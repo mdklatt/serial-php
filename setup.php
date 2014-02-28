@@ -33,7 +33,7 @@ catch (Exception $ex) {
     if ($DEBUG) {
         throw $ex;  // force a stack trace
     }
-    echo $ex->getMessage().PHP_EOL;
+    echo 'ERROR: '.$ex->getMessage().PHP_EOL;
     exit(1);
 }
 
@@ -54,7 +54,7 @@ function main($config, $argv)
             throw new InvalidArgumentException($message);
         }
         $command = new $cmdclass();
-        if (($status = $command($config)) != 0) {
+        if (($status = $command->__invoke($config)) != 0) {
             $message = "command failed: {$cmdname} ({$status})";
             throw new RuntimeException($message);
         }        
@@ -105,6 +105,7 @@ class TestCommand extends Command
 /**
  * Create a PHP Archive (.phar) file.
  *
+ * For PHP 5.2 the optional Phar extension is required.
  */
 class PharCommand extends Command
 {
@@ -114,6 +115,10 @@ class PharCommand extends Command
      */
     public function __invoke($config)
     {
+        if (!class_exists('Phar')) {
+            $message = 'the phar command requires the Phar extension';
+            throw new RuntimeException($message);
+        }
         if (!array_key_exists('init', $config)) {
             $config['init'] = 'autoload.php';
         }
