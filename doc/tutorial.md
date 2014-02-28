@@ -17,9 +17,10 @@ floating point value and an optional flag string.
     340010 2012-04-01 00:10 UTC   63.80Q    0.00
 
 This data stream can be read using a `FixedWidthReader`. The reader must be
-initialized with an array of field definitions. Each field is defined by its
-name, position, and data type. For a fixed-width field the position array is a
-substring specifier (beg, len), inclusive of any spaces between fields.
+initialized with an array of field definitions. Each field is associated with
+a data type and defined by its name and position. For a fixed-width field the
+position array is a substring specifier (beg, len), inclusive of any spaces 
+between fields.
 
     require 'Serial/Core/autoload.php';
 
@@ -34,8 +35,7 @@ substring specifier (beg, len), inclusive of any spaces between fields.
         new Serial_Core_StringField('flag2', array(44, 1)),
     );
 
-    $stream = fopen("data.txt", "r");
-    $reader = new Serial_Core_FixedWidthReader($stream, $fields);
+    $reader = Serial_Core_FixedWidthReader::open('data.txt', $fields);
     foreach ($reader as $record) {
         echo $record['date'].PHP_EOL;    
     }
@@ -66,8 +66,7 @@ element.
         new Serial_Core_ArrayField('data', array(27, 18), $array_fields)),
     );
 
-    $stream = fopen('data.txt', 'r');
-    $reader = new Serial_Core_FixedWidthReader($stream, $fields);
+    $reader = Serial_Core_FixedWidthReader::open('data.txt', $fields);
     foreach ($reader as $record) {
         foreach ($record['data'] as $sensor) {
             echo $sensor['value'].' '.$sensor['flag'].PHP_EOL;
@@ -166,8 +165,8 @@ format using one set of field definitions.
     );
 
     // Copy 'data.txt' to 'copy.txt'.
-    $reader = new Serial_Core_FixedWidthReader(fopen('data.txt', 'r'), $sample_fields);
-    $writer = new Serial_Core_FixedWidthWriter(fopen('copy.txt', 'w'), $sample_fields);
+    $reader = Serial_Core_FixedWidthReader::open('data.txt', $sample_fields);
+    $writer = Serial_Core_FixedWidthWriter::open('copy.txt', $sample_fields);
     foreach ($reader as $record) {
         // Write each record to the stream. Or, write all records in a single 
         // call: $writer->dump($reader);
@@ -204,8 +203,39 @@ types because a width is not required.
     ...
     
     $delim = ',';
-    $reader = new Serial_Core_DelimitedReader($istream, $sample_fields, $delim);
-    $writer = new Serial_Core_DelimitedWriter($ostream, $sample_fields, $delim);
+    $reader = Serial_Core_DelimitedReader::open($istream, $sample_fields, $delim);
+    $writer = Serial_Core_DelimitedWriter::open($ostream, $sample_fields, $delim);
+
+
+# Initializing Readers and Writers #
+
+For most situations, calling the class's static `open()` method is the most 
+convenient way to create a Reader or Writer. The stream associated with the new
+obect will automatically be closed once the Reader or Writer becomes undefined.
+
+    $reader = Serial_Core_DelimitedReader::open('data.csv', $fields, ',');
+    ...
+    unset($reader);  // closes input file
+
+If a string is passed to `open()` it is interpreted as a path to be opened as
+a plain text file. If another type of stream is needed, open the stream 
+explicitly and pass it to `open()`; this stream will be automatically closed.
+
+    $stream = fopen('compress.zlib://data.csv.gz', 'r');
+    $reader = Serial_Core_DelimitedReader::open($stream, $fields, ',');
+    ...
+    unset($reader);  // closes $stream
+
+Calling a Reader or Writer constructor directly provides the most control. The
+client code is responsible for opening and closing the associated stream. The
+constructor takes the same arguments as `open()`, except that the constructor
+requires an open stream instead of an optional file path.
+    
+    $stream = fopen('compress.zlib://data.csv.gz', 'r');
+    $reader = new Serial_Core_DelimitedReader($stream, $fields, ',');
+    ...
+    unset($reader);  // $stream is still open
+    fclose($stream);
 
 
 # Filters #
@@ -365,7 +395,7 @@ on a line of text instead of a data record. Text filters can be chained.
     $stream = fopen('data.txt', 'r');
     Serial_Core_StreamFilterManager::attach($stream, 'comment_filter');
     Serial_Core_StreamFilterManager::attach($stream, $prcp_filter);
-    $reader = new Serial_Core_FixedWidthReader($stream, $fields);
+    $reader = Serial_Core_FixedWidthReader::open($stream, $fields);
 
 
 # Custom Data Formats #
@@ -395,16 +425,14 @@ access them directly using the `classFilters` attribute.
 
     define('SAMPLE_DELIM' ',');
 
-    $SAMPLE_ARRAY_FIELDS = array(
-        new Serial_Core_FloatField('value', 0, '%.2f'),
-        new Serial_Core_Stringfield('flag', 1, '%1s'),
-    );
-
     $SAMPLE_FIELDS = array(
         new Serial_Core_StringField('stid', 0),
         new Serial_Core_DateTimeField('timestamp', 1, 'Y-m-d H:i'),
         new Serial_Core_ConstField('timezone', 'UTC'),
-        new Serial_Core_ArrayField('data', array(3, null), $SAMPLE_ARRAY_FIELDS)),
+        new Serial_Core_ArrayField('data', array(3, null), array(
+            new Serial_Core_FloatField('value', 0, '%.2f'),
+            new Serial_Core_Stringfield('flag', 1, '%1s'),
+        )),
     );
 
 
@@ -606,7 +634,7 @@ stream.  If a Reader's input stream protocol uses a different line ending
 ending, use the `endl` argument with the appropriate constructor.
 
     define("ENDL", "\r\r");  // Windows
-    $writer = new Serial_Core_FixedWidthWriter($stream, $fields, ENDL);
+    $writer = Serial_Core_FixedWidthWriter::open('data.txt', $fields, ENDL);
 
 ## Header Data ##
 
