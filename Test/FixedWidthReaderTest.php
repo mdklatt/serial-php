@@ -37,7 +37,7 @@ class Test_FixedWidthReaderTest extends Test_TabularReaderTest
         // path.
         $this->reader = Serial_Core_FixedWidthReader::open($this->stream, 
                         $this->fields);
-        $this->test_iter();
+        $this->testIter();
         unset($this->reader);  // close $this->stream
         $this->assertFalse(is_resource($this->stream));
         return;

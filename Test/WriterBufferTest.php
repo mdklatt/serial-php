@@ -25,7 +25,7 @@ class Test_WriterBufferTest extends Test_BufferTest
      * Test the write() method.
      *
      */
-    public function test_write()
+    public function testWrite()
     {
         foreach ($this->input as $record) {
             $this->buffer->write($record);
@@ -39,7 +39,7 @@ class Test_WriterBufferTest extends Test_BufferTest
      * Test the dump() method.
      *
      */
-    public function test_dump()
+    public function testDump()
     {
         $this->buffer->dump($this->input);
         $this->assertEquals($this->output, $this->writer->output);
@@ -50,11 +50,11 @@ class Test_WriterBufferTest extends Test_BufferTest
      * Test the filter() method.
      *
      */
-    public function test_filter()
+    public function testFilter()
     {
         $this->buffer->filter('Test_BufferTest::reject_filter');
         array_splice($this->output, 0, 1);
-        $this->test_dump();
+        $this->testDump();
         return;
     }
 }

@@ -46,6 +46,19 @@ class Test_ReaderSequenceTest extends PHPUnit_Framework_TestCase
     }
     
     /**
+     * Tear down the test fixture.
+     *
+     * This is called after every test is run.
+     */
+    protected function tearDown()
+    {  
+        foreach ($this->streams as $stream) {
+            @fclose($this->stream);            
+        }
+        return;
+    }
+
+    /**
      * Test the iterator protocol.
      *
      */
@@ -70,19 +83,6 @@ class Test_ReaderSequenceTest extends PHPUnit_Framework_TestCase
         $reader = 'Test_ReaderSequenceTest::reader';
         $sequence = new Serial_Core_ReaderSequence($reader);
         $this->assertEquals(array(), iterator_to_array($sequence));
-        return;
-    }
-
-    /**
-     * Tear down the test fixture.
-     *
-     * This is called after every test is run.
-     */
-    protected function tearDown()
-    {  
-        foreach ($this->streams as $stream) {
-            @fclose($this->stream);            
-        }
         return;
     }
 }

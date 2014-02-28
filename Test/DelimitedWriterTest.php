@@ -39,7 +39,7 @@ class Test_DelimitedWriterTest extends Test_TabularWriterTest
         // path.
         $this->writer = Serial_Core_DelimitedWriter::open($this->stream, 
                         $this->fields, self::DELIM, self::ENDL);
-        $this->test_write();
+        $this->testWrite();
         unset($this->writer);  // close $this->stream
         $this->assertFalse(is_resource($this->stream));
         return;
@@ -49,12 +49,12 @@ class Test_DelimitedWriterTest extends Test_TabularWriterTest
      * Test the filter() method.
      *
      */
-    public function test_filter()
+    public function testFilter()
     {
-        $this->writer->filter('Test_TabularWriterTest::reject_filter', 
-                              'Test_TabularWriterTest::modify_filter');
+        $this->writer->filter('Test_TabularWriterTest::rejectFilter', 
+                              'Test_TabularWriterTest::modifyFilter');
         $this->data = '912,ghi,jklX';
-        $this->test_dump();
+        $this->testDump();
         return;
     }
 }

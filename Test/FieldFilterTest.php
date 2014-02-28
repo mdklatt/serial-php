@@ -32,7 +32,7 @@ class Test_FieldFilterTest extends PHPUnit_Framework_TestCase
      * Test the filter for whitelisting.
      *
      */
-    public function test_whitelist()
+    public function testWhitelist()
     {
         $filtered = array_slice($this->data, 0, 2);
         $filtered[] = null;
@@ -44,7 +44,7 @@ class Test_FieldFilterTest extends PHPUnit_Framework_TestCase
      * Test the filter for whitelisting with a missing field.
      *
      */
-    public function test_whitelist_missing()
+    public function testWhitelistMissing()
     {
         $this->data = array(array('not_test' => 'xyz'));
         $filtered = array(null);
@@ -56,7 +56,7 @@ class Test_FieldFilterTest extends PHPUnit_Framework_TestCase
      * Test the filter for blacklisting.
      *
      */
-    public function test_blacklist()
+    public function testBlacklist()
     {
         $filtered = array(null, null);
         $filtered[] = $this->data[2];
@@ -68,7 +68,7 @@ class Test_FieldFilterTest extends PHPUnit_Framework_TestCase
      * Test the filter for blacklisting with a missing field.
      *
      */
-    public function test_blacklist_missing()
+    public function testBlacklistMissing()
     {
         $this->data = array(array('not_test' => 'xyz'));
         $filtered = $this->data;

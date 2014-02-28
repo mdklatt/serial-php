@@ -5,18 +5,18 @@
  */
 abstract class Test_TabularReaderTest extends PHPUnit_Framework_TestCase
 {
-    static public function reject_filter($record)
+    static public function rejectFilter($record)
     {
         return $record['int'] != 123 ? $record : null;
     }
     
-    static public function modify_filter($record)
+    static public function modifyFilter($record)
     {
         $record['int'] *= 2;
         return $record;
     }
 
-    static public function stop_filter($record)
+    static public function stopFilter($record)
     {
         if ($record['int'] == 456) {
             throw new Serial_Core_StopIteration();
@@ -69,7 +69,7 @@ abstract class Test_TabularReaderTest extends PHPUnit_Framework_TestCase
      * Test the iterator interface.
      *
      */
-    public function test_iter()
+    public function testIter()
     {
         $records = iterator_to_array($this->reader);
         $this->assertEquals($this->records, $records);
@@ -80,25 +80,25 @@ abstract class Test_TabularReaderTest extends PHPUnit_Framework_TestCase
      * Test the filter() method.
      *
      */
-    public function test_filter()
+    public function testFilter()
     {
         $this->records = array_slice($this->records, 1);
         $this->records[0]['int'] = 912;
-        $this->reader->filter('Test_TabularReaderTest::reject_filter', 
-                              'Test_TabularReaderTest::modify_filter');
-        $this->test_iter();
+        $this->reader->filter('Test_TabularReaderTest::rejectFilter', 
+                              'Test_TabularReaderTest::modifyFilter');
+        $this->testIter();
         return;
     }
     
     /**
-     * Test the filter() method with STOP_ITERATION.
+     * Test the filter() method with a StopIteration exception.
      *
      */
-    public function test_filter_stop()
+    public function testFilterStop()
     {
         $this->records = array_slice($this->records, 0, 1);
-        $this->reader->filter('Test_TabularReaderTest::stop_filter');
-        $this->test_iter();
+        $this->reader->filter('Test_TabularReaderTest::stopFilter');
+        $this->testIter();
         return;        
     }
 }

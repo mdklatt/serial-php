@@ -25,7 +25,7 @@ class Test_ReaderBufferTest extends Test_BufferTest
      * Test the iterator interface.
      *
      */
-    public function test_iter()
+    public function testIter()
     {
         $output = iterator_to_array($this->buffer);
         $this->assertEquals($this->output, $output);
@@ -36,11 +36,11 @@ class Test_ReaderBufferTest extends Test_BufferTest
      * Test the filter() method.
      *
      */
-    public function test_filter()
+    public function testFilter()
     {
         $this->buffer->filter('Test_ReaderBufferTest::reject_filter');
         array_splice($this->output, 0, 1);
-        $this->test_iter();
+        $this->testIter();
         return;
     }
 }

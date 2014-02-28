@@ -7,12 +7,12 @@ abstract class Test_TabularWriterTest extends PHPUnit_Framework_TestCase
 {
     const ENDL = 'X';
     
-    static public function reject_filter($record)
+    static public function rejectFilter($record)
     {
         return $record['int'] != 123 ? $record : null;
     }
 
-    static public function modify_filter($record)
+    static public function modifyFilter($record)
     {
         $record['int'] *= 2;
         return $record;
@@ -40,7 +40,7 @@ abstract class Test_TabularWriterTest extends PHPUnit_Framework_TestCase
         return;
     }
     
-    public function test_write()
+    public function testWrite()
     {
         foreach ($this->records as $record) {
             $this->writer->write($record);
@@ -50,7 +50,7 @@ abstract class Test_TabularWriterTest extends PHPUnit_Framework_TestCase
         return;
     }
 
-    public function test_dump()
+    public function testDump()
     {
         $this->writer->dump($this->records);
         rewind($this->stream);

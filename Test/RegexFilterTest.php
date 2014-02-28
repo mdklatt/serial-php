@@ -28,7 +28,7 @@ class Test_RegexFilterTest extends PHPUnit_Framework_TestCase
      * Test the filter for whitelisting.
      *
      */
-    public function test_whitelist()
+    public function testWhitelist()
     {
         $filtered = array_slice($this->data, 0, 2);
         $filtered[] = null;
@@ -40,7 +40,7 @@ class Test_RegexFilterTest extends PHPUnit_Framework_TestCase
      * Test the filter for blacklisting.
      *
      */
-    public function test_blacklist()
+    public function testBlacklist()
     {
         $filtered = array(null, null);
         $filtered[] = $this->data[2];

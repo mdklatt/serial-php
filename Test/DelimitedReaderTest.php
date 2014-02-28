@@ -39,7 +39,7 @@ class Test_DelimitedReaderTest extends Test_TabularReaderTest
         // path.
         $this->reader = Serial_Core_DelimitedReader::open($this->stream, 
                         $this->fields, self::DELIM);
-        $this->test_iter();
+        $this->testIter();
         unset($this->reader);  // close $this->stream
         $this->assertFalse(is_resource($this->stream));
         return;
