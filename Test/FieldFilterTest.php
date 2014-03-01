@@ -19,7 +19,9 @@ class Test_FieldFilterTest extends PHPUnit_Framework_TestCase
     {
         $values = array('abc', 'def');
         $this->whitelist = new Serial_Core_FieldFilter('test', $values);
+        $this->whitelist = array($this->whitelist, '__invoke');  // PHP 5.2
         $this->blacklist = new Serial_Core_FieldFilter('test', $values, false);
+        $this->blacklist = array($this->blacklist, '__invoke');  // PHP 5.2
         $this->data = array();
         $values[] = 'ghi';
         foreach ($values as $value) {

@@ -19,7 +19,9 @@ class Test_RegexFilterTest extends PHPUnit_Framework_TestCase
     {
         $regex = '/abc|def/';
         $this->whitelist = new Serial_Core_RegexFilter($regex);
+        $this->whitelist = array($this->whitelist, '__invoke');  // PHP 5.2
         $this->blacklist = new Serial_Core_RegexFilter($regex, false);
+        $this->blacklist = array($this->blacklist, '__invoke');  // PHP 5.2
         $this->data = array("abc\n", "def\n", "ghi\n");
         return;
     }
