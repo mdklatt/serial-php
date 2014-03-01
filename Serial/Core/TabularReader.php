@@ -45,8 +45,6 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
     /**
      * Initialize this object.
      *
-     * The input stream must be an instance of a Serial_Core_IStreamAdaptor or 
-     * a regular PHP stream that works with fgets().
      */
     public function __construct($stream, $fields, $endl=PHP_EOL)
     {
