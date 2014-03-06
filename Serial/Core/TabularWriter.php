@@ -63,7 +63,9 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
     public function __destruct()
     {
         if ($this->closing) {
-            @fclose($this->stream);
+            // Can't throw an exception from a destructor, so let fclose()
+            // report a warning if it fails.
+            fclose($this->stream);
         }
         return;
     }    
