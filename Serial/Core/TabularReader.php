@@ -11,10 +11,15 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
     /**
      * Create a reader with automatic stream handling.
      *
-     * The first argument is a either an open stream or a path to use to open
-     * a text file. In either case, the input stream will automatically be
-     * closed when the reader object is destroyed. Any additional arguments are
-     * passed along to the reader's constructor.
+     * The first argument is either an open stream or a path to open as a text
+     * file. In either case, the input stream will automatically be closed when
+     * the reader's destructor is called. Any additional arguments are passed
+     * along to the reader's constructor.
+     *
+     * If the object contains a circular reference, e.g. a class method used
+     * as a filter callback, unsetting the variable is not enough to trigger
+     * the destructor. It will be called when the process ends, or it can be 
+     * called explicitly, i.e. $reader->__destruct().
      */
     public static function open(/* $args */)
     {
@@ -28,7 +33,7 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
         // }
         // if (!is_resource($args[0])) {
         //     // Assume this is a string to use as a file path.
-        //     $args[0] = fopen($path, 'r');
+        //     $args[0] = fopen($args[0], 'r');
         // }
         // $class = new ReflectionClass('Derived_Class_Name_Goes_Here');
         // $reader = $class->newInstanceArgs($args);
@@ -62,8 +67,14 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
      */
     public function __destruct()
     {
-        if ($this->closing) {
-            @fclose($this->stream);
+        if ($this->closing ) {
+            while (is_resource($this->stream) && @fclose($this->stream)) {
+                // Need a loop here because sometimes fclose() didn't actually
+                // close the stream on the first try even if it returned true.
+                // Don't care if fclose() fails because this is an input
+                // stream.
+               continue;
+            }
         }
         return;
     }    
