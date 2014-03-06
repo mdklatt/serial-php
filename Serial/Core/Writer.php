@@ -12,6 +12,12 @@ abstract class Serial_Core_Writer
     // classes can use these to do any final data manipulation before the
     // record is written to the stream.
 
+    // NB: Adding a method of $this as a class or user filter creates a
+    // circular reference that prevents its destructor from being called
+    // automatically when it reference becomes undefined, e.g. unset($writer).
+    // The destructor will be called when the process exits, or call it
+    // explicitly, e.g. $writer->__destruct().
+
     protected $classFilters = array();
     private $userFilters = array();
     

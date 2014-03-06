@@ -9,7 +9,13 @@ abstract class Serial_Core_Reader implements Iterator
 {
     // Class filters are always applied before any user filters. Derived
     // classes can use these to do any preliminary data manipulation after
-    // the record is parsed.
+    // the record is parsed. 
+    
+    // NB: Adding a method of $this as a class or user filter creates a
+    // circular reference that prevents its destructor from being called
+    // automatically when it reference becomes undefined, e.g. unset($reader).
+    // The destructor will be called when the process exits, or call it
+    // explicitly, e.g. $reader->__destruct().
     
     protected $classFilters = array();
     private $userFilters = array();
