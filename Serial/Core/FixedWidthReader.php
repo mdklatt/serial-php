@@ -26,7 +26,7 @@ class Serial_Core_FixedWidthReader extends Serial_Core_TabularReader
         }
         if (!is_resource($args[0])) {
             // Assume this is a string to use as a file path.
-            $args[0] = fopen($path, 'r');
+            $args[0] = fopen($args[0], 'r');
         }
         $class = new ReflectionClass('Serial_Core_FixedWidthReader');
         $reader = $class->newInstanceArgs($args);

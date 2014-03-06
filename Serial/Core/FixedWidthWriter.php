@@ -26,7 +26,7 @@ class Serial_Core_FixedWidthWriter extends Serial_Core_TabularWriter
         }
         if (!is_resource($args[0])) {
             // Assume this is a string to use as a file path.
-            $args[0] = fopen($path, 'w');
+            $args[0] = fopen($args[0], 'w');
         }
         $class = new ReflectionClass('Serial_Core_FixedWidthWriter');
         $writer = $class->newInstanceArgs($args);
