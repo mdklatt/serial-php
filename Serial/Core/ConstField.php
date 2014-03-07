@@ -3,7 +3,7 @@
  * Translate text tokens to/from a constant value.
  *
  */
-class Serial_Core_ConstField extends Serial_Core_Field
+class Serial_Core_ConstField extends Serial_Core_ScalarField
 {
     /**
      * Initialize this object.

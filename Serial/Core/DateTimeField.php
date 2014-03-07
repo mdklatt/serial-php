@@ -3,10 +3,8 @@
  * Translate text tokens to/from DateTime values.
  *
  */
-class Serial_Core_DateTimeField extends Serial_Core_Field
+class Serial_Core_DateTimeField extends Serial_Core_ScalarField
 {
-    private $timefmt;
-    
     /**
      * Initialize this object.
      *

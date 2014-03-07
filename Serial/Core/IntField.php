@@ -3,7 +3,7 @@
  * Translate text tokens to/from integer values.
  *
  */
-class Serial_Core_IntField extends Serial_Core_Field
+class Serial_Core_IntField extends Serial_Core_ScalarField
 {
     /**
      * Initialize this object.

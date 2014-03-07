@@ -3,7 +3,7 @@
  * Base class for translating text tokens to/from PHP types.
  *
  */ 
-abstract class Serial_Core_Field
+abstract class Serial_Core_ScalarField
 {
     public $name;
     public $pos;

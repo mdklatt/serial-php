@@ -3,7 +3,7 @@
  * Translate text tokens to/from floating point values.
  *
  */
-class Serial_Core_FloatField extends Serial_Core_Field
+class Serial_Core_FloatField extends Serial_Core_ScalarField
 {
     private $special = array('nan' => NAN);
     
