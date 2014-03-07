@@ -33,7 +33,10 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
         // }
         // if (!is_resource($args[0])) {
         //     // Assume this is a string to use as a file path.
-        //     $args[0] = fopen($args[0], 'r');
+        //     if (!($args[0] = @fopen($args[0], 'r'))) {
+        //         $message = "invalid input stream or path: {$args[0]}";
+        //         throw new RuntimeException($message);
+        //     }
         // }
         // $class = new ReflectionClass('Derived_Class_Name_Goes_Here');
         // $reader = $class->newInstanceArgs($args);

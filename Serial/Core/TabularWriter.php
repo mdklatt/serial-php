@@ -33,7 +33,10 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
         // }
         // if (!is_resource($args[0])) {
         //     // Assume this is a string to use as a file path.
-        //     $args[0] = fopen($path, 'w');
+        //     if (!($args[0] = @fopen($args[0], 'w'))) {
+        //         $message = "invalid input stream or path: {$args[0]}";
+        //         throw new RuntimeException($message);
+        //     }
         // }
         // $class = new ReflectionClass('Derived_Class_Name_Goes_Here');
         // $writer = $class->newInstanceArgs($args);
