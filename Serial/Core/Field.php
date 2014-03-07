@@ -7,7 +7,7 @@ abstract class Serial_Core_Field
 {
     public $name;
     public $pos;
-    protected $width;
+    public $width;
     protected $fmt;
     protected $default;
     

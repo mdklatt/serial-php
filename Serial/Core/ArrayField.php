@@ -3,10 +3,13 @@
  * Translate text tokens to/from an array of PHP values.
  *
  */
-class Serial_Core_ArrayField extends Serial_Core_Field
+class Serial_Core_ArrayField
 {
+    public $name;
+    public $pos;
     public $width;
-    private $fields = array();
+    private $fields;
+    private $default;
     private $stride = 0;
 
     /**
@@ -15,8 +18,11 @@ class Serial_Core_ArrayField extends Serial_Core_Field
      */
     public function __construct($name, $pos, $fields, $default=array())
     {
-        parent::__construct($name, $pos, '%s', $default);
-        $this->fields = $fields;    
+        $this->name = $name;
+        $this->pos = $pos;
+        $this->default = $default;
+        $this->width = $pos[1];
+        $this->fields = $fields; 
         foreach ($this->fields as $field) {
             $this->stride += $field->width;
         }
@@ -28,40 +34,46 @@ class Serial_Core_ArrayField extends Serial_Core_Field
      *
      * This is called by a Reader and does not need to be called by the user.
      */
-    public function decode($token_array)
+    public function decode($tokens)
     {
-        $token_array = new Serial_Core_Sequence($token_array);
-        $value_array = array();
-        for ($beg = 0; $beg < count($token_array); $beg += $this->stride) {
-            $elem = new Serial_Core_Sequence($token_array->get(array($beg, $this->stride)));
+        $tokens = new Serial_Core_Sequence($tokens);
+        $values = array();
+        for ($beg = 0; $beg < count($tokens); $beg += $this->stride) {
+            $elem = new Serial_Core_Sequence($tokens->get(array($beg, $this->stride)));
             $value = array();
             foreach ($this->fields as $field) {
                 $value[$field->name] = $field->decode($elem->get($field->pos));
             }
-            $value_array[] = $value;
+            $values[] = $value;
         }
-        $this->width = count($value_array) * $this->stride;
-        return $value_array ? $value_array : $this->default;
+        $this->width = count($values) * $this->stride;
+        return $values ? $values : $this->default;
     }
     
     /**
-     * Convert a PHP value to a string.
+     * Convert an array of PHP values to an array of string tokens.
      *
-     * This is called by a Reader and does not need to be called by the user.
+     * If the argument is null or an empty array the default field value is
+     * used (null is encoded as an empty array). Each element of the array
+     * should be an associative array that corresponsds the to the field
+     * definitions for this array.
      */
-    public function encode($value_array)
+    public function encode($values)
     {
-        if (!$value_array) {
-            $value_array = $this->default;
+        if (!$values) {
+            $values = $this->default;
         }
-        $this->width = count($value_array) * $this->stride;        
-        $token_array = array();
-        foreach ($value_array as $elem) {
+        if ($this->width === null) {
+            // Update the width of a variable-length array with each record.
+            $this->width = count($values) * $this->stride;            
+        }
+        $tokens = array();
+        foreach ($values as $elem) {
             foreach ($this->fields as $field) {
-                $token_array[] = $field->encode($elem[$field->name]);
+                $tokens[] = $field->encode($elem[$field->name]);
             }
         }
-        return $token_array;
+        return $tokens;
     }
 }
 
