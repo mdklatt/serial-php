@@ -46,6 +46,17 @@ class Test_DelimitedWriterTest extends Test_TabularWriterTest
     }
 
     /**
+     * Test the open() method for an invalid stream or path.
+     * 
+     */
+    public function testOpenFail()
+    {
+        $this->setExpectedException('RuntimeException');
+        Serial_Core_DelimitedWriter::open(null, $this->fields, self::DELIM);
+        return;
+    }
+
+    /**
      * Test the filter() method.
      *
      */

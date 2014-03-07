@@ -20,7 +20,7 @@ class Serial_Core_DelimitedWriter extends Serial_Core_TabularWriter
      */
     public static function open(/* $args */)
     {
-        // Every derived class *MUST* implement its own open() method that
+        // Every derived class must implement its own open() method that
         // returns the correct type of object.
         $args = func_get_args();
         if (count($args) < 3) {
@@ -29,7 +29,10 @@ class Serial_Core_DelimitedWriter extends Serial_Core_TabularWriter
         }
         if (!is_resource($args[0])) {
             // Assume this is a string to use as a file path.
-            $args[0] = fopen($args[0], 'w');
+            if (!($args[0] = @fopen($args[0], 'w'))) {
+                $message = "invalid output stream or path: {$args[0]}";
+                throw new RuntimeException($message);
+            }
         }
         $class = new ReflectionClass('Serial_Core_DelimitedWriter');
         $writer = $class->newInstanceArgs($args);
