@@ -11,10 +11,15 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
     /**
      * Create a writer with automatic stream handling.
      *
-     * The first argument is a either an open stream or a path to use to open
-     * a text file. In either case, the output stream will automatically be
-     * closed when the writer object is destroyed. Any additional arguments are
+     * The first argument is either an open stream or a path to open as a text
+     * file. In either case, the output stream will automatically be closed 
+     * when the writer's destructor is called. Any additional arguments are 
      * passed along to the writer's constructor.
+     *
+     * If the object contains a circular reference, e.g. a class method used
+     * as a filter callback, unsetting the variable is not enough to trigger
+     * the destructor. It will be called when the process ends, or it can be 
+     * called explicitly, i.e. $writer->__destruct().
      */
     public static function open(/* $args */)
     {
