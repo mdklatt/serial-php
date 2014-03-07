@@ -1,39 +1,45 @@
 <?php
 /**
- * Translate text tokens to/from a constant value.
+ * A constant value field.
  *
  */
 class Serial_Core_ConstField extends Serial_Core_ScalarField
 {
+    private $token;
+    private $value;
+    
     /**
      * Initialize this object.
      *
      */
     public function __construct($name, $pos, $value, $fmt='%s')
     {
-        parent::__construct($name, $pos, $fmt, $value);
+        parent::__construct($name, $pos);
+        $this->value = $value;
+        $token = sprintf($fmt, $this->value);
+        if ($this->fixed) {
+            $fmt = "%{$this->width}s";
+            $token = sprintf($fmt, substr($token, 0, $this->width));
+        }
+        $this->token = $token;
         return;
     }
 
     /**
-     * Convert a string to a PHP value.
+     * Return a constant value (token is ignored).
      *
-     * This is called by a Reader and does not need to be called by the user.
      */
     public function decode($token)
     {
-        // Token is ignored.
-        return $this->default;
+        return $this->value;
     }
 
     /**
-     * Convert a PHP value to a string.
+     * Return a constant token (value is ignored).
      *
-     * This is called by a Reader and does not need to be called by the user.
      */
     public function encode($value)
     {
-        // Value is ignored.
-        return sprintf($this->fmt, $this->default);
+        return $this->token;
     }
 }

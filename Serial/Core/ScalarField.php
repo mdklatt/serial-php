@@ -1,41 +1,42 @@
 <?php
 /**
- * Base class for translating text tokens to/from PHP types.
+ * Base class for scalar fields.
  *
  */ 
 abstract class Serial_Core_ScalarField
 {
     public $name;
     public $pos;
-    public $width;
-    protected $fmt;
-    protected $default;
+    public $width = 1;
+    protected $fixed = false;
     
     /**
      * Initialize this object.
      *
      */
-    public function __construct($name, $pos, $fmt='%s', $default=null)
+    public function __construct($name, $pos)
     {
         $this->name = $name;
         $this->pos = $pos;
-        $this->fmt = $fmt;
-        $this->default = $default;
-        $this->width = is_array($pos) ? $pos[1] : 1;        
+        if (is_array($this->pos)) {
+            // This is a fixed-width field; the width is in characters.
+            $this->width = $pos[1];
+            $this->fixed = true;
+        }
         return;
     }
     
     /**
      * Convert a string token to a PHP value.
      *
-     * This is called by a Reader and does not need to be called by the user.
+     * This is called by a Reader while parsing an input record.
      */
     abstract public function decode($token);
     
     /**
      * Convert a PHP value to a string token.
      *
-     * This is called by a Writer and does not need to be called by the user.
+     * This is called by a Writer while formatting an output record.
      */
     abstract public function encode($value);
 } 

@@ -1,24 +1,31 @@
 <?php
 /**
- * Translate text tokens to/from integer values.
+ * An integer field.
  *
  */
 class Serial_Core_IntField extends Serial_Core_ScalarField
 {
+    private $valfmt;
+    private $strfmt;
+    private $default;
+    
     /**
      * Initialize this object.
-     * 
+     *
      */
     public function __construct($name, $pos, $fmt='%d', $default=null)
     {
-        parent::__construct($name, $pos, $fmt, $default);
+        parent::__construct($name, $pos);
+        $this->valfmt = $fmt;
+        $this->strfmt = "%{$this->width}s";
+        $this->default = $default;
         return;
     }
 
     /**
-     * Convert a string to a PHP value.
+     * Convert a string token to an int.
      *
-     * This is called by a Reader and does not need to be called be the user.
+     * If the token is an empty string the default field value is used.
      */
     public function decode($token)
     {
@@ -29,15 +36,21 @@ class Serial_Core_IntField extends Serial_Core_ScalarField
     }
     
     /**
-     * Convert a PHP value to a string.
+     * Convert an int to a string token.
      *
-     * This is called by a Writer and does not need to be called by the user.
+     * If the value is null the default field value is used (null is encoded as
+     * a null string). For fixed-width fields the token is padded on the left
+     * or trimmed on the right to fit the allotted width
      */
     public function encode($value)
     {
         if ($value === null) {
             $value = $this->default;
         }
-        return $value !== null ? sprintf($this->fmt, $value) : '';
+        $token = $value !== null ? sprintf($this->valfmt, $value) : '';
+        if ($this->fixed) {
+            $token = sprintf($this->strfmt, substr($token, 0, $this->width));
+        }
+        return $token;
     }
 }

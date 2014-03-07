@@ -1,27 +1,34 @@
 <?php
 /**
- * Translate text tokens to/from DateTime values.
+ * A DateTime field.
  *
  */
 class Serial_Core_DateTimeField extends Serial_Core_ScalarField
 {
+    private $valfmt;
+    private $strfmt;
+    private $default;
+    
     /**
      * Initialize this object.
      *
      */
     public function __construct($name, $pos, $fmt, $default=null)
     {
-        parent::__construct($name, $pos, $fmt, $default);
+        parent::__construct($name, $pos);
+        $this->valfmt = $fmt;
+        $this->strfmt = "%{$this->width}s";
+        $this->default = $default;
         return;
     }
     
     /**
-     * Convert a string token to a PHP value.
+     * Convert a string token to a DateTime.
      *
      * CAUTION: This does *not* use the format string to parse the token into
      * a DateTime; instead the token must be in a format that the DateTime
-     * constructor can correctly parse. This is called by a Reader and does not 
-     * need to be called by the user.
+     * constructor can correctly parse. If the token is an empty string the
+     * default field value is used.
      */
     public function decode($token)
     {
@@ -38,9 +45,11 @@ class Serial_Core_DateTimeField extends Serial_Core_ScalarField
     }
     
     /**
-     * Convert a PHP value to a string token.
+     * Convert a DateTime to a string token.
      *
-     * This is called by a Reader and does not need to be called by the user.
+     * If the value is null the default field value is used (null is encoded as
+     * a null string). For fixed-width fields the token is padded on the left
+     * or trimmed on the right to fit the allotted width
      */
     public function encode($value)
     {
@@ -50,6 +59,10 @@ class Serial_Core_DateTimeField extends Serial_Core_ScalarField
             }
             $value = $this->default;
         }
-        return $value->format($this->fmt);
+        $token = $value->format($this->valfmt);
+        if ($this->fixed) {
+            $token = sprintf($this->strfmt, substr($token, 0, $this->width));
+        }
+        return $token;
     }
 }
