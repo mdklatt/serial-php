@@ -44,6 +44,17 @@ class Test_FixedWidthWriterTest extends Test_TabularWriterTest
     }
 
     /**
+     * Test the open() method for an invalid stream or path.
+     * 
+     */
+    public function testOpenFail()
+    {
+        $this->setExpectedException('RuntimeException');
+        Serial_Core_FixedWidthWriter::open(null, $this->fields);
+        return;
+    }
+
+    /**
      * Test the filter() method.
      *
      */
