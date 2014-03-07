@@ -22,7 +22,7 @@ class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
      */
     public static function open(/* $args */)
     {
-        // Every derived class *MUST* implement its own open() method that
+        // Every derived class must implement its own open() method that
         // returns the correct type of object.
         $args = func_get_args();
         if (count($args) < 3) {
@@ -31,7 +31,10 @@ class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
         }
         if (!is_resource($args[0])) {
             // Assume this is a string to use as a file path.
-            $args[0] = fopen($args[0], 'r');
+            if (!($args[0] = @fopen($args[0], 'r'))) {
+                $message = "invalid input stream or path: {$args[0]}";
+                throw new RuntimeException($message);
+            }
         }
         $class = new ReflectionClass('Serial_Core_DelimitedReader');
         $reader = $class->newInstanceArgs($args);

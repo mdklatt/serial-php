@@ -44,4 +44,15 @@ class Test_DelimitedReaderTest extends Test_TabularReaderTest
         $this->assertFalse(is_resource($this->stream));
         return;
     }
+
+    /**
+     * Test the open() method for an invalid stream or path.
+     * 
+     */
+    public function testOpenFail()
+    {
+        $this->setExpectedException('RuntimeException');
+        Serial_Core_DelimitedReader::open(null, $this->fields, self::DELIM);
+        return;
+    }
 }
