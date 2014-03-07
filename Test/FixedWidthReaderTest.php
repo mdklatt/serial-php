@@ -42,4 +42,15 @@ class Test_FixedWidthReaderTest extends Test_TabularReaderTest
         $this->assertFalse(is_resource($this->stream));
         return;
     }
+    
+    /**
+     * Test the open() method for an invalid stream or path.
+     * 
+     */
+    public function testOpenFail()
+    {
+        $this->setExpectedException('RuntimeException');
+        Serial_Core_FixedWidthReader::open(null, $this->fields);
+        return;
+    }
 }
