@@ -28,7 +28,7 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
         // method if appropriate. Here is a sample implementation.
         //
         // if (!($args = func_get_args())) {
-        //     $message = "call to open() is missing required arguments";
+        //     $message = "open() is missing required arguments";
         //     throw new BadMethodCallException($message);
         // }
         // if (!is_resource($args[0])) {
@@ -101,9 +101,8 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
         }
         $tokens = $this->split(rtrim($line, $this->endl));
         $record = array();
-        $pos = 0;
-        foreach ($this->fields as $field) {
-            $record[$field->name] = $field->decode($tokens[$pos++]);
+        foreach ($this->fields as $pos => $field) {
+            $record[$field->name] = $field->decode($tokens[$pos]);
         }
         return $record;
     }
