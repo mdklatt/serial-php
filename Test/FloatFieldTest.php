@@ -14,12 +14,14 @@ class Test_FloatFieldTest extends Test_FieldTest
     protected function setUp()
     {
         $fmt = '%6.3f';
+        $pos = array(0, 7);
         $this->value = 1.23;
-        $this->token = ' 1.230';
-        $this->field = new Serial_Core_FloatField('float', 0, $fmt);
+        $this->token = '  1.230';
+        $this->field = new Serial_Core_FloatField('float', $pos, $fmt);
         $this->default_value = -9.999;
-        $this->default_token = '-9.999';
-        $this->default_field = new Serial_Core_FloatField('float', 0, $fmt, $this->default_value);
+        $this->default_token = ' -9.999';
+        $this->default_field = new Serial_Core_FloatField('float', $pos, $fmt,
+                               $this->default_value);
         return;
     }
 
@@ -43,7 +45,7 @@ class Test_FloatFieldTest extends Test_FieldTest
     public function testEncodeZero()
     {
         // Make sure to use assertSame() so that === is used for the test.
-        $this->assertSame(' 0.000', $this->field->encode(0));
+        $this->assertSame('  0.000', $this->field->encode(0));
         return;
     }
 

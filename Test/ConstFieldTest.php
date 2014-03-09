@@ -15,7 +15,8 @@ class Test_ConstFieldTest extends Test_FieldTest
     {
         $this->value = 9999;
         $this->token = ' 9999';
-        $this->field = new Serial_Core_ConstField('const', 0, $this->value, '%5d');
+        $this->field = new Serial_Core_ConstField('const', array(0, 5), 
+                                                  $this->value, '%4d');
         $this->default_value = $this->value;
         $this->default_token = $this->token;
         $this->default_field = $this->field;

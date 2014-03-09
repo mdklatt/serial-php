@@ -61,7 +61,7 @@ abstract class Test_FieldTest extends PHPUnit_Framework_TestCase
      */
     public function testEncodeNull()
     {
-        $this->assertSame('', $this->field->encode(null));
+        $this->assertSame('', trim($this->field->encode(null)));
         return;
     }
 

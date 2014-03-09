@@ -13,12 +13,12 @@ class Test_StringFieldTest extends Test_FieldTest
      */
     protected function setUp()
     {
-        $fmt = '%4s';
+        $fmt = '%5s';
         $this->value = 'abc';
-        $this->token = ' abc';
+        $this->token = '  abc';
         $this->field = new Serial_Core_StringField('str', 0, $fmt);
         $this->default_value = 'xyz';
-        $this->default_token = ' xyz';
+        $this->default_token = '  xyz';
         $this->default_field = new Serial_Core_StringField('str', 0, $fmt, '', $this->default_value);
         $this->quote_token = '"abc"';
         $this->quote_field = new Serial_Core_StringField('str', 0, '%s', '"');
@@ -53,7 +53,7 @@ class Test_StringFieldTest extends Test_FieldTest
      */
     public function testEncodeNull()
     {
-        $this->assertSame(str_repeat(' ', 4), $this->field->encode(null));
+        $this->assertSame(str_repeat(' ', 5), $this->field->encode(null));
         return;
     }
 }

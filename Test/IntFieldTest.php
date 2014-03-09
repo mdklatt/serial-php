@@ -14,13 +14,14 @@ class Test_IntFieldTest extends Test_FieldTest
     protected function setUp()
     {
         $fmt = '%4d';
-        $this->pos = 
+        $pos = array(0, 5); 
         $this->value = 123;
-        $this->token = ' 123';
-        $this->field = new Serial_Core_IntField('int', 0, $fmt);
+        $this->token = '  123';
+        $this->field = new Serial_Core_IntField('int', $pos, $fmt);
         $this->default_value = -999;
-        $this->default_token = '-999';
-        $this->default_field = new Serial_Core_IntField('int', 0, $fmt, $this->default_value);
+        $this->default_token = ' -999';
+        $this->default_field = new Serial_Core_IntField('int', $pos, $fmt, 
+                                   $this->default_value);
         return;
     }
 
@@ -44,7 +45,7 @@ class Test_IntFieldTest extends Test_FieldTest
     public function testEncodeZero()
     {
         // Make sure to use assertSame() so that === is used for the test.
-        $this->assertSame('   0', $this->field->encode(0));
+        $this->assertSame('    0', $this->field->encode(0));
         return;
     }
 }
