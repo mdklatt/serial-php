@@ -65,15 +65,19 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
     /**
      * Object clean-up.
      *
-     * If the $closing attribute is true, this object's stream is automatically
+     * If the $closing attribute is true, the object's stream is automatically
      * closed; see the open() method.
      */
     public function __destruct()
     {
-        if ($this->closing) {
-            // Can't throw an exception from a destructor, so let fclose()
-            // report a warning if it fails.
-            fclose($this->stream);
+        if ($this->closing && is_resource($this->stream)) {
+            while (is_resource($this->stream) && fclose($this->stream)) {
+                // Need a loop here because sometimes fclose() doesn't actually
+                // close the stream on the first try even if it returns true.
+                // Can't throw an exception from a destructor, so let fclose()
+                // report a warning if it fails (data may be lost).
+                continue;
+            }
         }
         return;
     }    
