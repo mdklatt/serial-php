@@ -46,7 +46,6 @@ class Serial_Core_ArrayField
             }
             $values[] = $value;
         }
-        $this->width = count($values) * $this->stride;
         return $values ? $values : $this->default;
     }
     
@@ -62,10 +61,6 @@ class Serial_Core_ArrayField
     {
         if (!$values) {
             $values = $this->default;
-        }
-        if ($this->width === null) {
-            // Update the width of a variable-length array with each record.
-            $this->width = count($values) * $this->stride;            
         }
         $tokens = array();
         foreach ($values as $elem) {

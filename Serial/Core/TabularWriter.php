@@ -94,10 +94,8 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
             // Convert each field to a string token.
             $token = $field->encode(@$record[$field->name]);
             if (is_array($token)) {
-                // An array of tokens; expand inline and update the field width
-                // and position based on the actual size of the field.
+                // An array of tokens; expand inline.
                 $tokens = array_merge($tokens, $token);
-                $field->pos[1] = $field->width;
             }
             else {
                 $tokens[] = $token;
