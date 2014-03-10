@@ -28,7 +28,7 @@ between fields.
         // Ignoring time zone field. 
         new Serial_Core_StringField('stid', array(0, 6)),
         new Serial_Core_StringField('date', array(6, 11)),
-        new Serial_Core_StringField('time', arraay(17, 6)),
+        new Serial_Core_StringField('time', array(17, 6)),
         new Serial_Core_FloatField('data1', array(27, 8))),
         new Serial_Core_StringField('flag1', array(35, 1)),
         new Serial_Core_FloatField('data2' array(36, 8)),
@@ -132,29 +132,12 @@ should not have a string as its default value.
 
 Data is written to a stream using a Writer. Writers implement a `write()` 
 method for writing individual records and a `dump()` method for writing a 
-sequence of records. 
+sequence of records. Writers use the same field definitions as Readers with
+some additional requirements.
 
-Writers use the same field definitions as Readers with some additional 
-requirements. A data type can be initialized with a [format string][3]; this 
-is ignored by Readers, but it is used by Writers to convert a PHP value to 
-text. Each data type has a default format, but for `FixedWidthWriter` fields a 
-format string with the appropriate field width (inclusive of spaces between 
-fields) **must** be specified.
-
-For the `FixedWidthReader` example the time zone field was ignored. However,
-when defining fields for a `FixedWidthWriter`, every field must be defined,
-even if it's blank. Also, fields must be listed in their correct order.
-
-A Writer will output a value for each of its fields with every data record. If 
-a field is missing from a data record the Writer will use the default value for 
-that field (`null` is encoded as a blank field). For input a default value
-can be anything, but for output it should be type-compatible, e.g. ''M'' would
-be output as ''0'' for an `IntField`, which is probably not what is wanted.
-Fields in the record that do not have a field definition are ignored.
-
-With some minor modifications the field definitions used for reading the sample
-data can be used for writing it. In fact, the modified fields can still be used
-for reading the data, so a Reader and a Writer can be defined for a given data
+With some minor modifications the field definitions for reading the sample data
+can be used for writing it. In fact, the modified fields can still be used for
+reading the data, so a Reader and a Writer can be defined for a given data
 format using one set of field definitions.
 
     $array_fields = array(
@@ -163,8 +146,8 @@ format using one set of field definitions.
     );
 
     $sample_fields = array(
-        new Serial_Core_StringField('stid', array(0, 7), '%7s'),
-        new Serial_Core_DateTimeField('timestamp', array(7, 16), 'Y-m-d H:i'),
+        new Serial_Core_StringField('stid', array(0, 6), '%7s'),
+        new Serial_Core_DateTimeField('timestamp', array(6, 17), 'Y-m-d H:i'),
         new Serial_Core_StringField('timezone', array(23, 4), '%4s'),
         new Serial_Core_ArrayField('data', array(27, null), $array_fields)),
     );
@@ -173,10 +156,33 @@ format using one set of field definitions.
     $reader = Serial_Core_FixedWidthReader::open('data.txt', $sample_fields);
     $writer = Serial_Core_FixedWidthWriter::open('copy.txt', $sample_fields);
     foreach ($reader as $record) {
-        // Write each record to the stream. Or, write all records in a single 
-        // call: $writer->dump($reader);
+        // Write each record to the stream.
         $writer->write($record);
     }
+    // Or, write all records in a single call: $writer->dump($reader)
+
+## Output Formatting ##
+
+Each field is formatted for output according to its [format string][4]. For
+fixed-width output values are fit to the allotted fields widths by padding on
+the left or trimming on the right. By using a format width, values can be
+positioned within the field. Use a format width smaller than the field width to
+specify a left margin and control spacing between field values
+
+    $fields = array(
+        new Serial_Core_StringField('stid', array(0, 6)),
+        new Serial_Core_FloatField('value', array(6, 8), '%7.2f'),  // left margin
+        ...
+    );
+    
+## Default Values ##
+ 
+For every output record a Writer will write a value for each defined field. If 
+a field is missing from a record the Writer will use the default value for that
+field (`null` is encoded as a blank field). Default output values should be 
+type-compatible, e.g. ''M'' would be output as ''0'' for an `IntField`, which 
+is probably not what is wanted.
+
     
 
 # Delimited Data #
