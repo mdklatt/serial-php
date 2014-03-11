@@ -54,12 +54,9 @@ class Serial_Core_DateTimeField extends Serial_Core_ScalarField
     public function encode($value)
     {
         if ($value === null) {
-            if ($this->default === null) {
-                return '';
-            }
             $value = $this->default;
         }
-        $token = $value->format($this->valfmt);
+        $token = $value !== null ? $value->format($this->valfmt) : '';
         if ($this->fixed) {
             $token = sprintf($this->strfmt, substr($token, 0, $this->width));
         }
