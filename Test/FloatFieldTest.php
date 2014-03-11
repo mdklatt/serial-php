@@ -28,7 +28,7 @@ class Test_FloatFieldTest extends Test_FieldTest
     /**
      * Test the decode() method for zero.
      *
-     * Zeros are false-y, so need to make sure they aren't decoded as a null.
+     * Zeroes are false-y, so need to make sure they aren't decoded as a null.
      */
     public function testDecodeZero()
     {

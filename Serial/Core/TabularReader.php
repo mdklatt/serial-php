@@ -72,8 +72,8 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
     {
         if ($this->closing ) {
             while (is_resource($this->stream) && @fclose($this->stream)) {
-                // Need a loop here because sometimes fclose() didn't actually
-                // close the stream on the first try even if it returned true.
+                // Need a loop here because sometimes fclose() doesn't actually
+                // close the stream on the first try even if it returns true.
                 // Don't care if fclose() fails because this is an input
                 // stream.
                continue;

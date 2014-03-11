@@ -40,7 +40,7 @@ class Test_IntFieldTest extends Test_FieldTest
     /**
      * Test the encode() method for zero.
      *
-     * Zeros are false-y, so need to make sure they aren't encoded as a null.
+     * Zeroes are false-y, so need to make sure they aren't encoded as a null.
      */
     public function testEncodeZero()
     {
