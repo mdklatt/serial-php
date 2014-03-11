@@ -14,14 +14,17 @@ class Test_StringFieldTest extends Test_FieldTest
     protected function setUp()
     {
         $fmt = '%5s';
+        $pos = array(0, 5);
         $this->value = 'abc';
         $this->token = '  abc';
-        $this->field = new Serial_Core_StringField('str', 0, $fmt);
+        $this->field = new Serial_Core_StringField('str', $pos, $fmt);
         $this->default_value = 'xyz';
         $this->default_token = '  xyz';
-        $this->default_field = new Serial_Core_StringField('str', 0, $fmt, '', $this->default_value);
+        $this->default_field = new Serial_Core_StringField('str', $pos, $fmt, 
+                                   '', $this->default_value);
         $this->quote_token = '"abc"';
-        $this->quote_field = new Serial_Core_StringField('str', 0, '%s', '"');
+        $this->quote_field = new Serial_Core_StringField('str', $pos, '%s', 
+                                 '"');
         return;
     }
     
@@ -44,16 +47,6 @@ class Test_StringFieldTest extends Test_FieldTest
     {
         $quote_token = $this->quote_field->encode($this->value);
         $this->assertSame($this->quote_token, $quote_token);
-        return;
-    }
-
-    /**
-     * Test the encode() method for null output.
-     *
-     */
-    public function testEncodeNull()
-    {
-        $this->assertSame(str_repeat(' ', 5), $this->field->encode(null));
         return;
     }
 }
