@@ -71,14 +71,7 @@ class Serial_Core_SequenceReader extends Serial_Core_Reader
             return;
         }
         foreach ($this->streams as $stream) {
-            // Close each open stream.
-            while (is_resource($stream) && @fclose($stream)) {
-                // Need a loop here because sometimes fclose() doesn't actually
-                // close the stream on the first try even if it returns true.
-                // Don't care if fclose() fails because this is an input
-                // stream.
-               continue;
-            }
+            Serial_Core::close($stream);
         }
         return;
     }
@@ -185,14 +178,7 @@ class Serial_Core_StreamQueue implements Iterator
      */
     public function next()
     {
-        $stream = array_shift($this->streams);
-        while (is_resource($stream) && @fclose($stream)) {
-            // Need a loop here because sometimes fclose() doesn't actually
-            // close the stream on the first try even if it returns true.
-            // Don't care if fclose() fails because this is an input
-            // stream.
-           continue;
-        }
+        Serial_Core::close(array_shift($this->streams));
         $this->open();
         ++$this->count;
         return;
