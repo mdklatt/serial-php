@@ -39,11 +39,7 @@ abstract class Serial_Core_Writer
             return;
         }
         foreach (func_get_args() as $callback) {            
-            if (method_exists($callback, '__invoke')) {
-                // PHP 5.2 workaround for callable objects.
-                $callback = array($callback, '__invoke');
-            }
-            $this->userFilters[] = $callback;
+            $this->userFilters[] = new Serial_Core_Callback($callback);
         }
         return;
     }
@@ -57,7 +53,7 @@ abstract class Serial_Core_Writer
         # TODO: array_merge() probably doesn't need to be done with each write.
         $filters = array_merge($this->userFilters, $this->classFilters);
         foreach ($filters as $callback) {
-            if (!($record = call_user_func($callback, $record))) {
+            if (!($record = $callback->__invoke(array($record)))) {
                 return;
             }
         }

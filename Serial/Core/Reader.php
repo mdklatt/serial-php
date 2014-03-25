@@ -41,11 +41,7 @@ abstract class Serial_Core_Reader implements Iterator
             return;
         }
         foreach (func_get_args() as $callback) {            
-            if (method_exists($callback, '__invoke')) {
-                // PHP 5.2 workaround for callable objects.
-                $callback = array($callback, '__invoke');
-            }
-            $this->userFilters[] = $callback;
+            $this->userFilters[] = new Serial_Core_Callback($callback);
         }
         return;
     }
@@ -76,7 +72,7 @@ abstract class Serial_Core_Reader implements Iterator
             try {
                 $this->record = $this->get();
                 foreach ($filters as $callback) {
-                    $this->record = call_user_func($callback, $this->record);
+                    $this->record = $callback->__invoke(array($this->record));
                     if ($this->record === null) {
                         // This record failed a filter, try the next one.
                         continue 2;                        
