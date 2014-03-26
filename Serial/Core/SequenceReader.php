@@ -10,13 +10,13 @@ class Serial_Core_SequenceReader extends Serial_Core_Reader
     /**
      * Open a SequenceReader with automatic stream handling.
      *
-     * The arguments are passed to the class contructor. Each stream is
-     * closed once it has been exhausted, and any remaining open streams in the 
+     * The arguments are passed to the class contructor. Each stream is closed
+     * once it has been exhausted, and any remaining open streams in the 
      * sequence will be closed when the reader's destructor is called.
      *
-     * If the object contains a circular reference, e.g. TODO , unsetting the variable is not enough to trigger
-     * the destructor. It will be called when the process ends or goes out of scope?, or explictly
-     * call __destruct() or 
+     * Due to a circular reference, unsetting a SequenceReader variable is not
+     * enough to trigger its destructor. It will be called when the process 
+     * ends, or it can be called explicitly, i.e. $reader->__destruct().
      */
     public static function open(/* $args */)
     {
@@ -37,7 +37,10 @@ class Serial_Core_SequenceReader extends Serial_Core_Reader
     /**
      * Initialize this object.
      *
-     * TODO: First paragraph.  Function name, method name, class name (reflection)!
+     * The first argument is an array of file paths and/or open streams. The
+     * second argument is callback that takes an open stream and returns a 
+     * reader, e.g. a Reader class name. Any remaining arguments are passed to
+     * the reader function.
      *
      * Filtering is applied at the ReaderSequnce level, but for filters that
      * throw a Serial_Core_StopIteration exception this may not be the desired 
@@ -53,7 +56,8 @@ class Serial_Core_SequenceReader extends Serial_Core_Reader
             throw new InvalidArgumentException('missing required arguments');
         }
         $streams = array_shift($args);
-        $this->streams = new Serial_Core_StreamQueue($streams, array($this, 'stream'));
+        $this->streams = new Serial_Core_StreamQueue($streams,
+            array($this, 'stream'));  // circular reference
         $this->streams->rewind();
         $reader = array_shift($args);
         $fixed = array_combine(range(1, count($args)), $args);
@@ -87,7 +91,8 @@ class Serial_Core_SequenceReader extends Serial_Core_Reader
     {
         while ($this->streams->valid()) {
             if (!$this->reader) {
-                $this->reader = $this->callback->__invoke(array($this->streams->current()));
+                $this->reader = $this->callback->__invoke(
+                    array($this->streams->current()));
                 $this->reader->rewind();
             }
             if ($this->reader->valid()) {

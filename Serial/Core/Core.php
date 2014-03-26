@@ -17,7 +17,7 @@ class Serial_Core
         while (is_resource($stream) && fclose($stream)) {
             // Need a loop here because sometimes fclose() doesn't actually
             // close the stream on the first try even if it returns true.
-           continue;
+            continue;
         }
     }
 }

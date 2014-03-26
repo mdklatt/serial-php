@@ -115,7 +115,7 @@ class Serial_Core_StreamFilterManager extends php_user_filter
         // anticipation of more data. If the buffer ends with a newline, the
         // last token will be an empty string.
         $tokens = explode(PHP_EOL, $this->buffer);
-        $lines = $this->callback->map(array_slice($tokens, 0, -1));
+        $lines = $this->callback->map(array(array_slice($tokens, 0, -1)));
         $this->buffer = end($tokens);
         if ($closing && $this->buffer !== '') {
             // This is the last pass through the filter, so flush the buffer.

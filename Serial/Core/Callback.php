@@ -8,14 +8,14 @@ class Serial_Core_Callback
     /**
      * Initialize this object.
      *
-     * The fixed arguments are specified using an associative array keyed by
-     * each argument's position in the callable's signature (0 is the first
-     * argument).
+     * The fixed arguments are specified using an array keyed by the position
+     * of each argument in the callbacks signature (0 is the first argument).
      */
     public function __construct($callback, $fixed=array())
     {
         $this->callback = $callback;
         if (is_string($callback) && class_exists($this->callback)) {
+            // Callback is a class.
             $class = new ReflectionClass($this->callback);
             $this->callback = array($class, 'newInstance');
         }        
@@ -33,7 +33,7 @@ class Serial_Core_Callback
      * The given arguments are filled in with the fixed arguments to complete
      * the call signature
      */
-    public function __invoke($args)
+    public function __invoke($args=array())
     {
         foreach ($this->fixed as $pos => $arg) {
             // Insert each fixed argument into the argument array.
@@ -46,24 +46,23 @@ class Serial_Core_Callback
     /**
      * Execute the callback for a sequence of arguments.
      *
-     * The argument list consists of one array per argument in the callback
-     * signature (excluding fixed arguments). Each array should be the same
-     * size.
+     * As with the array_map() function, $argv consists of one array per 
+     * argument in the callback signature (excluding fixed arguments). Each 
+     * array should be the same size. For example, given a callback that adds 
+     * two numbers, map(array(1, 2), array(3, 4)) would return array(4, 6).
      */
-    public function map(/* $args */)
+    public function map($argv)
     {
         // Transpose the argument array so that each element along the first
         // dimension is the argument vector for each function call.
-        $args = func_get_args();  // NX x NY
-        array_unshift($args, null);
-        $args = call_user_func_array('array_map', $args);  // NY x NX
-        $ny = count($args);
-        if (!($ny = count($args))) {
+        array_unshift($argv, null);
+        $argv = call_user_func_array('array_map', $argv);
+        if (!($ny = count($argv))) {
             return array();
         }
         $results = array_fill(0, $ny, null);
-        foreach ($args as $key => $argv) {
-            $results[$key] = $this->__invoke(array($argv));
+        foreach ($argv as $key => $args) {
+            $results[$key] = $this->__invoke(array($args));
         }
         return $results;
     }
