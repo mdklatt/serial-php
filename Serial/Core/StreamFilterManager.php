@@ -34,11 +34,8 @@ class Serial_Core_StreamFilterManager extends php_user_filter
         // breaks inheritance. If PHP 5.2 support is no longer needed, take
         // advantage of late static binding in PHP 5.3+ to fix this.
         $uid = uniqid();
-        if (method_exists($callback, '__invoke')) {
-            // PHP 5.2 workaround for callable objects.
-            $callback = array($callback, '__invoke');
-        }
-        self::$registry[$uid] = array('endl' => PHP_EOL, 'callback' =>$callback);
+        $callback = new Serial_Core_Callback($callback);
+        self::$registry[$uid] = array('endl' => PHP_EOL, 'callback' => $callback);
         stream_filter_register($uid, __CLASS__);
         if ($prepend) {
             stream_filter_prepend($stream, $uid, $mode);
@@ -118,11 +115,12 @@ class Serial_Core_StreamFilterManager extends php_user_filter
         // anticipation of more data. If the buffer ends with a newline, the
         // last token will be an empty string.
         $tokens = explode(PHP_EOL, $this->buffer);
-        $lines = array_map($this->callback, array_slice($tokens, 0, -1));
+        $lines = $this->callback->map(array_slice($tokens, 0, -1));
         $this->buffer = end($tokens);
         if ($closing && $this->buffer !== '') {
             // This is the last pass through the filter, so flush the buffer.
-            $lines[] = call_user_func($this->callback, $this->buffer);
+            // $lines[] = call_user_func($this->callback, $this->buffer);
+            $lines[] = $this->callback->__invoke(array($this->buffer));
         }
         return $lines;
     }
