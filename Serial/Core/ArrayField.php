@@ -81,7 +81,7 @@ class Serial_Core_Sequence implements Countable
 {
     private $data;
     private $count;
-    private $slice;  // function alias
+    private $array;
        
     /**
      * Initialize this object.
@@ -92,11 +92,11 @@ class Serial_Core_Sequence implements Countable
         $this->data = $data;
         if (is_string($data)) {
             $this->count = strlen($data);
-            $this->slice = 'substr';
+            $this->array = false;
         }
         else {
             $this->count = count($data);
-            $this->slice = 'array_slice';
+            $this->array = true;
         }
         return;
     }
@@ -110,7 +110,13 @@ class Serial_Core_Sequence implements Countable
         if (is_array($pos)) {
             // Slice notation.
             list($beg, $len) = $pos;
-            return call_user_func($this->slice, $this->data, $beg, $len);
+            if ($this->array) {
+                $elem = array_slice($this->data, $beg, $len);
+            }
+            else {
+                $elem = substr($this->data, $beg, $len);
+            }
+            return $elem;
         }
         return $this->data[$pos];
     }
