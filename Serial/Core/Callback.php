@@ -42,4 +42,29 @@ class Serial_Core_Callback
         }
         return call_user_func_array($this->callback, $args);
     }
+    
+    /**
+     * Execute the callback for a sequence of arguments.
+     *
+     * The argument list consists of one array per argument in the callback
+     * signature (excluding fixed arguments). Each array should be the same
+     * size.
+     */
+    public function map(/* $args */)
+    {
+        // Transpose the argument array so that each element along the first
+        // dimension is the argument vector for each function call.
+        $args = func_get_args();  // NX x NY
+        array_unshift($args, null);
+        $args = call_user_func_array('array_map', $args);  // NY x NX
+        $ny = count($args);
+        if (!($ny = count($args))) {
+            return array();
+        }
+        $results = array_fill(0, $ny, null);
+        foreach ($args as $key => $argv) {
+            $results[$key] = $this->__invoke(array($argv));
+        }
+        return $results;
+    }
 }
