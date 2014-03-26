@@ -9,7 +9,6 @@
  */
 class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
 {
-    // TODO: Add default delimiter to split on all whitespace.
     // TODO: Add delimiter escaping.
     
     /**
@@ -30,7 +29,7 @@ class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
         // Every derived class must implement its own open() method that
         // returns the correct type of object.
         $args = func_get_args();
-        if (count($args) < 3) {
+        if (count($args) < 2) {
             $message = 'call to open() is missing required arguments';
             throw new BadMethodCallException($message);
         }
@@ -48,12 +47,14 @@ class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
     }
     
     private $delim;
+    private $explode;
     
     /**
      * Iniialize this object.
      *
+     * The default delimiter will split on any whitespace.
      */
-    public function __construct($stream, $fields, $delim, $endl=PHP_EOL)
+    public function __construct($stream, $fields, $delim=null, $endl=PHP_EOL)
     {
         parent::__construct($stream, $fields, $endl);
         $this->delim = $delim;
@@ -68,7 +69,13 @@ class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
      */
     protected function split($line)
     {
-        $line = explode($this->delim, $line);
+        if ($this->delim === null) {
+            // Split on any whitespace.
+            $line = preg_split('/\s+/', $line);
+        }
+        else {
+            $line = explode($this->delim, $line);
+        }
         $tokens = array();
         foreach ($this->fields as $field) {
             if (is_array($field->pos)) {
