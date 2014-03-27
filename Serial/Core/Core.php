@@ -7,7 +7,7 @@ class Serial_Core
 {
     // Namespace workaround for PHP 5.2.
 
-    const VERSION = '0.1.1dev';  // Semantic Versioning: <http://semver.org>
+    const VERSION = '0.1.1';  // Semantic Versioning: <http://semver.org>
     
     /**
      * Close a stream.
