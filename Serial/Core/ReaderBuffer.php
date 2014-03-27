@@ -17,6 +17,7 @@ abstract class Serial_Core_ReaderBuffer extends Serial_Core_Reader
      */
     public function __construct($reader)
     {
+        parent::__construct();
         $this->reader = $reader;
         $this->reader->rewind();
         return;

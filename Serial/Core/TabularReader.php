@@ -56,6 +56,7 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
      */
     public function __construct($stream, $fields, $endl=PHP_EOL)
     {
+        parent::__construct();
         $this->stream = $stream;
         $this->fields = $fields;
         $this->endl = $endl;

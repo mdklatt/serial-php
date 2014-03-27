@@ -17,10 +17,25 @@ abstract class Serial_Core_Reader implements Iterator
     // The destructor will be called when the process exits, or call it
     // explicitly, e.g. $reader->__destruct().
     
-    protected $classFilters = array();
-    private $userFilters = array();
+    protected $classFilters;
+    private $userFilters;
+    private $filterIter;
     private $record;
     private $index = -1;
+    
+    /**
+     * Initialize this object.
+     *
+     */
+    public function __construct()
+    {
+        $this->userFilters = new ArrayObject();
+        $this->classFilters = new ArrayObject();
+        $this->filterIter = new AppendIterator();
+        $this->filterIter->append($this->classFilters->getIterator());
+        $this->filterIter->append($this->userFilters->getIterator());
+        return;
+    }
         
     /**
      * Add filters to this reader or clear all filters (default).
@@ -37,7 +52,7 @@ abstract class Serial_Core_Reader implements Iterator
         // This does not affect class filters.
         if (!($callbacks = func_get_args())) {
             // Clear all filters.
-            $this->userFilters = array();
+            $this->userFilters->exchangeArray(array());
             return;
         }
         foreach (func_get_args() as $callback) {            
@@ -64,14 +79,12 @@ abstract class Serial_Core_Reader implements Iterator
      */
     public function next()
     {
-        # TODO: array_merge() doesn't need to be done with each iteration.
-        $filters = array_merge($this->classFilters, $this->userFilters);
         while (true) {
             // Repeat until a record successfully passes through all filters or
             // the end of input.
             try {
                 $this->record = $this->get();
-                foreach ($filters as $callback) {
+                foreach ($this->filterIter as $callback) {
                     $this->record = $callback->__invoke(array($this->record));
                     if ($this->record === null) {
                         // This record failed a filter, try the next one.

@@ -51,6 +51,7 @@ class Serial_Core_SequenceReader extends Serial_Core_Reader
      */
     public function __construct(/* $args */)
     {
+        parent::__construct();
         $args = func_get_args();
         if (count($args) < 2) {
             throw new InvalidArgumentException('missing required arguments');
