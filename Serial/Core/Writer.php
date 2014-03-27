@@ -18,7 +18,7 @@ abstract class Serial_Core_Writer
     // The destructor will be called when the process exits, or call it
     // explicitly, e.g. $writer->__destruct().
 
-    protected $classFilters;
+    private $classFilters;
     private $userFilters;
     private $filterIter;
     
@@ -86,6 +86,18 @@ abstract class Serial_Core_Writer
         return;
     }
      
+    /**
+     * Add class filters to the writer.
+     *
+     */
+    protected function classFilter(/* $args */)
+    {
+        foreach (func_get_args() as $callback) {            
+            $this->classFilters[] = new Serial_Core_Callback($callback);
+        }
+        return;
+    }    
+
     /**
      * Put a formatted record into the output stream. 
      *

@@ -17,7 +17,7 @@ abstract class Serial_Core_Reader implements Iterator
     // The destructor will be called when the process exits, or call it
     // explicitly, e.g. $reader->__destruct().
     
-    protected $classFilters;
+    private $classFilters;
     private $userFilters;
     private $filterIter;
     private $record;
@@ -55,7 +55,7 @@ abstract class Serial_Core_Reader implements Iterator
             $this->userFilters->exchangeArray(array());
             return;
         }
-        foreach (func_get_args() as $callback) {            
+        foreach ($callbacks as $callback) {            
             $this->userFilters[] = new Serial_Core_Callback($callback);
         }
         return;
@@ -128,6 +128,18 @@ abstract class Serial_Core_Reader implements Iterator
     {
         return $this->index;
     }
+
+    /**
+     * Add class filters to the reader.
+     *
+     */
+    protected function classFilter(/* $args */)
+    {
+        foreach (func_get_args() as $callback) {            
+            $this->classFilters[] = new Serial_Core_Callback($callback);
+        }
+        return;
+    }    
     
     /**
      * Get the next parsed record from the input stream.
