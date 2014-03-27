@@ -28,6 +28,8 @@ class Serial_Core_ConstField extends Serial_Core_ScalarField
     /**
      * Return a constant value (token is ignored).
      *
+     * For fixed-width fields the token is padded on the left or trimmed on the
+     * right to fit the allotted width.
      */
     public function decode($token)
     {

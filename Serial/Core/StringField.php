@@ -43,7 +43,7 @@ class Serial_Core_StringField extends Serial_Core_ScalarField
      *
      * If the value is null the default field value is used (null is encoded as
      * a null string). For fixed-width fields the token is padded on the left
-     * or trimmed on the right to fit the allotted width
+     * or trimmed on the right to fit the allotted width.
      */
     public function encode($value)
     {
