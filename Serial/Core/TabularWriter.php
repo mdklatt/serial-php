@@ -56,6 +56,7 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
      */
     public function __construct($stream, $fields, $endl=PHP_EOL)
     {
+        parent::__construct();
         $this->stream = $stream;
         $this->fields = $fields;
         $this->endl = $endl;

@@ -16,6 +16,7 @@ abstract class Serial_Core_WriterBuffer extends Serial_Core_Writer
      */
     public function __construct($writer)
     {
+        parent::__construct();
         $this->writer = $writer;
         return;
     }
