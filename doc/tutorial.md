@@ -424,9 +424,9 @@ in classes that inherit from the appropriate Reader or Writer, and these
 classes can be bundled into a module for that format. There are two categories
 of filters, class filters and user filters. Class filters are part of the data
 model, while user filters are optionally applied by client code. Readers apply 
-class filters before any user filters, and Writers apply them after any user 
+class filters before any user filters, but Writers apply them after any user 
 filters. Class filters are not affected by the `filter()` method; instead, 
-access them directly using the `classFilters` attribute.
+add them using the `classFilter()` method.
 
     /** 
      * Module for reading and writing the sample data format.
@@ -464,7 +464,7 @@ access them directly using the `classFilters` attribute.
             global $SAMPLE_FIELDS, $DELIM;
             parent::__construct($SAMPLE_FIELDS, SAMPLE_DELIM);
             $this->offset = "{$offset} minutes";  // offset from UTC
-            $this->class_filters[] = $this->timestampFilter;  // applied first
+            $this->classFilter(array($this, 'timestampFilter')); 
             return;
         }
         
@@ -477,7 +477,7 @@ access them directly using the `classFilters` attribute.
         }
     }
     
-    
+        
     /**
      * Sample data writer.
      *
@@ -496,7 +496,7 @@ access them directly using the `classFilters` attribute.
             global $SAMPLE_FIELDS, $DELIM;
             parent::__construct($SAMPLE_FIELDS, SAMPLE_DELIM);
             $this->offset = -$offset.' minutes';  // offset from LST to UTC
-            $this->class_filters[] = $this->timestampFilter;  // applied last
+            $this->classFilter(array($this, 'timestampFilter')); 
             return;
         }
         
