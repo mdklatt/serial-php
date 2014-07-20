@@ -23,7 +23,7 @@ class Test_SubstrFilterTest extends PHPUnit_Framework_TestCase
         $pos = array(1, 2);
         $this->whitelist = new Serial_Core_SubstrFilter($pos, $values);
         $this->whitelist = array($this->whitelist, '__invoke');  // PHP 5.2
-        $this->blacklist = new Serial_Core_SubstrFilter($pos, $values, false);
+        $this->blacklist = new Serial_Core_SubstrFilter($pos, $values, true);
         $this->blacklist = array($this->blacklist, '__invoke');  // PHP 5.2
         return;
     }

@@ -13,13 +13,13 @@ class Serial_Core_RegexFilter
      * Initialize this object.
      *
      * By default, lines that match the regular expression are passed through
-     * and all other lines are rejected (whitelisting). If $whitelist is false
-     * this is reversed (blacklisting).
+     * and all other lines are rejected (whitelisting). If $blacklist is true 
+     * this behavior is inverted (blacklisting).
      */
-    public function __construct($regex, $whitelist=true)
+    public function __construct($regex, $blacklist=false)
     {
         $this->regex = $regex;
-        $this->whitelist = $whitelist;
+        $this->blacklist = $blacklist;
         return;
     }
     
@@ -29,7 +29,7 @@ class Serial_Core_RegexFilter
      */ 
     public function __invoke($line)
     {
-        $valid = preg_match($this->regex, $line) == $this->whitelist;
-        return $valid ? $line : null;
+        $match = preg_match($this->regex, $line);
+        return $match != $this->blacklist ? $line : null;
     }
 }
