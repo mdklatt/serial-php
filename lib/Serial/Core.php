@@ -6,10 +6,10 @@
  * the form `Serial_Core_ClassName`. Global functions and constants are defined
  * in the Serial_Core class.
  * 
- * This library uses Semntic Versioning:
+ * This library uses Semantic Versioning:
  *    <http://semver.org>
  *
- * Major versions introduce significant changes to the APE, and backwards
+ * Major versions introduce significant changes to the API, and backwards
  * compatibility is not guaranteed. Minor versions are new features and other
  * backwards-compatible changes to the API. Patch versions are for bug fixes
  * internal code changes that do not effect the API.
@@ -19,7 +19,7 @@
  */
 class Serial_Core
 {
-    const VERSION = '0.2.0';
+    const VERSION = '0.2.1dev';
     
     // The following functions are intended for internal use only.
     
