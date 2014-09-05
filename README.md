@@ -7,34 +7,51 @@ Overview
 
 The [**serial-php**][3] library provides tools for reading and writing
 record-oriented data in various formats. The core library is contained in the
-`Serial/Core` directory. Library extensions are contained in their own `Serial`
+`Serial/Core` directory. Library extensions will have their own `Serial`
 subdirectories.
+
+
+Features
+--------
+* Read/write delimited and fixed-width data
+* Named and typed data fields
+* Data filtering via callbacks
+* Advanced data transformations
 
 
 Requirements
 ------------
 * PHP 5.2 - 5.4
-* [Phar extension][4] (optional; required to create *phar* files with PHP 5.2)
-* [PHPUnit][5] (optional; required to run test suite)
 
 
 Installation
 ------------
 Place the [Serial][6] directory anywhere in the PHP [include path][7], or use
 a self-contained *phar* file downloaded from GitHub or created using the
-[`setup.php`][8] script (requires PHP 5.3+ or the `Phar` extension).
+[`setup.php`][8] script (requires PHP 5.3+ or the [`Phar` extension][4]).
 
     php -f setup.php phar
 
 
 Usage
 -----
-Include the package autoloader or the appropriate *phar* file.
 
-    require 'Serial/Core/autoload.php';
-    require 'serial-core-0.1.0.phar';
+Include the library header or the *phar* file. 
+  
+    require 'Serial/Core.php';
+    require 'serial-core-0.1.0.phar';    
+
 
 The [tutorial][9] has examples of how to use and extend this library.
+
+
+Testing
+-------
+
+Use the [`setup.php`][8] script to run the test suite (requires [PHPUnit][5]). 
+
+    php -f setup.php test
+
 
 
 <!-- REFERENCES -->
