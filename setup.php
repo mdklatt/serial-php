@@ -4,7 +4,7 @@
  *
  * This is based on python.distutils setup scripts.
  */
-require_once 'lib/Serial/Core/autoload.php';
+require_once 'lib/Serial/Core.php';
 require_once 'Test/autoload.php';
 
 // The package-specific configuration array.
@@ -12,7 +12,7 @@ require_once 'Test/autoload.php';
 $PACKAGE_CONFIG = array(
     'name' => 'serial-core',
     'path' => 'lib',
-    'init' => 'Serial/Core/autoload.php',
+    'init' => 'Serial/Core.php',
     'version' => Serial_Core::VERSION,
 );
 

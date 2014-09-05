@@ -17,7 +17,7 @@ require 'autoload.php';
 
 if (!($path = getenv('PHPUNIT_TEST_SOURCE'))) {
     $root = dirname(dirname(__FILE__));  // package root
-    $path = array($root, 'lib', 'Serial', 'Core', 'autoload.php');
+    $path = array($root, 'lib', 'Serial', 'Core.php');
     $path = implode(DIRECTORY_SEPARATOR, $path);
 }
 require $path;
