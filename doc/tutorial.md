@@ -22,7 +22,7 @@ a data type and defined by its name and position. For a fixed-width field the
 position array is a substring specifier (beg, len), inclusive of any spaces 
 between fields.
 
-    require 'Serial/Core/autoload.php';
+    require 'Serial/Core.php';
 
     $fields = array(
         // Ignoring time zone field. 
@@ -233,7 +233,7 @@ a plain text file. If another type of stream is needed, open the stream
 explicitly and pass it to `open()`; this stream will be automatically closed.
 
     $stream = fopen('compress.zlib://data.csv.gz', 'r');
-    $reader = Serial_Core_DelimitedReader::open($stream, $fields, ',');
+    $reader = neSerial_Core_DelimitedReader::open($stream, $fields, ',');
     ...
     unset($reader);  // closes $stream
 
@@ -382,7 +382,7 @@ The library defines the `FieldFilter` class for use with Readers and Writers.
     $whitelist = new Serial_Core_FieldFilter('color', array('crimson', 'cream'));
     
     // Drop all records where the color field is orange.
-    $blacklist = new Serial_Core_FieldFilter('color', array('orange'), false);
+    $blacklist = new Serial_Core_FieldFilter('color', array('orange'), true);
 
 ## Stream Filters ##
 
@@ -432,7 +432,7 @@ add them using the `classFilter()` method.
      * Module for reading and writing the sample data format.
      *
      */
-    require 'Serial/Core/autoload.php';
+    require 'Serial/Core.php';
 
     define('SAMPLE_DELIM' ',');
 
