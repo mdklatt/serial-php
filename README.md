@@ -26,9 +26,10 @@ Requirements
 
 Installation
 ------------
-Place the [Serial][6] directory anywhere in the PHP [include path][7], or use
-a self-contained *phar* file downloaded from GitHub or created using the
-[`setup.php`][8] script (requires PHP 5.3+ or the [`Phar` extension][4]).
+Place the [Serial][6] directory or a self-contained *phar* file anywhere in the 
+PHP [include path][7]. A *phar* file can be downloaded from GitHub or created
+using the [`setup.php`][8] script (requires PHP 5.3+ or the 
+[`Phar` extension][4]).
 
     php -f setup.php phar
 
@@ -39,7 +40,8 @@ Usage
 Include the library header or the *phar* file. 
   
     require 'Serial/Core.php';
-    require 'serial-core-0.1.0.phar';    
+    
+    require 'serial-core-v0.1.0.phar';    
 
 
 The [tutorial][9] has examples of how to use and extend this library.
@@ -59,8 +61,8 @@ Use the [`setup.php`][8] script to run the test suite (requires [PHPUnit][5]).
 [2]: https://travis-ci.org/mdklatt/serial-php "Travis-CI"
 [3]: http://github.com/mdklatt/serial-php "GitHub/serial-php"
 [4]: http://pecl.php.net/package/phar "Phar extension"
-[5]: http://pear.phpunit.de "PHPUnit PEAR package"
-[6]: http://github.com/mdklatt/serial-php/tree/master/Serial "Serial tree"
-[7]: http://www.php.net/manual/en/ini.core.php#ini.include-path  "PHP include path"
+[5]: https://github.com/sebastianbergmann/phpunit "PHPUnit"
+[6]: https://github.com/mdklatt/serial-php/tree/master/Serial "Serial tree"
+[7]: http://php.net/manual/en/ini.core.php#ini.include-path  "PHP include path"
 [8]: https://github.com/mdklatt/serial-php/blob/master/setup.php "setup.php"
 [9]: http://github.com/mdklatt/serial-php/blob/master/doc/tutorial.md "tutorial.md"
