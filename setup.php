@@ -4,14 +4,15 @@
  *
  * This is based on python.distutils setup scripts.
  */
-require_once 'Serial/Core/autoload.php';
+require_once 'lib/Serial/Core/autoload.php';
 require_once 'Test/autoload.php';
 
 // The package-specific configuration array.
 
 $PACKAGE_CONFIG = array(
     'name' => 'serial-core',
-    'path' => 'Serial/Core',
+    'path' => 'lib',
+    'init' => 'Serial/Core/autoload.php',
     'version' => Serial_Core::VERSION,
 );
 
@@ -118,9 +119,6 @@ class PharCommand extends Command
         if (!class_exists('Phar')) {
             $message = 'the phar command requires the Phar extension';
             throw new RuntimeException($message);
-        }
-        if (!array_key_exists('init', $config)) {
-            $config['init'] = 'autoload.php';
         }
         $name = "{$config['name']}-{$config['version']}.phar";
         $path = $name;
