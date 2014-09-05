@@ -1,13 +1,12 @@
 <?php
 /**
- * PHPUnit bootstrap file.
+ * Define the PHPUnit test environment.
  *
- * Use this to define the PHPUnit test environment.
  */
 
 // Load the Test classes.
 
-require 'autoload.php';
+require 'Test.php';
 
 
 // Load the package under test. This can be either from a source tree or a phar
@@ -16,7 +15,7 @@ require 'autoload.php';
 // file.  
 
 if (!($path = getenv('PHPUNIT_TEST_SOURCE'))) {
-    $root = dirname(dirname(dirname(__FILE__)));  // package root
+    $root = dirname(dirname(__FILE__));  // package root
     $path = array($root, 'lib', 'Serial', 'Core.php');
     $path = implode(DIRECTORY_SEPARATOR, $path);
 }

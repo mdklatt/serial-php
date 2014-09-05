@@ -5,7 +5,7 @@
  * This is based on python.distutils setup scripts.
  */
 require_once 'lib/Serial/Core.php';
-require_once 'test/Test/autoload.php';
+require_once 'test/Test.php';
 
 // The package-specific configuration array.
 
