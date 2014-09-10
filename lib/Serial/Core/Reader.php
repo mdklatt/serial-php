@@ -5,7 +5,7 @@
  * Serial data consists of sequential records. A Reader iterates over serial
  * data and allows for preprocessing of the data using filters.
  */
-abstract class Serial_Core_Reader implements Iterator
+abstract class Serial_Core_Reader implements RecursiveIterator
 {
     // Class filters are always applied before any user filters. Derived
     // classes can use these to do any preliminary data manipulation after
@@ -25,7 +25,6 @@ abstract class Serial_Core_Reader implements Iterator
     
     /**
      * Initialize this object.
-     *
      */
     public function __construct()
     {
@@ -63,7 +62,6 @@ abstract class Serial_Core_Reader implements Iterator
 
     /**
      * Position the iterator at the first valid record.
-     *
      */
     public function rewind()
     {
@@ -75,10 +73,10 @@ abstract class Serial_Core_Reader implements Iterator
     
     /**
      * Advance to the next valid record while applying filtering.
-     *
      */
     public function next()
     {
+        // TODO: Implement this by extending FilterIterator?
         while (true) {
             // Repeat until a record successfully passes through all filters or
             // the end of input.
@@ -104,7 +102,6 @@ abstract class Serial_Core_Reader implements Iterator
     
     /**
      * Return true if the current iterator position is valid.
-     *
      */
     public function valid()
     {
@@ -113,7 +110,6 @@ abstract class Serial_Core_Reader implements Iterator
     
     /**
      * Return the current filtered record.
-     *
      */
     public function current()
     {
@@ -122,7 +118,6 @@ abstract class Serial_Core_Reader implements Iterator
     
     /**
      * Return an index for the current record.
-     *
      */
     public function key()
     {
@@ -130,8 +125,26 @@ abstract class Serial_Core_Reader implements Iterator
     }
 
     /**
+     * RecursiveIterator: Return true if the current element is iterable.
+     */
+    public function hasChildren()
+    {
+        // If this returns true, the leaves will be individual record fields.
+        // For now, return false to make each record a leaf as required by
+        // ChainReader.
+        return false;
+    }
+    
+    /**
+     * RecursiveIterator: Return a RecursiveIterator for the current record.
+     */
+    public function getChildren()
+    {
+        return new RecursiveArrayIterator($this->current());
+    }
+
+    /**
      * Add class filters to the reader.
-     *
      */
     protected function classFilter(/* $args */)
     {
