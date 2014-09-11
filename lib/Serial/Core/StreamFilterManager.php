@@ -34,7 +34,6 @@ class Serial_Core_StreamFilterManager extends php_user_filter
         // breaks inheritance. If PHP 5.2 support is no longer needed, take
         // advantage of late static binding in PHP 5.3+ to fix this.
         $uid = uniqid();
-        $callback = new Serial_Core_Callback($callback);
         self::$registry[$uid] = array('endl' => PHP_EOL, 'callback' => $callback);
         stream_filter_register($uid, __CLASS__);
         if ($prepend) {
@@ -98,7 +97,7 @@ class Serial_Core_StreamFilterManager extends php_user_filter
             // Add a trailing newline unless this is the last line. In that
             // case, the output will mirror the presence of a trailing newline
             // in the input.
-            $this->bucket->data.= PHP_EOL;
+            $this->bucket->data .= PHP_EOL;
         }
         $this->bucket->datalen = strlen($this->bucket->data);
         stream_bucket_append($out, $this->bucket);
@@ -107,7 +106,6 @@ class Serial_Core_StreamFilterManager extends php_user_filter
     
     /**
      * Parse buffered data into lines.
-     *
      */
     private function lines($closing)
     {
@@ -115,12 +113,14 @@ class Serial_Core_StreamFilterManager extends php_user_filter
         // anticipation of more data. If the buffer ends with a newline, the
         // last token will be an empty string.
         $tokens = explode(PHP_EOL, $this->buffer);
-        $lines = $this->callback->map(array(array_slice($tokens, 0, -1)));
+        $lines = array_slice($tokens, 0, -1);
+        foreach($lines as &$line) {
+            $line = call_user_func($this->callback, $line);
+        }        
         $this->buffer = end($tokens);
         if ($closing && $this->buffer !== '') {
             // This is the last pass through the filter, so flush the buffer.
-            // $lines[] = call_user_func($this->callback, $this->buffer);
-            $lines[] = $this->callback->__invoke(array($this->buffer));
+            $lines[] = call_user_func($this->callback, $this->buffer);
         }
         return $lines;
     }
