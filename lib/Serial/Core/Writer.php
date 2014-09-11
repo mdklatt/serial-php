@@ -54,7 +54,7 @@ abstract class Serial_Core_Writer
             return;
         }
         foreach (func_get_args() as $callback) {            
-            $this->userFilters[] = new Serial_Core_Callback($callback);
+            $this->userFilters[] = $callback;
         }
         return;
     }
@@ -66,7 +66,7 @@ abstract class Serial_Core_Writer
     public function write($record)
     {   
         foreach ($this->filterIter as $callback) {
-            if (!($record = $callback->__invoke(array($record)))) {
+            if (!($record = call_user_func($callback, $record))) {
                 return;
             }
         }
@@ -93,7 +93,7 @@ abstract class Serial_Core_Writer
     protected function classFilter(/* $args */)
     {
         foreach (func_get_args() as $callback) {            
-            $this->classFilters[] = new Serial_Core_Callback($callback);
+            $this->classFilters[] = $callback;
         }
         return;
     }    
