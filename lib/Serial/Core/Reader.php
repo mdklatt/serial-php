@@ -55,7 +55,7 @@ abstract class Serial_Core_Reader implements RecursiveIterator
             return;
         }
         foreach ($callbacks as $callback) {            
-            $this->userFilters[] = new Serial_Core_Callback($callback);
+            $this->userFilters[] = $callback;
         }
         return;
     }
@@ -83,7 +83,7 @@ abstract class Serial_Core_Reader implements RecursiveIterator
             try {
                 $this->record = $this->get();
                 foreach ($this->filterIter as $callback) {
-                    $this->record = $callback->__invoke(array($this->record));
+                    $this->record = call_user_func($callback, $this->record);
                     if ($this->record === null) {
                         // This record failed a filter, try the next one.
                         continue 2;                        
@@ -149,7 +149,7 @@ abstract class Serial_Core_Reader implements RecursiveIterator
     protected function classFilter(/* $args */)
     {
         foreach (func_get_args() as $callback) {            
-            $this->classFilters[] = new Serial_Core_Callback($callback);
+            $this->classFilters[] = $callback;
         }
         return;
     }    
