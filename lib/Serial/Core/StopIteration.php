@@ -15,7 +15,6 @@ class Serial_Core_StopIteration extends Exception
     
     /**
      * Initialize this object.
-     *
      */
     public function __construct()
     {

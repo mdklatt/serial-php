@@ -14,7 +14,6 @@ class Serial_Core_ArrayField
 
     /**
      * Initialize this object.
-     *
      */
     public function __construct($name, $pos, $fields, $default=array())
     {
@@ -85,7 +84,6 @@ class Serial_Core_Sequence implements Countable
        
     /**
      * Initialize this object.
-     *
      */
     public function __construct($data)
     {
@@ -103,7 +101,6 @@ class Serial_Core_Sequence implements Countable
     
     /**
      * Retrieve a single element for slice from the sequence.
-     *
      */
     public function get($pos) 
     {
@@ -123,7 +120,6 @@ class Serial_Core_Sequence implements Countable
       
     /**
      * Countable: Return the length of the sequence.
-     *
      */
     public function count()
     {

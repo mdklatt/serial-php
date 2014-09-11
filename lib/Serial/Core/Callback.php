@@ -37,8 +37,7 @@ class Serial_Core_Callback
     {
         foreach ($this->fixed as $pos => $arg) {
             // Insert each fixed argument into the argument array.
-            array_splice($args, $pos, 0, array($arg));
-            
+            array_splice($args, $pos, 0, array($arg));          
         }
         return call_user_func_array($this->callback, $args);
     }

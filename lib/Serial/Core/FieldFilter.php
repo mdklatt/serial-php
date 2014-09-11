@@ -3,10 +3,13 @@
  * Filter records by a specific field.
  *
  * This is intended for use with a Reader or Writer via their filter() method.
- *
  */
 class Serial_Core_FieldFilter
 {
+    private $field;
+    private $values;
+    private $blacklist;
+    
     /**
      * Initialize this object.
      *

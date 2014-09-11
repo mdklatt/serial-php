@@ -6,6 +6,11 @@
  */
 class Serial_Core_SubstrFilter
 {
+    private $beg;
+    private $end;
+    private $values;
+    private $blacklist;
+  
     /**
      * Initialize this object.
      *

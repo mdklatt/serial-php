@@ -7,7 +7,7 @@
 class Serial_Core_RegexFilter
 {
     private $regex;
-    private $whitelist;
+    private $blacklist;
     
     /**
      * Initialize this object.
@@ -25,7 +25,6 @@ class Serial_Core_RegexFilter
     
     /**
      * Execute the filter.
-     * 
      */ 
     public function __invoke($line)
     {
