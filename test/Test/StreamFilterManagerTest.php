@@ -38,10 +38,10 @@ class Test_StreamFilterManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test input stream filtering with a function.
+     * Test input stream filtering.
      *
      */
-    public function testInputFunction()
+    public function testInput()
     {
         file_put_contents($this->tmpname, $this->data);
         $stream = fopen($this->tmpname, 'r');
@@ -52,25 +52,10 @@ class Test_StreamFilterManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test input stream filtering with a class method.
+     * Test output stream filtering.
      *
      */
-    public function testInputMethod()
-    {
-        file_put_contents($this->tmpname, $this->data);
-        $stream = fopen($this->tmpname, 'r');
-        $filter = new StreamFilterManagerTest_MockFilter();
-        Serial_Core_StreamFilterManager::attach($stream, $filter); 
-        $filtered = stream_get_contents($stream);
-        $this->assertEquals($this->filtered, $filtered);
-        return;
-    }
-
-    /**
-     * Test output stream filtering with a function.
-     *
-     */
-    public function testOutputFunction()
+    public function testOutput()
     {
         $stream = fopen($this->tmpname, 'w');
         Serial_Core_StreamFilterManager::attach($stream, 'strtoupper'); 
@@ -79,38 +64,6 @@ class Test_StreamFilterManagerTest extends PHPUnit_Framework_TestCase
         $filtered = file_get_contents($this->tmpname);
         $this->assertEquals($this->filtered, $filtered);
         return;
-    }
-
-    /**
-     * Test output stream filtering with a class method.
-     *
-     */
-    public function testOutputMethod()
-    {
-        $stream = fopen($this->tmpname, 'w');
-        $filter = new StreamFilterManagerTest_MockFilter();
-        Serial_Core_StreamFilterManager::attach($stream, $filter); 
-        fwrite($stream, $this->data);
-        fclose($stream);
-        $filtered = file_get_contents($this->tmpname);
-        $this->assertEquals($this->filtered, $filtered);
-        return;
-    }
-}
-
-/**
- * Filter class for testing.
- *
- */
-class StreamFilterManagerTest_MockFilter
-{
-    /**
-     * Execute the filter.
-     *
-     */
-    public function __invoke($line)
-    {
-        return strtoupper($line);
     }
 }
 
