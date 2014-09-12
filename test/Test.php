@@ -3,8 +3,8 @@
  * Load the serial-core library test suite.
  *
  * As a PHP 5.2 workaround for namespaces, all test classes have a name of the
- * form `Serial_Core_ClassNameTest`. Global functions and constants are defined
- * in the Serial_Core class.
+ * form `Test_ClassNameTest`. Global functions and constants are defined in the
+ * in Test class.
  */
 class Test
 {

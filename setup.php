@@ -4,37 +4,36 @@
  *
  * This is based on python.distutils setup scripts.
  */
-require_once 'lib/Serial/Core.php';
-require_once 'test/Test.php';
 
-// The package-specific configuration array.
-
-$PACKAGE_CONFIG = array(
-    'name' => 'serial-core',
-    'path' => 'lib',
-    'init' => 'Serial/Core.php',
-    'version' => Serial_Core::VERSION,
-);
-
+require_once 'config.php';
+foreach (array('lib', 'test') as $key) {
+    $path = array($CONFIG["{$key}_path"], $CONFIG["{$key}_init"]);
+    require_once implode(DIRECTORY_SEPARATOR, $path);
+}
+$class = new ReflectionClass(str_replace('\\', '_', $NAMESPACE));
+$CONFIG['version'] = $class->getConstant('VERSION');
 
 
 // Execute the script.
 
 $DEBUG = false;  // should be command-line setting
-$COMMANDS = array('test' => 'TestCommand', 'phar' => 'PharCommand');
+$COMMANDS = array(
+    'test' => 'TestCommand', 
+    'phar' => 'PharCommand',
+);
 
 try {
     if ($argc == 1) {
         echo 'usage: setup.php cmd'.PHP_EOL;
         exit(1);
     }
-    exit(main($PACKAGE_CONFIG, $argv)); 
+    exit(main($CONFIG, $argv)); 
 }
 catch (Exception $ex) {
     if ($DEBUG) {
         throw $ex;  // force a stack trace
     }
-    echo 'ERROR: '.$ex->getMessage().PHP_EOL;
+    echo $ex->getMessage().PHP_EOL;
     exit(1);
 }
 
@@ -106,7 +105,7 @@ class TestCommand extends Command
 /**
  * Create a PHP Archive (.phar) file.
  *
- * For PHP 5.2 the optional Phar extension is required.
+ * This is only supported for PHP 5.3+.
  */
 class PharCommand extends Command
 {
@@ -116,16 +115,12 @@ class PharCommand extends Command
      */
     public function __invoke($config)
     {
-        if (!class_exists('Phar')) {
-            $message = 'the phar command requires the Phar extension';
-            throw new RuntimeException($message);
-        }
-        $name = "{$config['name']}-{$config['version']}.phar";
+        $name = "{$config['lib_name']}-{$config['version']}.phar";
         $path = $name;
         @unlink($path);  // always create new archive
         $phar = new Phar($path, 0, $name);
-        $phar->buildFromDirectory($config['path'], '/\.php/'); 
-        $phar->setStub($this->stub($config['init']));
+        $phar->buildFromDirectory($config['lib_path'], '/\.php/'); 
+        $phar->setStub($this->stub($config['lib_init']));
         printf("%d file(s) added to archive {$path}".PHP_EOL, $phar->count());
         // TODO: Make verification a command-line option.
         return $this->verify($path);        
