@@ -8,7 +8,7 @@ abstract class Serial_Core_ScalarField
     public $name;
     public $pos;
     public $width = 1;
-    protected $fixed = false;
+    public $fixed = false;
     
     /**
      * Initialize this object.
