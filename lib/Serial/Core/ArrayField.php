@@ -8,9 +8,11 @@ class Serial_Core_ArrayField
     public $name;
     public $pos;
     public $width;
+    public $fixed;
     private $fields;
     private $default;
     private $stride = 0;
+    private $decoder;
 
     /**
      * Initialize this object.
@@ -25,25 +27,24 @@ class Serial_Core_ArrayField
         foreach ($this->fields as $field) {
             $this->stride += $field->width;
         }
+        $this->fixed = $this->fields[0]->fixed;
         return;
     }
     
     /**
-     * Convert a string to a PHP value.
+     * Convert a sequence of string tokens to PHP values.
      *
-     * This is called by a Reader and does not need to be called by the user.
+     * The input is an array of strings for delimited data for a string for
+     * fixed-width data. This is called by a Reader and does not need to be 
+     * called by the user.
      */
     public function decode($tokens)
     {
-        $tokens = new Serial_Core_Sequence($tokens);
-        $values = array();
-        for ($beg = 0; $beg < count($tokens); $beg += $this->stride) {
-            $elem = new Serial_Core_Sequence($tokens->get(array($beg, $this->stride)));
-            $value = array();
-            foreach ($this->fields as $field) {
-                $value[$field->name] = $field->decode($elem->get($field->pos));
-            }
-            $values[] = $value;
+        if ($this->fixed) {
+            $values = $this->decodeString($tokens);
+        }
+        else {
+            $values = $this->decodeArray($tokens);
         }
         return $values ? $values : $this->default;
     }
@@ -69,60 +70,37 @@ class Serial_Core_ArrayField
         }
         return $tokens;
     }
-}
-
-
-/**
- * Treat a string or an array as a data sequence.
- *
- */
-class Serial_Core_Sequence implements Countable
-{
-    private $data;
-    private $count;
-    private $array;
-       
-    /**
-     * Initialize this object.
-     */
-    public function __construct($data)
-    {
-        $this->data = $data;
-        if (is_string($data)) {
-            $this->count = strlen($data);
-            $this->array = false;
-        }
-        else {
-            $this->count = count($data);
-            $this->array = true;
-        }
-        return;
-    }
     
     /**
-     * Retrieve a single element for slice from the sequence.
+     * Decode a token string for fixed-width data.
      */
-    public function get($pos) 
+    private function decodeString($tokens)
     {
-        if (is_array($pos)) {
-            // Slice notation.
-            list($beg, $len) = $pos;
-            if ($this->array) {
-                $elem = array_slice($this->data, $beg, $len);
+        $values = array();
+        foreach (str_split($tokens, $this->stride) as $elem) {
+            $value = array();
+            foreach ($this->fields as $field) {
+                list($beg, $len) = $field->pos;
+                $value[$field->name] = $field->decode(substr($elem, $beg, $len));
             }
-            else {
-                $elem = substr($this->data, $beg, $len);
-            }
-            return $elem;
+            $values[] = $value;
         }
-        return $this->data[$pos];
+        return $values;        
     }
-      
+
     /**
-     * Countable: Return the length of the sequence.
+     * Decode a token array for delimiited data.
      */
-    public function count()
+    private function decodeArray($tokens)
     {
-        return $this->count;
+        $values = array();
+        foreach (array_chunk($tokens, $this->stride) as $pos => $elem) {
+            $value = array();
+            foreach ($this->fields as $pos => $field) {
+               $value[$field->name] = $field->decode($elem[$pos]);
+            }
+            $values[] = $value;
+        }            
+        return $values;
     }
 }
