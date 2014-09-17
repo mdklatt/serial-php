@@ -1,9 +1,9 @@
 <?php
 /**
- * Unit testing for the AggregateCallback class.
+ * Unit testing for the CallbackReduction class.
  *
  */
-class Test_AggregateCallbackTest extends PHPUnit_Framework_TestCase
+class Test_CallbackReductionTest extends PHPUnit_Framework_TestCase
 {   
     protected $records;
 
@@ -27,7 +27,7 @@ class Test_AggregateCallbackTest extends PHPUnit_Framework_TestCase
      */
     public function testSingleField()
     {
-        $callback = new Serial_Core_AggregateCallback('array_sum', 'int', 'sum');
+        $callback = new Serial_Core_CallbackReduction('array_sum', 'int', 'sum');
         $reduction = $callback->__invoke($this->records);
         $this->assertEquals(array('sum' => 3), $reduction);
         return;
@@ -38,8 +38,8 @@ class Test_AggregateCallbackTest extends PHPUnit_Framework_TestCase
      */
     public function testMultiField()
     {
-        $callback = new Serial_Core_AggregateCallback(
-            'Test_AggregateCallbackTest::sum', array('int', 'float'), 'sum');
+        $callback = new Serial_Core_CallbackReduction(
+            'Test_CallbackReductionTest::sum', array('int', 'float'), 'sum');
         $reduction = $callback->__invoke($this->records);
         $this->assertEquals(array('sum' => 6.3), $reduction);
         return;        

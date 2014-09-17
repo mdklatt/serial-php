@@ -3,7 +3,7 @@
  * Wraps a callback 
  *
  */
-class Serial_Core_AggregateCallback
+class Serial_Core_CallbackReduction
 {
     /**
      * Initialize this object.

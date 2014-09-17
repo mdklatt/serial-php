@@ -29,8 +29,8 @@ class Test_AggregateReaderTest extends Test_AggregateTest
         );
         $reader = new Serial_Core_AggregateReader($this->reader, 'str');
         $reader->reduce(
-            array(new Serial_Core_AggregateCallback('array_sum', 'int'), '__invoke'),
-            array(new Serial_Core_AggregateCallback('max', 'float'), '__invoke')
+            array(new Serial_Core_CallbackReduction('array_sum', 'int'), '__invoke'),
+            array(new Serial_Core_CallbackReduction('max', 'float'), '__invoke')
         );
         $this->assertEquals($reduced, iterator_to_array($reader));
         return;
@@ -48,7 +48,7 @@ class Test_AggregateReaderTest extends Test_AggregateTest
         );
         $reader = new Serial_Core_AggregateReader($this->reader, array('str', 'int'));
         $reader->reduce(
-            array(new Serial_Core_AggregateCallback('max', 'float'), '__invoke')
+            array(new Serial_Core_CallbackReduction('max', 'float'), '__invoke')
         );
         $this->assertEquals($reduced, iterator_to_array($reader));
         return;
@@ -66,7 +66,7 @@ class Test_AggregateReaderTest extends Test_AggregateTest
         $keyfunc = 'Test_AggregateReaderTest::key';
         $reader = new Serial_Core_AggregateReader($this->reader, $keyfunc);
         $reader->reduce(
-            array(new Serial_Core_AggregateCallback('max', 'float'), '__invoke')
+            array(new Serial_Core_CallbackReduction('max', 'float'), '__invoke')
         );
         $this->assertEquals($reduced, iterator_to_array($reader));
         return;
