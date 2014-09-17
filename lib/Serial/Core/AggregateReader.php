@@ -35,8 +35,8 @@ class Serial_Core_AggregateReader extends Serial_Core_ReaderBuffer
             $this->reductions = array();
             return;
         }
-        foreach ($callbacks as $callback) {            
-            $this->reductions[] = $callback;
+        else {
+            $this->reductions = array_merge($this->reductions, $callbacks);
         }
         return;
     }
@@ -71,6 +71,9 @@ class Serial_Core_AggregateReader extends Serial_Core_ReaderBuffer
         return;
     }
     
+    /**
+     * Apply reductions to buffered records and send to output queue.
+     */
     private function flush()
     {
         if (!$this->buffer) {
