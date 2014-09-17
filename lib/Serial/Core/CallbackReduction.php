@@ -19,17 +19,17 @@ class Serial_Core_CallbackReduction
     public function __construct($callback, $field, $alias=null)
     {
         $this->callback = $callback;
-        $this->field = $field;
-        if ($alias) {
-            $this->alias = $alias;
+        if (is_array($field)) {
+            if (!$alias) {
+                $message = 'an alias is required for a multi-field reduction';
+                throw new InvalidArgumentException($message);                
+            }
+            $this->field = array_flip($field);
         }
         else {
-            if (is_array($field)) {
-                $message = 'an alias is required for a multi-field reduction';
-                throw new InvalidArgumentException($message);
-            }
-            $this->alias = $field;
+            $this->field = $field;
         }
+        $this->alias = $alias ? $alias : $field;
         return;
     }
     
@@ -68,10 +68,7 @@ class Serial_Core_CallbackReduction
         $args = array();
         $arr = array_fill_keys($this->field, null);
         foreach ($records as $record) {
-            foreach ($arr as $key => $val) {
-                $arr[$key] = $record[$key];
-            }
-            $args[] = $arr;
+            $args[] = array_intersect_key($record, $this->field);
         }
         return $args;
     }
