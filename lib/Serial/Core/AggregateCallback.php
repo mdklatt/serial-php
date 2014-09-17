@@ -16,9 +16,9 @@ class Serial_Core_AggregateCallback
             $this->alias = $alias;
         }
         else {
-            if (!is_array($field)) {
+            if (is_array($field)) {
                 $message = 'an alias is required for a multi-field reduction';
-                throw new InvalidArgumentError($message);
+                throw new InvalidArgumentException($message);
             }
             $this->alias = $field;
         }
