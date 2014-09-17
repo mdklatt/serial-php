@@ -1,7 +1,11 @@
 <?php
 /**
- * Apply aggregate functions to input from another reader.
- *    
+ * Aggregate input from another reader.
+ * 
+ * During aggregation, records are grouped, reduction functions are applied to
+ * each group, and a single record is returned for each group. Input records 
+ * are presumed to be already sorted such that all records in a group are
+ * group contiguous.
  */
 class Serial_Core_AggregateReader extends Serial_Core_ReaderBuffer
 {
@@ -13,6 +17,10 @@ class Serial_Core_AggregateReader extends Serial_Core_ReaderBuffer
     /**
      * Initialize this object.
      *
+     * The $key argument is either a single field name, an array of names, or a
+     * key function. A key function must return an associative array containing
+     * the name and value for each key field. Key functions are free to create
+     * key fields that are not in the incoming data.
      */
     public function __construct($reader, $key)
     {
@@ -27,6 +35,18 @@ class Serial_Core_AggregateReader extends Serial_Core_ReaderBuffer
 
     /**
      * Add one or more reductions or clear all reductions (default).
+     *
+     * A reduction is a callable object that takes an array of records and
+     * aggregates them into a single associative array keyed by field name.
+     * A reduction can return on or more fields. A reduction is free to crate 
+     * new fields, and, conversely, fields that do not have a reduction will 
+     * not be in the aggregated data. The `CallbackRedcution` class can be used 
+     * to generate a reduction from basic array functions like `array_sum`.
+     *
+     * Reductions are applied in order to each group of records, and the
+     * results are merged to create one record per group. If multiple
+     * reductions return a field with the same name, the latter value will 
+     * overwrite the existing value.
      */
     public function reduce(/* $args */)
     {

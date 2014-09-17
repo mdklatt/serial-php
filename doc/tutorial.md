@@ -515,115 +515,86 @@ add them using the `classFilter()` method.
 Like filters, Buffers allow for postprocessing of input from a Reader or 
 preprocessing out output to a Wrtier. However, Buffers can operate on more than
 one record at a time. Buffers can be used, for example, to split or merge
-records before passing them on. Like Readers and Writers, Buffers support
-filtering; records are filtered after they have passed through the Buffer.
+records before passing them on. Because Buffers are Readers or Writers
+themselves, they can be chained and filtered.
 
-## Input Buffering ##
+ 
 
-An input Buffer is basically a Reader that reads records from another Reader
-(including another input Buffer) instead of lines of text from a stream. An
-input Buffer should derive from the `ReaderBuffer` base class. It must 
-implement a `queue()` method to process each incoming record, and it may 
-override the `uflow()` method to supply records once the input Reader has been
-exhausted.
+## Aggregate Input ##
 
-    class MonthlyTotal extends Serial_Core_ReaderBuffer
+Data aggregation refers to grouping data records and then applying reductions 
+(e.g. sum or mean) to the grouped data. An `AggregateReader` is a Buffer that 
+can be used to aggregate data from another Reader. Aggregation relies on a key 
+function. Incoming records with the same key value are grouped together 
+(records are assumed to be sorted such that all records in the same group are 
+contiguous), then one or more reduction functions are applied to each group of 
+records to yield a single aggregate record consisting of the key values and the
+reduced values. 
+
+A key can be a single field name, an array of names, or a function. In the 
+first two cases a key function will be automatically generated. A key function 
+takes a single record as its argument and returns the values of one or more key 
+fields as an associative array. A custom key function is free to create key 
+fields that are not in the incoming data.
+
+A reduction function takes a sequence of records as an argument and returns 
+an associative array of reduced values. The `CallbackReduction` class can be
+used to create reductions from basic functions like the `array_sum()` built-in.
+Reduction functions are free to create reduction fields that are not in the 
+incoming data.
+
+Reductions are chained in the order they are added to the Reader, and the 
+results are merged with the key fields to create a single aggregate record. If 
+more than one reduction returns the same field name the latter value will 
+overwrite the existing value. Fields in the input data that do not have a 
+reduction defined for them will not be in the aggregate record.
+
+    // Aggregate input by site. Input should already be sorted by site 
+    // identifier. Each aggregate record will have the sum of all 'data' values 
+    // for a given site.
+    $reader = new Serial_Core_AggregateReader($reader, 'stid');  // auto key function
+    $reader->reduce(new Serial_Core_CallbackReduction('array_sum', 'data'));
+    $summed = iterator_to_array($reader);
+
+    
+## Aggregate Output ##
+
+An `AggregateWriter` writes data to another Writer, but otherwise functions
+like an `AggregateReader`. The `close()` method must be called to ensure that
+all records get written to the destination writer.
+
+    // Write monthly records by site. The records being written should already
+    // be sorted by date and site. Each aggregate record will have the mean of
+    // all 'data' values for a given site and month.
+    
+    function key($record)
     {
-        // Combine daily input into monthly totals.
-         
-        private $buffer = array();
-        
-        public function __construct($reader)
-        {
-            parent::__construct($reader);
-            return;
-        }
-        
-        protected function queue($record)
-        {
-            // Process each incoming record. The incoming data is assumed to be
-            // sorted in chronological order.
-            $month = record['date']->format('Y-m-01');
-            if ($this->buffer && $this->buffer['date'] == $month) {
-                // Add this record to the current month.
-                $this->buffer['value'] += $record['value'];
-            }
-            else {
-                // Output the previous month and start a new month.
-                $this->output[] = $this->buffer;  // FIFO queue
-                $this->buffer = $record;
-                $this->buffer['date'] = $month;
-            }
-            return;
-        }
-        
-        protected function uflow()
-        {
-            // This is called if the output queue is empty and the input reader
-            // has been exhausted. No more records are coming so finish the
-            // current month.
-            if ($this->buffer) {
-                $this->output[] = $this->buffer;
-                $this->buffer = null;  // next call will trigger EOF
-            }
-            else {
-                // This function *must* throw StopIteration on EOF.
-                throw new Serial_Core_StopIteration();
-            }
-            return;
-        }
+        // Group records by site and month. This is an example of how a custom
+        // key function should be implemented.
+        month = $record['timestamp']->format('Ym');
+        return array('month' => month, 'stid' => $record['stid']);
     }
     
-    ...
-    
-    $monthly_records = iterator_to_array(new MonthlyTotal($reader));
-    
-## Output Buffering ##
-
-An output Buffer is basically a Writer that writes records to another Writer
-(including another output Buffer) instead of lines of text to a stream. An 
-output buffer should derive from the `WriterBuffer` base class. It must 
-implement a `queue()` method to process records being written to it, and it may
-override the `flush()` method to finalize processing.
-            
-    class DataExpander extends Serial_Core_WriterBuffer
+    function mean($records)
     {
-        // Output individual elements of an array field.
-
-        // In addition to the normal Writer interface, the base class defines
-        // the close() method to be called by the client code to signal that no 
-        // more records will be written. If multiple buffers are chained 
-        // together their close() methods must be called in the correct order 
-        // (outermost buffer first).
-
-        public function __construct($writer)
-        {
-            parent::__construct($writer);
-            return;
-        }
-
-        protected function queue($record)
-        {
-            // Process each outgoing record. 
-            foreach ($record['data'] as $item) {
-                // Each item in the record's array field will be output as an 
-                // individual record.
-                $item['stid'] = $record['stid'];
-                $item['timestamp'] = $record['timestamp'];
-                $this->output[] = $item;  // FIFO queue
+        // Calculate the mean value of the the 'data' field. This is an example
+        // of how a custom reduction function should be implemented.
+        if ($len = count($records)) {
+            $sum = 0;
+            foreach ($records as $record) {
+                $sum += $record['data']
             }
-            return;
+            $mean = $sum / $len;
         }
-            
-        // WriterBuffer has a flush() method that can be overriden to finalize
-        // output; is is called when close() is called on the buffer. For this 
-        // example, flush() does not need to do anything.
+        else {
+            $mean = null;
+        }
+        return array('mean' => $mean);
     }
-
-    ...
-   
-    $buffer = new DataExpander($writer);
-    $buffer->dump($reader);  // dump() calls close()
+    
+    $writer = new Serial_Core_AggregateWriter($writer, $key);
+    $writer->reduce('mean');
+    $writer->dump($records);  // dump() calls close()
 
 
 # Tips and Tricks #
@@ -644,7 +615,7 @@ stream.  If a Reader's input stream protocol uses a different line ending
 (as returned by `fgets()`), or Writer output is required to have a different 
 ending, use the `endl` argument with the appropriate constructor.
 
-    define("ENDL", "\r\r");  // Windows
+    define('ENDL', "\r\r");  // Windows
     $writer = Serial_Core_FixedWidthWriter::open('data.txt', $fields, ENDL);
 
 ## Header Data ##
