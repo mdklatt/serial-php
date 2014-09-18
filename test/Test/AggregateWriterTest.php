@@ -79,16 +79,3 @@ class Test_AggregateWriterTest extends Test_AggregateTest
         return;
     }
 }
-
-/**
- * Mock writer for testing.
- */
-class Test_MockWriter
-{
-    public $output = array();
-    
-    public function write($record)
-    {
-        $this->output[] = $record;
-    }
-}
