@@ -104,7 +104,7 @@ class Serial_Core_AggregateReader extends Serial_Core_ReaderBuffer
             $record = array_merge($record, call_user_func($callback, $this->buffer));
         }
         $this->output[] = $record;
-        $this->buffer = null;
+        $this->buffer = array();
         return;
     }
 }

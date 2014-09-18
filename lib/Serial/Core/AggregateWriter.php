@@ -89,7 +89,7 @@ class Serial_Core_AggregateWriter extends Serial_Core_WriterBuffer
             $record = array_merge($record, call_user_func($callback, $this->buffer));
         }
         $this->output[] = $record;
-        $this->buffer = null;
+        $this->buffer = array();
         return;
     }
 }
