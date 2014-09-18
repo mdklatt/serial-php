@@ -27,6 +27,10 @@ class Serial_Core_KeyFunc
      */
     public function __invoke($record)
     {
-        return array_intersect_key($record, $this->keys);
+        $keys = $this->keys;
+        foreach ($keys as $key => $pos) {
+            $keys[$key] = $record[$key];
+        }
+        return $keys;
     }
 }

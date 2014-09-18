@@ -9,6 +9,8 @@ class Serial_Core_SortReader extends Serial_Core_ReaderBuffer
     // TODO: Add support for grouping.
     
     private $buffer = array();
+    private $keyfunc;
+    
     
     /**
      * Initialize this object.
@@ -18,7 +20,11 @@ class Serial_Core_SortReader extends Serial_Core_ReaderBuffer
     public function __construct($reader, $key)
     {
         parent::__construct($reader);
-        $this->keys = is_array($key) ? array_values($key) : array($key);
+        if (!is_callable($key)) {
+            // Use the default key function.
+            $key = array(new Serial_Core_KeyFunc($key), '__invoke');
+        }
+        $this->keyfunc = $key;
         return;
     }
 
@@ -56,9 +62,9 @@ class Serial_Core_SortReader extends Serial_Core_ReaderBuffer
         }
         $keycols = array();
         foreach ($this->buffer as $row => $record) {
-            foreach ($this->keys as $col => $key) {
-                $keycols[$row][$col] = $record[$key];
-            }
+            // Build an N x K array of key values to use to with multisort.
+            $keys = call_user_func($this->keyfunc, $record); 
+            $keycols[] = array_values($keys);
         }
         array_multisort($keycols, $this->buffer);
         $this->output = $this->buffer;
