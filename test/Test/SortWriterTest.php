@@ -63,6 +63,20 @@ class Test_SortWriterTest extends Test_SortTest
     }
 
     /**
+     * Test the write() method with grouping.
+     */
+    public function testWriteGroup()
+    {
+        $writer = new Serial_Core_SortWriter($this->writer, 'num', 'mod');
+        foreach ($this->numRandom as $record) {
+            $writer->write($record);
+        }
+        $writer->close();
+        $this->assertEquals($this->modSorted, $this->writer->output);
+        return;
+    }
+
+    /**
      * Test the dump() method.
      */
     public function testDump()
