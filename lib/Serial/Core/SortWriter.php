@@ -5,10 +5,14 @@
  */
 class Serial_Core_SortWriter extends Serial_Core_WriterBuffer
 {
-    // TODO: Add support for key functions.
+    // Except for the lack of a uflow() method this has essentially the same
+    // implementation as and should be kept in sync with SortReader. Hooray for
+    // the lack of multiple inheritence!
     // TODO: Add support for grouping.
+    // TODO: Factor common sorting code out as some kind of Sorter object?
 
     private $buffer = array();
+    private $keyfunc;
     
     /**
      * Initialize this object.
@@ -18,8 +22,12 @@ class Serial_Core_SortWriter extends Serial_Core_WriterBuffer
     public function __construct($writer, $key)
     {
         parent::__construct($writer);
-        $this->keys = is_array($key) ? array_values($key) : array($key);
-        return;
+        if (!is_callable($key)) {
+            // Use the default key function.
+            $key = array(new Serial_Core_KeyFunc($key), '__invoke');
+        }
+        $this->keyfunc = $key;
+         return;
     }
 
     /**
@@ -41,9 +49,9 @@ class Serial_Core_SortWriter extends Serial_Core_WriterBuffer
         }
         $keycols = array();
         foreach ($this->buffer as $row => $record) {
-            foreach ($this->keys as $col => $key) {
-                $keycols[$row][$col] = $record[$key];
-            }
+            // Build an N x K array of key values to use to with multisort.
+            $keys = call_user_func($this->keyfunc, $record); 
+            $keycols[] = array_values($keys);
         }
         array_multisort($keycols, $this->buffer);
         $this->output = $this->buffer;

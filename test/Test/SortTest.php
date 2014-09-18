@@ -44,4 +44,17 @@ abstract class Test_SortTest extends PHPUnit_Framework_TestCase
         shuffle($this->allRandom);
         return;
     }
+    
+    /**
+     * Sample key function for testing.
+     */
+    public static function keyFunc($record)
+    {
+        $keyvals = array();
+        foreach (array('mod', 'num') as $key) {
+            $keyvals[$key] = $record[$key];
+        }
+        return $keyvals;
+    } 
+    
 }

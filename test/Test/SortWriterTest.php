@@ -48,6 +48,21 @@ class Test_SortWriterTest extends Test_SortTest
     }
 
     /**
+     * Test the write() method for a custom key sort.
+     */
+    public function testWriteCustomKey()
+    {
+        $keyfunc = 'Test_SortWriterTest::keyFunc';
+        $writer = new Serial_Core_SortWriter($this->writer, $keyfunc);
+        foreach ($this->allRandom as $record) {
+            $writer->write($record);
+        }
+        $writer->close();
+        $this->assertEquals($this->modSorted, $this->writer->output);
+        return;
+    }
+
+    /**
      * Test the dump() method.
      */
     public function testDump()

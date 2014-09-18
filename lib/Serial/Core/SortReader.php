@@ -5,8 +5,11 @@
  */
 class Serial_Core_SortReader extends Serial_Core_ReaderBuffer
 {
-    // TODO: Add support for key functions.
+    // Except for the additional uflow() method this has essentially the same
+    // implementation as and should be kept in sync with SortWriter. Hooray for
+    // the lack of multiple inheritence!
     // TODO: Add support for grouping.
+    // TODO: Factor common sorting code out as some kind of Sorter object?
     
     private $buffer = array();
     private $keyfunc;
