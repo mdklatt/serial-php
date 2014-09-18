@@ -66,8 +66,7 @@ class Serial_Core_SortReader extends Serial_Core_ReaderBuffer
         $keycols = array();
         foreach ($this->buffer as $row => $record) {
             // Build an N x K array of key values to use to with multisort.
-            $keys = call_user_func($this->keyfunc, $record); 
-            $keycols[] = array_values($keys);
+            $keycols[] = call_user_func($this->keyfunc, $record); 
         }
         array_multisort($keycols, $this->buffer);
         $this->output = $this->buffer;
