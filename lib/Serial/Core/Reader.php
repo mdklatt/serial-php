@@ -118,6 +118,9 @@ abstract class Serial_Core_Reader implements RecursiveIterator
     
     /**
      * Return an index for the current record.
+     *
+     * Key values are guaranteed to be unique for every record (assuming no
+     * overflow; see PHP_INT_MAX), but do not have any specific meaning.
      */
     public function key()
     {
