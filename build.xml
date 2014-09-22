@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Phing build file. -->
+<project name="serial-core" default="">
+
+  <includepath classpath="lib/" />
+  <includepath classpath="tool/Phing" />
+  <taskdef name="const" classname="PhpConstTask" />
+  
+  <target name="phar">
+    <const name="VERSION" class="Serial_Core" property="version" />
+    <pharpackage destfile="serial-core-${version}.phar" basedir="lib" clistub="lib/Serial/Core.php">
+      <fileset dir="lib">
+        <include name="**" />
+      </fileset>
+    </pharpackage>
+    <!-- Run test to verify phar package. -->
+  </target>
+
+</project>
