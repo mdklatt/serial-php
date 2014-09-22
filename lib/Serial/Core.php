@@ -19,7 +19,7 @@
  */
 class Serial_Core
 {
-    const VERSION = '0.3.0';
+    const VERSION = '0.3.1dev';
     
     // The following functions are intended for internal use only.
     
@@ -47,13 +47,12 @@ class Serial_Core
     }
  
     /**
-     * Close a stream.
-     *
+     * Robustly close a stream.
      */
     public static function close($stream) {
+        // Need a loop here because sometimes fclose() doesn't actually close
+        // the stream on the first try even if it returns true.        
         while (is_resource($stream) && fclose($stream)) {
-            // Need a loop here because sometimes fclose() doesn't actually
-            // close the stream on the first try even if it returns true.
             continue;
         }
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Default key function for an AggregateReader/Writer.
+ * Default key function.
  *
  * The key value for each record will be the subset of values specified by one
  * or more key fields. This is used internally and is not part of the public 
