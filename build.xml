@@ -1,19 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!-- Phing build file. -->
 <project name="serial-core" default="">
 
-  <includepath classpath="lib/" />
-  <includepath classpath="tool/Phing" />
+  <!-- Build parameters. -->
+  <!-- TODO: Load these from a config file. -->
+  
+  <property name="lib.root" value="lib" />
+  <property name="lib.header" value="Serial/Core.php" />
+  <property name="test.root" value="test" />
+  <property name="test.header" value="Test.php" />
+  <property name="phpunit.phar" value="tool/phpunit.phar" />
+  
+  
+  <!-- Global initialization. -->
+  
+  <includepath classpath="${lib.root}" />
+  <includepath classpath="tool/Phing" />  
   <taskdef name="const" classname="PhpConstTask" />
+  <taskdef name="include" classname="PhpIncludeTask" />
+  <include path="${lib.header}" />
+
+
+  <!-- Run the test suite -->
+  
+  <target name="test">
+    <includepath classpath="${test.root}" />    
+    <include path="${test.header}" />
+    <phpunit haltonfailure="true" pharlocation="${phpunit.phar}" printsummary="true">
+      <batchtest>
+        <fileset dir="test/Test">
+          <include name="**/*Test.php" />
+        </fileset>
+      </batchtest>
+    </phpunit>
+  </target>
+  
+  
+  <!-- Bundle the library as a Phar file. -->
   
   <target name="phar">
     <const name="VERSION" class="Serial_Core" property="version" />
-    <pharpackage destfile="serial-core-${version}.phar" basedir="lib" clistub="lib/Serial/Core.php">
+    <property name="phar" value = "${phing.project.name}-${version}.phar" />
+    <pharpackage destfile="${phar}" basedir="lib" clistub="lib/Serial/Core.php">
       <fileset dir="lib">
         <include name="**" />
       </fileset>
     </pharpackage>
-    <!-- Run test to verify phar package. -->
   </target>
 
 </project>
