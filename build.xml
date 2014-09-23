@@ -3,18 +3,9 @@
 <!-- Phing build file. -->
 <project name="serial-core" default="">
 
-  <!-- Build parameters. -->
-  <!-- TODO: Load these from a config file. -->
-  
-  <property name="lib.root" value="lib" />
-  <property name="lib.header" value="Serial/Core.php" />
-  <property name="test.root" value="test" />
-  <property name="test.header" value="Test.php" />
-  <property name="phpunit.phar" value="tool/phpunit.phar" />
-  
-  
   <!-- Global initialization. -->
-  
+
+  <property file="build.properties" />  
   <includepath classpath="${lib.root}" />
   <includepath classpath="tool/Phing" />  
   <taskdef name="const" classname="PhpConstTask" />
@@ -24,7 +15,7 @@
 
   <!-- Run the test suite -->
   
-  <target name="test">
+  <target name="test" description="run test suite">
     <includepath classpath="${test.root}" />    
     <include path="${test.header}" />
     <phpunit haltonfailure="true" pharlocation="${phpunit.phar}" printsummary="true">
@@ -39,7 +30,7 @@
   
   <!-- Bundle the library as a Phar file. -->
   
-  <target name="phar">
+  <target name="phar" description="create phar distribution">
     <const name="VERSION" class="Serial_Core" property="version" />
     <property name="phar" value = "${phing.project.name}-${version}.phar" />
     <pharpackage destfile="${phar}" basedir="lib" clistub="lib/Serial/Core.php">
@@ -48,5 +39,6 @@
       </fileset>
     </pharpackage>
   </target>
+
 
 </project>
