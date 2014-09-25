@@ -17,7 +17,7 @@ class PhpIncludeTask extends Task
         if ($this->path === null) {
             throw new BuildException('You must specify a file path.', $this->location);
         }
-        if ((@include $this->path) === false && $this->require) {
+        if ((include_once $this->path) === false && $this->require) {
             throw new BuildException("Could not include required file {$this->path}");
         }
     }
