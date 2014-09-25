@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- Phing build file. -->
+
 <project name="serial-core" default="">
 
   <!-- Global initialization. -->
-
+  
   <property file="build.properties" />  
   <includepath classpath="${lib.root}" />
   <includepath classpath="tool/Phing" />  
@@ -13,9 +14,11 @@
   <include path="${lib.header}" />
 
 
-  <!-- Run the test suite -->
+  <!-- Run the test suite. Use the -Dlib.header command-line option to specify 
+  a phar file to test. -->
   
   <target name="test" description="run test suite">
+    <echo message="running test suite against ${lib.header}" />
     <includepath classpath="${test.root}" />    
     <include path="${test.header}" />
     <phpunit haltonfailure="true" pharlocation="${phpunit.phar}" printsummary="true">
@@ -39,6 +42,5 @@
       </fileset>
     </pharpackage>
   </target>
-
 
 </project>
