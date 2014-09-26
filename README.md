@@ -30,7 +30,7 @@ Installation
 ------------
 Place the [Serial][6] directory or a self-contained *phar* file anywhere in the 
 PHP [include path][7]. A *phar* file can be downloaded from GitHub or created
-using the [build script][10] (requires [Phing][8] and PHP 5.3+ or the 
+using the [build file][10] (requires [Phing][8] and PHP 5.3+ or the 
 [Phar extension][4]).
 
     phing phar
@@ -52,7 +52,7 @@ The [tutorial][9] has examples of how to use and extend this library.
 Testing
 -------
 
-Use the [build script][10] to run the test suite (requires [Phing][8] and
+Use the [build file][10] to run the test suite (requires [Phing][8] and
 [PHPUnit][5]). 
 
     phing test
