@@ -19,7 +19,7 @@
  */
 class Serial_Core
 {
-    const VERSION = '0.3.1';
+    const VERSION = '0.3.2dev';
     
     // The following functions are intended for internal use only.
     

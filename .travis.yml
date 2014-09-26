@@ -24,4 +24,4 @@ script:
     # Run the test suite against the source tree, build a phar archive, and run
     # the test suite against the phar archive.
     - php tool/phing.phar test phar
-    - php tool/phing.phar -Dlib.header=$(ls serial-core-*.phar) test 
+    - php tool/phing.phar -Dlib.header=$(ls build/serial-core-*.phar) test 

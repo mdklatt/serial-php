@@ -45,7 +45,8 @@
   <target name="phar" description="create phar distribution">
     <const name="VERSION" class="Serial_Core" property="version" />    
     <property name="phar" value = "${phing.project.name}-${version}.phar" />
-    <pharpackage destfile="${phar}" basedir="lib" compression="gzip" stub="tool/stub.php">
+    <mkdir dir="${lib.build}" />
+    <pharpackage destfile="${lib.build}/${phar}" basedir="lib" compression="gzip" stub="tool/stub.php">
       <fileset dir="lib">
         <include name="**" />
       </fileset>
