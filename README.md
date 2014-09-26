@@ -30,10 +30,10 @@ Installation
 ------------
 Place the [Serial][6] directory or a self-contained *phar* file anywhere in the 
 PHP [include path][7]. A *phar* file can be downloaded from GitHub or created
-using the [`setup.php`][8] script (requires PHP 5.3+ or the 
-[`Phar` extension][4]).
+using the [build script][10] (requires [Phing][8] and PHP 5.3+ or the 
+[Phar extension][4]).
 
-    php -f setup.php phar
+    phing phar
 
 
 Usage
@@ -52,9 +52,11 @@ The [tutorial][9] has examples of how to use and extend this library.
 Testing
 -------
 
-Use the [`setup.php`][8] script to run the test suite (requires [PHPUnit][5]). 
+Use the [build script][10] to run the test suite (requires [Phing][8] and
+[PHPUnit][5]). 
 
-    php -f setup.php test
+    phing test
+    phing test -Dlib.header=serial-core-0.1.0.phar  # test a phar file
 
 
 
@@ -66,5 +68,6 @@ Use the [`setup.php`][8] script to run the test suite (requires [PHPUnit][5]).
 [5]: https://github.com/sebastianbergmann/phpunit "PHPUnit"
 [6]: https://github.com/mdklatt/serial-php/tree/master/Serial "Serial tree"
 [7]: http://php.net/manual/en/ini.core.php#ini.include-path  "PHP include path"
-[8]: https://github.com/mdklatt/serial-php/blob/master/setup.php "setup.php"
+[8]: http://www.phing.info/ "Phing"
 [9]: http://github.com/mdklatt/serial-php/blob/master/doc/tutorial.md "tutorial.md"
+[10]: https://github.com/mdklatt/serial-php/blob/master/build.xml
