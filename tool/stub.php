@@ -103,7 +103,7 @@ if (!class_exists('PharExtractor')) {
          * The directory holding the extracted files is added to the PHP
          * include path.
          */
-        protected function __invoke($init=null)
+        public function __invoke($init=null)
         {
             // Files will be extracted to a uniquely-named directory in the
             // system tmp path; these files need to be cleaned up by the 
@@ -215,6 +215,6 @@ if (!class_exists('PharExtractor')) {
 // into by Phar::setStub(). For convienience, using two trailing blank lines
 // (LF) here will ensure that the stub length matches the file length.
 
-PharExtractor::extract(__FILE__, 'Serial/Core.php', 8320);
+PharExtractor::extract(__FILE__, 'Serial/Core.php', 8317);
 __HALT_COMPILER(); ?>
 
