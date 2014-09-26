@@ -1,4 +1,4 @@
-# Travis CI configuration for the serial-core PHP library.
+# Travis CI configuration.
 #
 # <http://travis-ci.org>
 #
@@ -14,8 +14,13 @@ branches:
         - master
         - dev
 
-# Run the test suite against the source tree and create a phar distribution.
-# The phar file will automatically be verified against the test suite.
-
-before_script: pecl install phar
-script: php -f setup.php test phar 
+before_install:
+    - pecl install phar  # PHP 5.2 only
+    - wget https://phar.phpunit.de/phpunit.phar -O tool/phpunit.phar # PHP 5.3+
+    - wget http://www.phing.info/get/phing-latest.phar -O tool/phing.phar
+    
+script:
+    # Run the test suite against the source tree, build a phar archive, and run
+    # the test suite against the phar archive.
+    - php tool/phing.phar test phar
+    - php tool/phing.phar -Dlib.header=$(ls serial-core-*.phar) test 

@@ -21,6 +21,14 @@
     <echo message="running test suite against ${lib.header}" />
     <includepath classpath="${test.root}" />    
     <include path="${test.header}" />
+    <php function="phpversion" returnProperty="php.version" />
+    <if>
+      <contains string="${php.version}" substring="5.2." />
+      <then>
+        <echo message="cannot use PHPUnit phar package with PHP 5.2" />
+        <property name="phpunit.phar" value="false" override="true" />
+      </then>
+    </if>
     <phpunit haltonfailure="true" pharlocation="${phpunit.phar}" printsummary="true">
       <batchtest>
         <fileset dir="test/Test">
@@ -34,7 +42,7 @@
   <!-- Bundle the library as a Phar file. -->
   
   <target name="phar" description="create phar distribution">
-    <const name="VERSION" class="Serial_Core" property="version" />
+    <const name="VERSION" class="Serial_Core" property="version" />    
     <property name="phar" value = "${phing.project.name}-${version}.phar" />
     <pharpackage destfile="${phar}" basedir="lib" compression="gzip" stub="tool/stub.php">
       <fileset dir="lib">
