@@ -29,7 +29,8 @@
         <property name="phpunit.phar" value="false" override="true" />
       </then>
     </if>
-    <phpunit haltonfailure="true" pharlocation="${phpunit.phar}" printsummary="true">
+    <php expression="date_default_timezone_set('UTC')" />
+    <phpunit haltonfailure="true" haltonerror="true" pharlocation="${phpunit.phar}" printsummary="true">
       <batchtest>
         <fileset dir="test/Test">
           <include name="**/*Test.php" />
