@@ -149,7 +149,6 @@ if (!class_exists('PharExtractor')) {
                 }
             }
             if (crc32($data) != $entry['crc32']) {
-                var_dump(crc32($data), $entry['crc32']);
                 $message = "checksum failed for {$entry['name']}";
                 throw new RuntimeException($message);
             }
@@ -215,6 +214,6 @@ if (!class_exists('PharExtractor')) {
 // into by Phar::setStub(). For convienience, using two trailing blank lines
 // (LF) here will ensure that the stub length matches the file length.
 
-PharExtractor::extract(__FILE__, 'Serial/Core.php', 8317);
+PharExtractor::extract(__FILE__, 'Serial/Core.php', 8260);
 __HALT_COMPILER(); ?>
 
