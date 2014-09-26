@@ -2,6 +2,7 @@
 /**
  * Define the PHPUnit test environment.
  *
+ * THIS IS DEPRECATED. USE PHING TO RUN UNIT TESTS.
  */
 
 // Read package configuration.

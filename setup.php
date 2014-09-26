@@ -2,7 +2,8 @@
 /**
  * Library installation and packaging script.
  *
- * This is based on python.distutils setup scripts.
+ * This is based on python.distutils setup scripts. THIS IS DEPRECATED. USE
+ * PHING INSTEAD.
  */
 
 require_once 'config.php';
@@ -47,6 +48,7 @@ function main($config, $argv)
     // Configuration values and command-line options are blended together into
     // a single array with command-line options taking precedence in the case
     // of duplicates.
+    echo "\nTHIS IS DEPRECATED IN FAVOR OF PHING.\n\n";
     global $COMMANDS;
     foreach (array_slice($argv, 1) as $cmdname) {
         if (!($cmdclass = @$COMMANDS[$cmdname])) {
