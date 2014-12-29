@@ -1,31 +1,18 @@
 <?php
 /**
- * Define the PHPUnit test environment.
+ * PHPUnit bootstrap file.
  *
- * THIS IS DEPRECATED. USE PHING TO RUN UNIT TESTS.
+ *     phpunit --bootstrap bootstrap.php
+ *
+ * By default, the development source tree will be tested. Specify a different
+ * test source by setting the PHPUNIT_TEST_SOURCE environment variable; this
+ * is useful for verifying a phar file.
  */
-
-// Read package configuration.
-
-$root = dirname(dirname(__FILE__));
-require_once implode(DIRECTORY_SEPARATOR, array($root, 'config.php'));
-
-
-// Load the package under test. This can be either from a source tree or a phar
-// archive. By default, the header file in the development source tree is used.
-// Set the PHPUNIT_TEST_SOURCE environment variable to specify another file.  
-
+# TODO: Use a package config file (JSON) to specify paths.
+$root = implode(DIRECTORY_SEPARATOR, array(dirname(dirname(__FILE__)), 'lib'));
 if (!($path = getenv('PHPUNIT_TEST_SOURCE'))) {
-    $path = implode(DIRECTORY_SEPARATOR, array($root, $CONFIG['lib_path'], $CONFIG['lib_init']));
+    $path = array(dirname(dirname(__FILE__)), 'lib', 'Serial', 'Core.php');
+    $path = implode(DIRECTORY_SEPARATOR, $path);
 }
 require $path;
-
-
-// Load tests.
-
-require $CONFIG['test_init'];
-
-
-// Additional initialization.
-
 date_default_timezone_set('UTC');  // stop DateTime from complaining
