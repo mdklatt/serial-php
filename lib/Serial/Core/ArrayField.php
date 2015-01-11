@@ -12,7 +12,6 @@ class Serial_Core_ArrayField
     private $fields;
     private $default;
     private $stride = 0;
-    private $decoder;
 
     /**
      * Initialize this object.
@@ -89,12 +88,12 @@ class Serial_Core_ArrayField
     }
 
     /**
-     * Decode a token array for delimiited data.
+     * Decode a token array for delimited data.
      */
     private function decodeArray($tokens)
     {
         $values = array();
-        foreach (array_chunk($tokens, $this->stride) as $pos => $elem) {
+        foreach (array_chunk($tokens, $this->stride) as $elem) {
             $value = array();
             foreach ($this->fields as $pos => $field) {
                $value[$field->name] = $field->decode($elem[$pos]);

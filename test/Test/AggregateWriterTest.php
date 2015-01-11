@@ -4,7 +4,9 @@
  *
  */
 class Test_AggregateWriterTest extends Test_AggregateTest
-{   
+{
+    private $writer;
+
     /**
      * Set up the test fixture.
      *

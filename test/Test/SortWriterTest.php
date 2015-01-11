@@ -4,7 +4,9 @@
  *
  */
 class Test_SortWriterTest extends Test_SortTest
-{   
+{
+    private $writer;
+
     /**
      * Set up the test fixture.
      *

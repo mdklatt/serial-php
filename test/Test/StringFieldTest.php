@@ -5,6 +5,9 @@
  */
 class Test_StringFieldTest extends Test_FieldTest
 {
+    private $quote_token;
+    private $quote_field;
+
     /**
      * Set up the test fixture.
      *

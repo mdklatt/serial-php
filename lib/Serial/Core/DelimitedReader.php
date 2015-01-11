@@ -47,8 +47,7 @@ class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
     }
     
     private $delim;
-    private $explode;
-    
+
     /**
      * Iniialize this object.
      *

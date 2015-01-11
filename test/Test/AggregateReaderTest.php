@@ -4,7 +4,8 @@
  *
  */
 class Test_AggregateReaderTest extends Test_AggregateTest
-{   
+{
+    private $reader;
     /**
      * Set up the test fixture.
      *

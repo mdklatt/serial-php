@@ -5,6 +5,8 @@
  */
 class Serial_Core_CallbackReduction
 {
+    private $field;
+
     /**
      * Initialize this object.
      *
@@ -12,7 +14,7 @@ class Serial_Core_CallbackReduction
      * a value, e.g. the built-in function 'array_sum()' The field argument
      * specifies which values to pass to the callback from each record being
      * reduced. This is either a single name or an array of names. In the
-     * latter case the callback recieves an array of associative arrays.
+     * latter case the callback receives an array of associative arrays.
      * By default the reduction field is named after the input field, or
      * specify an alias. If $field is an array, an alias must be specified.
      */
@@ -66,7 +68,6 @@ class Serial_Core_CallbackReduction
     protected function arrayField($records)
     {
         $args = array();
-        $arr = array_fill_keys($this->field, null);
         foreach ($records as $record) {
             $args[] = array_intersect_key($record, $this->field);
         }

@@ -18,7 +18,7 @@ class Serial_Core_StreamFilterManager extends php_user_filter
      * Attach a callback to a stream as a filter.
      *
      * A filter is a function or callable object that will be applied to each
-     * line of stream input or ouput for a stream. The filter takes a single 
+     * line of stream input or output for a stream. The filter takes a single
      * line of text as an argument and takes one of the following three actions
      * on it:
      * 1. Return null to ignore the line.
@@ -52,6 +52,7 @@ class Serial_Core_StreamFilterManager extends php_user_filter
     
     private $buffer;
     private $bucket;
+    private $callback;
     
     /**
      * Initialize the filter.

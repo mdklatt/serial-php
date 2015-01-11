@@ -6,8 +6,8 @@
 class Test_StreamFilterManagerTest extends PHPUnit_Framework_TestCase
 {
     protected $data;
-    protected $stream;
-    protected $tmpnam;
+    protected $tmpname;
+    private $filtered;
         
     /**
      * PHPUnit: Set up the test fixture.

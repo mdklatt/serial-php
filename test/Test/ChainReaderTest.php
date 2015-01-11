@@ -8,6 +8,7 @@ class Test_ChainReaderTest extends PHPUnit_Framework_TestCase
     
     private $streams;
     private $records;
+    private $fields;
     
     /**
      * Set up the test fixture.
@@ -46,7 +47,7 @@ class Test_ChainReaderTest extends PHPUnit_Framework_TestCase
     protected function tearDown()
     {  
         foreach ($this->streams as $stream) {
-            @fclose($this->stream);            
+            @fclose($stream);
         }
         return;
     }
