@@ -14,7 +14,7 @@ class Test_ArrayFieldTest extends Test_FieldTest
     protected function setUp()
     {
         $fields = array(
-            new Serial_Core_StringField('str', 0),
+            new Serial_Core_StringField('str', 0, '%s', '', 'abc'),
             new Serial_Core_IntField('int', 1),
         );
         $this->value = array(
@@ -69,5 +69,12 @@ class Test_ArrayFieldTest extends Test_FieldTest
         $default_token = $this->default_field->encode(array());
         $this->assertSame($this->default_token, $default_token);
         return;
-    }    
+    }
+
+    public function testEncodeDefaultElem()
+    {
+        unset($this->value[0]['str']);
+        $this->testEncode();
+        return;
+    }
 }
