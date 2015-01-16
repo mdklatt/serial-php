@@ -11,39 +11,37 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
     /**
      * Create a reader with automatic stream handling.
      *
-     * The first argument is either an open stream or a path to open as a text
-     * file. In either case, the input stream will automatically be closed when
-     * the reader's destructor is called. Any additional arguments are passed
-     * along to the reader's constructor.
+     * The first argument is a Reader class name, and the next argument is 
+     * either an open stream or a path to open as a text file. In both cases,
+     * the input stream will automatically be closed when the the Reader's 
+     * destructor is called. Any additional arguments are passed along to the
+     * Reader's constructor. Derived classes should implement their own static 
+     * open() method that calls this method with the appropriate class name.
      *
      * If the object contains a circular reference, e.g. a class method used
      * as a filter callback, unsetting the variable is not enough to trigger
      * the destructor. It will be called when the process ends, or it can be 
      * called explicitly, i.e. $reader->__destruct().
      */
-    public static function open(/* $args */)
+    protected static function openReader($args)
     {
-        // This is strictly for documention purposes. This should return a
-        // dynamic type, so derived classes must implement their own open()
-        // method if appropriate. Here is a sample implementation.
-        //
-        // if (!($args = func_get_args())) {
-        //     $message = "open() is missing required arguments";
-        //     throw new BadMethodCallException($message);
-        // }
-        // if (!is_resource($args[0])) {
-        //     // Assume this is a string to use as a file path.
-        //     if (!($args[0] = @fopen($args[0], 'r'))) {
-        //         $message = "invalid input stream or path: {$args[0]}";
-        //         throw new RuntimeException($message);
-        //     }
-        // }
-        // $class = new ReflectionClass('Derived_Class_Name_Goes_Here');
-        // $reader = $class->newInstanceArgs($args);
-        // $reader->closing = true;  // take responsiblity for closing stream
-        // return $reader;
-        $message = 'Serial_Core_TabularReader::open() is not implemented';
-        throw new BadMethodCallException($message);
+        // This is a workaround for PHP 5.2's lack of late static binding. If
+        // 5.2 compatibility is no longer necessary, this should be renamed to
+        // 'open' and made public, and derived classes can override it as
+        // necessary.
+        assert($args); 
+        $className = array_shift($args);
+         if (!is_resource($args[0])) {
+             // Assume this is a string to use as a file path.
+             if (!($args[0] = @fopen($args[0], 'r'))) {
+                 $message = "invalid input stream or path: {$args[0]}";
+                 throw new RuntimeException($message);
+             }
+         }
+         $class = new ReflectionClass($className);
+         $reader = $class->newInstanceArgs($args);
+         $reader->closing = true;  // take responsibility for closing stream
+         return $reader;
     }
     
     protected $closing = false;

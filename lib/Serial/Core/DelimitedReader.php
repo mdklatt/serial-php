@@ -26,30 +26,18 @@ class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
      */
     public static function open(/* $args */)
     {
-        // Every derived class must implement its own open() method that
-        // returns the correct type of object.
+        // Every derived class must implement its own open() method that calls
+        // openReader() with the correct class name. This is a workaround for
+        // PHP 5.2's lack of late static binding.
         $args = func_get_args();
-        if (count($args) < 2) {
-            $message = 'call to open() is missing required arguments';
-            throw new BadMethodCallException($message);
-        }
-        if (!is_resource($args[0])) {
-            // Assume this is a string to use as a file path.
-            if (!($args[0] = @fopen($args[0], 'r'))) {
-                $message = "invalid input stream or path: {$args[0]}";
-                throw new RuntimeException($message);
-            }
-        }
-        $class = new ReflectionClass('Serial_Core_DelimitedReader');
-        $reader = $class->newInstanceArgs($args);
-        $reader->closing = true;  // take responsiblity for closing stream
-        return $reader;
+        array_unshift($args, __CLASS__);
+        return parent::openReader($args);
     }
     
     private $delim;
 
     /**
-     * Iniialize this object.
+     * Initialize this object.
      *
      * The default delimiter will split on any whitespace.
      */
