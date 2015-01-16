@@ -25,24 +25,12 @@ class Serial_Core_DelimitedWriter extends Serial_Core_TabularWriter
      */
     public static function open(/* $args */)
     {
-        // Every derived class must implement its own open() method that
-        // returns the correct type of object.
+        // Every derived class must implement its own open() method that calls
+        // openWriter() with the correct class name. This is a workaround for
+        // PHP 5.2's lack of late static binding.
         $args = func_get_args();
-        if (count($args) < 3) {
-            $message = 'call to open() is missing required arguments';
-            throw new BadMethodCallException($message);
-        }
-        if (!is_resource($args[0])) {
-            // Assume this is a string to use as a file path.
-            if (!($args[0] = @fopen($args[0], 'w'))) {
-                $message = "invalid output stream or path: {$args[0]}";
-                throw new RuntimeException($message);
-            }
-        }
-        $class = new ReflectionClass('Serial_Core_DelimitedWriter');
-        $writer = $class->newInstanceArgs($args);
-        $writer->closing = true;  // take responsiblity for closing stream
-        return $writer;
+        array_unshift($args, __CLASS__);
+        return parent::openWriter($args);
     }
 
     private $delim;
