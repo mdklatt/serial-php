@@ -53,7 +53,7 @@ class Serial_Core_ArrayField
      *
      * If the argument is null or an empty array the default field value is
      * used (null is encoded as an empty array). Each element of the array
-     * should be an associative array that corresponds the to the field
+     * should be an associative array that corresponds to the field
      * definitions for this array.
      */
     public function encode($values)
@@ -64,7 +64,8 @@ class Serial_Core_ArrayField
         $tokens = array();
         foreach ($values as $elem) {
             foreach ($this->fields as $field) {
-                $tokens[] = $field->encode(@$elem[$field->name]);
+                $value = isset($elem[$field->name]) ? $elem[$field->name] : null;
+                $tokens[] = $field->encode($value);
             }
         }
         return $tokens;
