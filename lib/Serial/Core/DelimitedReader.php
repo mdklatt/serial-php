@@ -11,29 +11,15 @@ namespace Serial\Core;
  */
 class DelimitedReader extends TabularReader
 {
-    // TODO: Add delimiter escaping.
-    
     /**
-     * Open a DelimitedReader with automatic stream handling.
+     * Return the class name.
      *
-     * The first argument is either an open stream or a path to open as a text
-     * file. In either case, the input stream will automatically be closed when
-     * the reader's destructor is called. Any additional arguments are passed
-     * along to the DelimitedReader constructor.
-     *
-     * If the object contains a circular reference, e.g. a class method used
-     * as a filter callback, unsetting the variable is not enough to trigger
-     * the destructor. It will be called when the process ends, or it can be 
-     * called explicitly, i.e. $reader->__destruct().
+     * This *MUST* be implemented by all derived classes. It is sufficient to
+     * copy this function verbatim.
      */
-    public static function open(/* $args */)
+    protected static function className()
     {
-        // Every derived class must implement its own open() method that calls
-        // openReader() with the correct class name. This is a workaround for
-        // PHP 5.2's lack of late static binding.
-        $args = func_get_args();
-        array_unshift($args, __CLASS__);
-        return parent::openReader($args);
+        return __CLASS__;
     }
     
     private $delim;
@@ -58,6 +44,7 @@ class DelimitedReader extends TabularReader
      */
     protected function split($line)
     {
+        // TODO: Add delimiter escaping.
         if ($this->delim === null) {
             // Split on any whitespace.
             $line = preg_split('/\s+/', $line);

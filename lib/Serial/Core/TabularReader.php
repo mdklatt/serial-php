@@ -11,9 +11,20 @@ namespace Serial\Core;
 abstract class TabularReader extends Reader
 {
     /**
+     * Return the class name.
+     * 
+     * This *MUST* be implemented by all derived classes. It is sufficient to 
+     * copy this function verbatim.
+     */
+    protected static function className()
+    {
+        return __CLASS__;
+    }
+    
+    /**
      * Create a reader with automatic stream handling.
      *
-     * The first argument is a Reader class name, and the next argument is 
+     * The first argument is a reader class name, and the next argument is 
      * either an open stream or a path to open as a text file. In both cases,
      * the input stream will automatically be closed when the the Reader's 
      * destructor is called. Any additional arguments are passed along to the
@@ -25,22 +36,17 @@ abstract class TabularReader extends Reader
      * the destructor. It will be called when the process ends, or it can be 
      * called explicitly, i.e. $reader->__destruct().
      */
-    protected static function openReader($args)
+    public static function open(/* ... */)
     {
-        // This is a workaround for PHP 5.2's lack of late static binding. If
-        // 5.2 compatibility is no longer necessary, this should be renamed to
-        // 'open' and made public, and derived classes can override it as
-        // necessary.
-        assert($args); 
-        $className = array_shift($args);
-         if (!is_resource($args[0])) {
-             // Assume this is a string to use as a file path.
-             if (!($args[0] = @fopen($args[0], 'r'))) {
+        $args = func_get_args(); 
+        if (!is_resource($args[0])) {
+            // Assume this is a string to use as a file path.
+            if (!($args[0] = @fopen($args[0], 'r'))) {
                  $message = "invalid input stream or path: {$args[0]}";
                  throw new \RuntimeException($message);
              }
          }
-         $class = new \ReflectionClass($className);
+         $class = new \ReflectionClass(static::className());
          $reader = $class->newInstanceArgs($args);
          $reader->closing = true;  // take responsibility for closing stream
          return $reader;
