@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the ArrayField class.
  *
  */
-class Test_ArrayFieldTest extends Test_FieldTest
+class ArrayFieldTest extends FieldTest
 {
     /**
      * Set up the test fixture.
@@ -14,18 +17,18 @@ class Test_ArrayFieldTest extends Test_FieldTest
     protected function setUp()
     {
         $fields = array(
-            new Serial_Core_StringField('str', 0, '%s', '', 'abc'),
-            new Serial_Core_IntField('int', 1),
+            new Core\StringField('str', 0, '%s', '', 'abc'),
+            new Core\IntField('int', 1),
         );
         $this->value = array(
             array('str' => 'abc', 'int' => 123),
             array('str' => 'def', 'int' => 456),
         );
         $this->token = array('abc', '123', 'def', '456');
-        $this->field = new Serial_Core_ArrayField('array', array(0, 4), $fields);
+        $this->field = new Core\ArrayField('array', array(0, 4), $fields);
         $this->default_value = array(array('str' => 'xyz', 'int' => -999));
         $this->default_token = array('xyz', '-999');
-        $this->default_field = new Serial_Core_ArrayField('array', array(0, 4), $fields, $this->default_value);
+        $this->default_field = new Core\ArrayField('array', array(0, 4), $fields, $this->default_value);
         return;
     }
     

@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the StreamFilterManager class.
  *
  */
-class Test_StreamFilterManagerTest extends PHPUnit_Framework_TestCase
+class StreamFilterManagerTest extends \PHPUnit_Framework_TestCase
 {
     protected $data;
     protected $tmpname;
@@ -45,7 +48,7 @@ class Test_StreamFilterManagerTest extends PHPUnit_Framework_TestCase
     {
         file_put_contents($this->tmpname, $this->data);
         $stream = fopen($this->tmpname, 'r');
-        Serial_Core_StreamFilterManager::attach($stream, 'strtoupper'); 
+        Core\StreamFilterManager::attach($stream, 'strtoupper'); 
         $filtered = stream_get_contents($stream);
         $this->assertEquals($this->filtered, $filtered);
         return;
@@ -58,7 +61,7 @@ class Test_StreamFilterManagerTest extends PHPUnit_Framework_TestCase
     public function testOutput()
     {
         $stream = fopen($this->tmpname, 'w');
-        Serial_Core_StreamFilterManager::attach($stream, 'strtoupper'); 
+        Core\StreamFilterManager::attach($stream, 'strtoupper'); 
         fwrite($stream, $this->data);
         fclose($stream);
         $filtered = file_get_contents($this->tmpname);

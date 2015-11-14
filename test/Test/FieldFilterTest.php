@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the FieldFilter class.
  *
  */
-class Test_FieldFilterTest extends PHPUnit_Framework_TestCase
+class FieldFilterTest extends \PHPUnit_Framework_TestCase
 {
     private $whitelist;
     private $blacklist;
@@ -18,9 +21,9 @@ class Test_FieldFilterTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $values = array('abc', 'def');
-        $this->whitelist = new Serial_Core_FieldFilter('test', $values);
+        $this->whitelist = new Core\FieldFilter('test', $values);
         $this->whitelist = array($this->whitelist, '__invoke');  // PHP 5.2
-        $this->blacklist = new Serial_Core_FieldFilter('test', $values, true);
+        $this->blacklist = new Core\FieldFilter('test', $values, true);
         $this->blacklist = array($this->blacklist, '__invoke');  // PHP 5.2
         $this->data = array();
         $values[] = 'ghi';

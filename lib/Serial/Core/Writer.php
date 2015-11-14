@@ -1,4 +1,6 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Base class for all writers.
  *
@@ -6,7 +8,7 @@
  * interface for writing serial data and allows for postprocessing of the data
  * using filters.
  */
-abstract class Serial_Core_Writer
+abstract class Writer
 {
     // Class filters are always applied after any user filters. Derived 
     // classes can use these to do any final data manipulation before the
@@ -28,9 +30,9 @@ abstract class Serial_Core_Writer
      */
     public function __construct()
     {
-        $this->userFilters = new ArrayObject();
-        $this->classFilters = new ArrayObject();
-        $this->filterIter = new AppendIterator();
+        $this->userFilters = new \ArrayObject();
+        $this->classFilters = new \ArrayObject();
+        $this->filterIter = new \AppendIterator();
         $this->filterIter->append($this->classFilters->getIterator());
         $this->filterIter->append($this->userFilters->getIterator());
         return;

@@ -1,10 +1,12 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Read a sequence of streams as a single set of records.
  *
  * Streams are opened as necessary and closed once they have been read.
  */
-class Serial_Core_ChainReader extends Serial_Core_Reader
+class ChainReader extends Reader
 {
     protected $closing = false;
     private $readers;  // needed for __destruct() workaround
@@ -25,7 +27,7 @@ class Serial_Core_ChainReader extends Serial_Core_Reader
     {
         // Every derived class must implement its own open() method that
         // returns the correct type of object.
-        $class = new ReflectionClass('Serial_Core_ChainReader');
+        $class = new \ReflectionClass(__NAMESPACE__.'\\ChainReader');
         $reader = $class->newInstanceArgs(func_get_args());
         $reader->closing = true;  // automatically call close()
         return $reader;
@@ -43,12 +45,12 @@ class Serial_Core_ChainReader extends Serial_Core_Reader
         parent::__construct();
         $args = func_get_args();
         if (count($args) < 2) {
-            throw new InvalidArgumentException('missing required arguments');
+            throw new \InvalidArgumentException('missing required arguments');
         }
         array_splice($args, 1, 0, array(array($this, 'openStream')));
-        $class = new ReflectionClass('Serial_Core_ReaderIterator');
+        $class = new \ReflectionClass(__NAMESPACE__.'\\ReaderIterator');
         $this->readers = $class->newInstanceArgs($args);
-        $this->records = new RecursiveIteratorIterator($this->readers);
+        $this->records = new \RecursiveIteratorIterator($this->readers);
         return;        
     }
     
@@ -76,7 +78,7 @@ class Serial_Core_ChainReader extends Serial_Core_Reader
     {
         $this->records->next();
         if (!$this->records->valid()) {
-            throw new Serial_Core_StopIteration();
+            throw new StopIteration();
         }
         return $this->records->current();
     }
@@ -107,8 +109,8 @@ class Serial_Core_ChainReader extends Serial_Core_Reader
  * records in all streams in the sequence. This is used by ChainReader and is
  * not part of the Serial_Core API.
  */
-class Serial_Core_ReaderIterator extends NoRewindIterator
-implements RecursiveIterator
+class ReaderIterator extends \NoRewindIterator
+implements \RecursiveIterator
 {
     private $openStream;
     private $readerType;
@@ -120,9 +122,9 @@ implements RecursiveIterator
     public function __construct(/* args */)
     {
         $args = func_get_args();
-        parent::__construct(new ArrayIterator(array_shift($args)));
+        parent::__construct(new \ArrayIterator(array_shift($args)));
         $this->openStream = array_shift($args);
-        $this->readerType = new ReflectionClass(array_shift($args));
+        $this->readerType = new \ReflectionClass(array_shift($args));
         $this->readerArgs = $args;
         array_unshift($this->readerArgs, null);
         $this->init();
@@ -136,7 +138,7 @@ implements RecursiveIterator
     {
         $inner = $this->getInnerIterator();
         while ($inner->valid()) {
-            Serial_Core::close($inner->current());
+            close($inner->current());
             $inner->next();
         }
         return;
@@ -147,7 +149,7 @@ implements RecursiveIterator
      */
     public function next()
     {
-        Serial_Core::close($this->getInnerIterator()->current());
+        close($this->getInnerIterator()->current());
         parent::next();
         $this->init();
         return;
@@ -178,7 +180,7 @@ implements RecursiveIterator
      */
     public function getChildren()
     {
-        // The Serial_Core_Reader base class implements RecursiveIterator.
+        // The Reader base class implements RecursiveIterator.
         return $this->current();
     }
     

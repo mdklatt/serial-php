@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the FixedWidthReader class.
  *
  */
-class Test_FixedWidthReaderTest extends Test_TabularReaderTest
+class FixedWidthReaderTest extends TabularReaderTest
 {   
     /**
      * Set up the test fixture.
@@ -14,16 +17,15 @@ class Test_FixedWidthReaderTest extends Test_TabularReaderTest
     protected function setUp()
     {
         $this->fields = array(
-            new Serial_Core_IntField('int', array(0, 4), '%3d'),
-            new Serial_Core_ArrayField('arr', array(4, null), array(
-                new Serial_Core_StringField('x', array(0, 4), '%3s'),
-                new Serial_Core_StringField('y', array(4, 4), '%3s'),                
+            new Core\IntField('int', array(0, 4), '%3d'),
+            new Core\ArrayField('arr', array(4, null), array(
+                new Core\StringField('x', array(0, 4), '%3s'),
+                new Core\StringField('y', array(4, 4), '%3s'),                
             )), 
         );
         $this->data = " 123 abc def\n 456 ghi jkl\n";
         parent::setUp();
-        $this->reader = new Serial_Core_FixedWidthReader($this->stream, 
-                        $this->fields);        
+        $this->reader = new Core\FixedWidthReader($this->stream, $this->fields);        
         return;
     }
 
@@ -35,7 +37,7 @@ class Test_FixedWidthReaderTest extends Test_TabularReaderTest
     {
         // TODO: This only tests an open stream; also need to test with a file
         // path.
-        $this->reader = Serial_Core_FixedWidthReader::open($this->stream, 
+        $this->reader = Core\FixedWidthReader::open($this->stream, 
                         $this->fields);
         $this->testIter();
         unset($this->reader);  // close $this->stream
@@ -50,7 +52,7 @@ class Test_FixedWidthReaderTest extends Test_TabularReaderTest
     public function testOpenFail()
     {
         $this->setExpectedException('RuntimeException');
-        Serial_Core_FixedWidthReader::open(null, $this->fields);
+        Core\FixedWidthReader::open(null, $this->fields);
         return;
     }
 }

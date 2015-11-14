@@ -1,11 +1,13 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Abstract base class for all Writer buffers.
  * 
  * A WriterBuffer applies preprocessing to records being written to another
  * Writer.
  */
-abstract class Serial_Core_WriterBuffer extends Serial_Core_Writer
+abstract class WriterBuffer extends Writer
 {
     protected $output = array();  // FIFO
     private $writer;

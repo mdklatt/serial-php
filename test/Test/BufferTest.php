@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Base class for buffer class unit testing.
  *
  */
-abstract class Test_BufferTest extends PHPUnit_Framework_TestCase
+abstract class BufferTest extends \PHPUnit_Framework_TestCase
 {   
     static public function reject_filter($record)
     {

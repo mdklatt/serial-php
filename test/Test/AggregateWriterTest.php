@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the AggregateWriter class.
  *
  */
-class Test_AggregateWriterTest extends Test_AggregateTest
+class AggregateWriterTest extends AggregateTest
 {
     private $writer;
 
@@ -16,7 +19,7 @@ class Test_AggregateWriterTest extends Test_AggregateTest
     protected function setUp()
     {
         parent::setUp();
-        $this->writer = new Test_MockWriter;
+        $this->writer = new MockWriter;
         return;
     }
     
@@ -29,10 +32,10 @@ class Test_AggregateWriterTest extends Test_AggregateTest
             array('str' => 'abc', 'int' => 5, 'float' => 3.),
             array('str' => 'def', 'int' => 3, 'float' => 4.),
         );
-        $writer = new Serial_Core_AggregateWriter($this->writer, 'str');
+        $writer = new Core\AggregateWriter($this->writer, 'str');
         $writer->reduce(
-            array(new Serial_Core_CallbackReduction('array_sum', 'int'), '__invoke'),
-            array(new Serial_Core_CallbackReduction('max', 'float'), '__invoke')
+            array(new Core\CallbackReduction('array_sum', 'int'), '__invoke'),
+            array(new Core\CallbackReduction('max', 'float'), '__invoke')
         );
         foreach ($this->records as $record) {
             $writer->write($record);
@@ -53,9 +56,9 @@ class Test_AggregateWriterTest extends Test_AggregateTest
             array('str' => 'abc', 'int' => 3, 'float' => 3.),
             array('str' => 'def', 'int' => 3, 'float' => 4.),
         );
-        $writer = new Serial_Core_AggregateWriter($this->writer, array('str', 'int'));
+        $writer = new Core\AggregateWriter($this->writer, array('str', 'int'));
         $writer->reduce(
-            array(new Serial_Core_CallbackReduction('max', 'float'), '__invoke')
+            array(new Core\CallbackReduction('max', 'float'), '__invoke')
         );
         $writer->dump($this->records);  // dump() calls close()
         $this->assertEquals($reduced, $this->writer->output);
@@ -71,10 +74,10 @@ class Test_AggregateWriterTest extends Test_AggregateTest
             array('KEY' => 'ABC', 'float' => 3.),
             array('KEY' => 'DEF', 'float' => 4.),
         );
-        $keyfunc = 'Test_AggregateWriterTest::key';
-        $writer = new Serial_Core_AggregateWriter($this->writer, $keyfunc);
+        $keyfunc = __NAMESPACE__.'\AggregateWriterTest::key';
+        $writer = new Core\AggregateWriter($this->writer, $keyfunc);
         $writer->reduce(
-            array(new Serial_Core_CallbackReduction('max', 'float'), '__invoke')
+            array(new Core\CallbackReduction('max', 'float'), '__invoke')
         );
         $writer->dump($this->records);  // dump() calls close()
         $this->assertEquals($reduced, $this->writer->output);

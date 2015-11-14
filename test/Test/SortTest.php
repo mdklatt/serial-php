@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Base class for SortReader/Writer unit testing.
  *
  */
-abstract class Test_SortTest extends PHPUnit_Framework_TestCase
+abstract class SortTest extends \PHPUnit_Framework_TestCase
 { 
     // These arrays could be created on the fly using range(), shuffle() and 
     // sort(), but the mod-sorted arrays don't come out right due to the lack

@@ -1,10 +1,12 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Filter records by a specific field.
  *
  * This is intended for use with a Reader or Writer via their filter() method.
  */
-class Serial_Core_FieldFilter
+class FieldFilter
 {
     private $field;
     private $values;

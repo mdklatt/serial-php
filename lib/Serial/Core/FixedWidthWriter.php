@@ -1,11 +1,13 @@
 <?php
+namespace Serial\Core;
+
 /**
  * A writer for tabular data consisting of fixed-width fields.
  *
  * The position of each field is given as a (begin, length) substring 
  * expression where the length is null for a variable-length array.
  */
-class Serial_Core_FixedWidthWriter extends Serial_Core_TabularWriter
+class FixedWidthWriter extends TabularWriter
 {
     /**
      * Create a FixedWidthWriter with automatic stream handling.

@@ -1,4 +1,6 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Aggregate output for another writer.
  * 
@@ -7,7 +9,7 @@
  * are presumed to be already sorted such that all records in a group are
  * group contiguous.
  */
-class Serial_Core_AggregateWriter extends Serial_Core_WriterBuffer
+class AggregateWriter extends WriterBuffer
 {
     private $buffer = array();
     private $keyfunc;
@@ -27,7 +29,7 @@ class Serial_Core_AggregateWriter extends Serial_Core_WriterBuffer
         parent::__construct($writer);
         if (!is_callable($key)) {
             // Use the default key function.
-            $key = array(new Serial_Core_KeyFunc($key), '__invoke');
+            $key = array(new KeyFunc($key), '__invoke');
         }
         $this->keyfunc = $key;
         return;

@@ -1,9 +1,11 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Sort input from another reader.
  * 
  */
-class Serial_Core_SortReader extends Serial_Core_ReaderBuffer
+class SortReader extends ReaderBuffer
 {
     private $buffer;
     
@@ -24,7 +26,7 @@ class Serial_Core_SortReader extends Serial_Core_ReaderBuffer
     public function __construct($reader, $key, $group=null)
     {
         parent::__construct($reader);
-        $this->buffer = new Serial_Core_SortQueue($key, $group);
+        $this->buffer = new SortQueue($key, $group);
         $this->output = &$this->buffer->sorted;
         return;
     }
@@ -51,7 +53,7 @@ class Serial_Core_SortReader extends Serial_Core_ReaderBuffer
     {
         $this->buffer->flush();
         if (!$this->output) {
-            throw new Serial_Core_StopIteration();
+            throw new StopIteration();
         }
         return;
     }

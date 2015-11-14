@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Base class for tabular writer class unit testing.
  *
  */
-abstract class Test_TabularWriterTest extends PHPUnit_Framework_TestCase
+abstract class TabularWriterTest extends \PHPUnit_Framework_TestCase
 {
     const ENDL = 'X';
     

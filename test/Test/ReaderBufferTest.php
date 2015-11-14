@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the ReaderBuffer class.
  *
  */
-class Test_ReaderBufferTest extends Test_BufferTest
+class ReaderBufferTest extends BufferTest
 {
     protected $buffer;
     
@@ -16,8 +19,8 @@ class Test_ReaderBufferTest extends Test_BufferTest
     protected function setUp()
     {
         parent::setUp();
-        $reader = new ArrayIterator($this->input);
-        $this->buffer = new ReaderBufferTest_MockReaderBuffer($reader);
+        $reader = new \ArrayIterator($this->input);
+        $this->buffer = new ReaderBufferMockReaderBuffer($reader);
         return;
     }
 
@@ -38,7 +41,8 @@ class Test_ReaderBufferTest extends Test_BufferTest
      */
     public function testFilter()
     {
-        $this->buffer->filter('Test_ReaderBufferTest::reject_filter');
+        $this->buffer->filter(
+            __NAMESPACE__.'\ReaderBufferTest::reject_filter');
         array_splice($this->output, 0, 1);
         $this->testIter();
         return;
@@ -50,7 +54,7 @@ class Test_ReaderBufferTest extends Test_BufferTest
  * Concrete implemenation of ReaderBuffer for testing.
  *
  */
-class ReaderBufferTest_MockReaderBuffer extends Serial_Core_ReaderBuffer
+class ReaderBufferMockReaderBuffer extends Core\ReaderBuffer
 {
     private $buffer = null;
     
@@ -91,7 +95,7 @@ class ReaderBufferTest_MockReaderBuffer extends Serial_Core_ReaderBuffer
             $this->buffer = null;
         }
         else {
-            throw new Serial_Core_StopIteration();            
+            throw new Core\StopIteration();            
         }
         return;
     }

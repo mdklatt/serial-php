@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the ConstField class.
  *
  */
-class Test_ConstFieldTest extends Test_FieldTest
+class ConstFieldTest extends FieldTest
 {
     /**
      * Set up the test fixture.
@@ -15,8 +18,7 @@ class Test_ConstFieldTest extends Test_FieldTest
     {
         $this->value = 9999;
         $this->token = ' 9999';
-        $this->field = new Serial_Core_ConstField('const', array(0, 5), 
-                                                  $this->value, '%4d');
+        $this->field = new Core\ConstField('const', array(0, 5), $this->value, '%4d');
         $this->default_value = $this->value;
         $this->default_token = $this->token;
         $this->default_field = $this->field;

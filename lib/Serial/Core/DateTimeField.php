@@ -1,9 +1,11 @@
 <?php
+namespace Serial\Core;
+
 /**
  * A DateTime field.
  *
  */
-class Serial_Core_DateTimeField extends Serial_Core_ScalarField
+class DateTimeField extends ScalarField
 {
     private $valfmt;
     private $strfmt;
@@ -41,7 +43,7 @@ class Serial_Core_DateTimeField extends Serial_Core_ScalarField
         if (!($token = trim($token))) {
             return $this->default;
         }
-        return new DateTime($token);
+        return new \DateTime($token);
     }
     
     /**

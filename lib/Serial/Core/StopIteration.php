@@ -1,11 +1,13 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Signal the end of input.
  *
  * This is used internally to signal EOF conditions, but it can also be used by
  * filters to halt input at any time.
  */
-class Serial_Core_StopIteration extends Exception
+class StopIteration extends \Exception
 {
     // This is inspired by the Python iterator protocol. It falls in the gray
     // area between an exceptional condition and flow control, but it's a more

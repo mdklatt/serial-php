@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the FloatField class.
  *
  */
-class Test_FloatFieldTest extends Test_FieldTest
+class FloatFieldTest extends FieldTest
 {
     /**
      * Set up the test fixture.
@@ -17,10 +20,10 @@ class Test_FloatFieldTest extends Test_FieldTest
         $pos = array(0, 7);
         $this->value = 1.23;
         $this->token = '  1.230';
-        $this->field = new Serial_Core_FloatField('float', $pos, $fmt);
+        $this->field = new Core\FloatField('float', $pos, $fmt);
         $this->default_value = -9.999;
         $this->default_token = ' -9.999';
-        $this->default_field = new Serial_Core_FloatField('float', $pos, $fmt,
+        $this->default_field = new Core\FloatField('float', $pos, $fmt,
                                $this->default_value);
         return;
     }

@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the RegexFilter class.
  *
  */
-class Test_RegexFilterTest extends PHPUnit_Framework_TestCase
+class RegexFilterTest extends \PHPUnit_Framework_TestCase
 {
     private $whitelist;
     private $blacklist;
@@ -18,9 +21,9 @@ class Test_RegexFilterTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $regex = '/abc|def/';
-        $this->whitelist = new Serial_Core_RegexFilter($regex);
+        $this->whitelist = new Core\RegexFilter($regex);
         $this->whitelist = array($this->whitelist, '__invoke');  // PHP 5.2
-        $this->blacklist = new Serial_Core_RegexFilter($regex, true);
+        $this->blacklist = new Core\RegexFilter($regex, true);
         $this->blacklist = array($this->blacklist, '__invoke');  // PHP 5.2
         $this->data = array("abc\n", "def\n", "ghi\n");
         return;

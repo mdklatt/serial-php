@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the SortReader class.
  *
  */
-class Test_SortWriterTest extends Test_SortTest
+class SortWriterTest extends SortTest
 {
     private $writer;
 
@@ -16,7 +19,7 @@ class Test_SortWriterTest extends Test_SortTest
     protected function setUp()
     {
         parent::setUp();
-        $this->writer = new Test_MockWriter;
+        $this->writer = new MockWriter;
         return;
     }
 
@@ -25,7 +28,7 @@ class Test_SortWriterTest extends Test_SortTest
      */
     public function testWrite()
     {
-        $writer = new Serial_Core_SortWriter($this->writer, 'num');
+        $writer = new Core\SortWriter($this->writer, 'num');
         foreach ($this->allRandom as $record) {
             $writer->write($record);
         }
@@ -40,7 +43,7 @@ class Test_SortWriterTest extends Test_SortTest
      */
     public function testWriteMultiKey()
     {
-        $writer = new Serial_Core_SortWriter($this->writer, array('mod', 'num'));
+        $writer = new Core\SortWriter($this->writer, array('mod', 'num'));
         foreach ($this->allRandom as $record) {
             $writer->write($record);
         }
@@ -54,8 +57,8 @@ class Test_SortWriterTest extends Test_SortTest
      */
     public function testWriteCustomKey()
     {
-        $keyfunc = 'Test_SortWriterTest::keyFunc';
-        $writer = new Serial_Core_SortWriter($this->writer, $keyfunc);
+        $keyfunc = __NAMESPACE__.'\SortWriterTest::keyFunc';
+        $writer = new Core\SortWriter($this->writer, $keyfunc);
         foreach ($this->allRandom as $record) {
             $writer->write($record);
         }
@@ -69,7 +72,7 @@ class Test_SortWriterTest extends Test_SortTest
      */
     public function testWriteGroup()
     {
-        $writer = new Serial_Core_SortWriter($this->writer, 'num', 'mod');
+        $writer = new Core\SortWriter($this->writer, 'num', 'mod');
         foreach ($this->numRandom as $record) {
             $writer->write($record);
         }
@@ -83,7 +86,7 @@ class Test_SortWriterTest extends Test_SortTest
      */
     public function testDump()
     {
-        $writer = new Serial_Core_SortWriter($this->writer, 'num');
+        $writer = new Core\SortWriter($this->writer, 'num');
         $writer->dump($this->allRandom);
         $this->assertEquals($this->numSorted, $this->writer->output);
         return;

@@ -1,9 +1,11 @@
 <?php
+namespace Serial\Core;
+
 /**
  * A string field.
  *
  */
-class Serial_Core_StringField extends Serial_Core_ScalarField
+class StringField extends ScalarField
 {
     private $valfmt;
     private $strfmt;

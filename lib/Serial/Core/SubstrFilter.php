@@ -1,10 +1,12 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Filter lines by a specific substring.
  *
- * This is intended for use with Serial_Core_StreamFilterManager.
+ * This is intended for use with StreamFilterManager.
  */
-class Serial_Core_SubstrFilter
+class SubstrFilter
 {
     private $beg;
     private $end;

@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Base class for Field unit tests.
  *
  */
-abstract class Test_FieldTest extends PHPUnit_Framework_TestCase
+abstract class FieldTest extends \PHPUnit_Framework_TestCase
 {   
     protected $field;
     protected $token;

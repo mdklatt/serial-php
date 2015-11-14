@@ -1,4 +1,6 @@
 <?php
+namespace Serial\Core;
+
 /**
  * A reader for tabular data consisting of character-delimited fields.
  *
@@ -7,7 +9,7 @@
  * null for a variable-length array.
  *
  */
-class Serial_Core_DelimitedReader extends Serial_Core_TabularReader
+class DelimitedReader extends TabularReader
 {
     // TODO: Add delimiter escaping.
     

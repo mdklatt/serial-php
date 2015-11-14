@@ -1,10 +1,12 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Filter lines using a regular expression.
  *
- * This is intended for use with Serial_Core_StreamFilterManager.
+ * This is intended for use with StreamFilterManager.
  */
-class Serial_Core_RegexFilter
+class RegexFilter
 {
     private $regex;
     private $blacklist;

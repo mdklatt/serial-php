@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the StringField class.
  *
  */
-class Test_StringFieldTest extends Test_FieldTest
+class StringFieldTest extends FieldTest
 {
     private $quote_token;
     private $quote_field;
@@ -20,13 +23,13 @@ class Test_StringFieldTest extends Test_FieldTest
         $pos = array(0, 5);
         $this->value = 'abc';
         $this->token = '  abc';
-        $this->field = new Serial_Core_StringField('str', $pos, $fmt);
+        $this->field = new Core\StringField('str', $pos, $fmt);
         $this->default_value = 'xyz';
         $this->default_token = '  xyz';
-        $this->default_field = new Serial_Core_StringField('str', $pos, $fmt, 
+        $this->default_field = new Core\StringField('str', $pos, $fmt, 
                                    '', $this->default_value);
         $this->quote_token = '"abc"';
-        $this->quote_field = new Serial_Core_StringField('str', $pos, '%s', 
+        $this->quote_field = new Core\StringField('str', $pos, '%s', 
                                  '"');
         return;
     }

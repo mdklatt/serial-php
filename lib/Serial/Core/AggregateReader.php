@@ -1,4 +1,6 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Aggregate input from another reader.
  * 
@@ -7,7 +9,7 @@
  * are presumed to be already sorted such that all records in a group are
  * group contiguous.
  */
-class Serial_Core_AggregateReader extends Serial_Core_ReaderBuffer
+class AggregateReader extends ReaderBuffer
 {
     private $buffer = array();
     private $keyfunc;
@@ -27,7 +29,7 @@ class Serial_Core_AggregateReader extends Serial_Core_ReaderBuffer
         parent::__construct($reader);
         if (!is_callable($key)) {
             // Use the default key function.
-            $key = array(new Serial_Core_KeyFunc($key), '__invoke');
+            $key = array(new KeyFunc($key), '__invoke');
         }
         $this->keyfunc = $key;
         return;
@@ -85,7 +87,7 @@ class Serial_Core_AggregateReader extends Serial_Core_ReaderBuffer
     protected function uflow()
     {
         if (!$this->buffer) {
-            throw new Serial_Core_StopIteration();
+            throw new StopIteration();
         }
         $this->flush();
         return;

@@ -1,9 +1,11 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Base class for scalar fields.
  *
- */ 
-abstract class Serial_Core_ScalarField
+ */
+abstract class ScalarField
 {
     public $name;
     public $pos;

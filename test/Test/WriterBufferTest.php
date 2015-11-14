@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the WriterBuffer class.
  *
  */
-class Test_WriterBufferTest extends Test_BufferTest
+class WriterBufferTest extends BufferTest
 {
     protected $buffer;
     
@@ -16,8 +19,8 @@ class Test_WriterBufferTest extends Test_BufferTest
     protected function setUp()
     {
         parent::setUp();
-        $this->writer = new WriterBufferTest_MockWriter();
-        $this->buffer = new WriterBufferTest_MockWriterBuffer($this->writer);
+        $this->writer = new WriterBufferMockWriter();
+        $this->buffer = new WriterBufferMockWriterBuffer($this->writer);
         return;
     }
 
@@ -52,7 +55,7 @@ class Test_WriterBufferTest extends Test_BufferTest
      */
     public function testFilter()
     {
-        $this->buffer->filter('Test_BufferTest::reject_filter');
+        $this->buffer->filter(__NAMESPACE__.'\BufferTest::reject_filter');
         array_splice($this->output, 0, 1);
         $this->testDump();
         return;
@@ -64,7 +67,7 @@ class Test_WriterBufferTest extends Test_BufferTest
  * Concrete implemenation of WriterBuffer for testing.
  *
  */
-class WriterBufferTest_MockWriterBuffer extends Serial_Core_WriterBuffer
+class WriterBufferMockWriterBuffer extends Core\WriterBuffer
 {
     private $buffer = null;
     
@@ -116,7 +119,7 @@ class WriterBufferTest_MockWriterBuffer extends Serial_Core_WriterBuffer
  * Capture WriterBuffer output for testing.
  *
  */ 
-class WriterBufferTest_MockWriter
+class WriterBufferMockWriter
 {
     public $output = array();
 

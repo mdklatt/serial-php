@@ -1,11 +1,13 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Sort a sequence of records.
  *
  * This is used internally by SortReader and SortWriter and is not part of the
  * public library API.
  */
-class Serial_Core_SortQueue
+class SortQueue
 {
     public $sorted = array();
 
@@ -18,12 +20,12 @@ class Serial_Core_SortQueue
     {
         if (!is_callable($key)) {
             // Use the default key function.
-            $key = array(new Serial_Core_KeyFunc($key), '__invoke');
+            $key = array(new KeyFunc($key), '__invoke');
         }
         $this->keyFunc = $key;
         if ($group && !is_callable($group)) {
             // Use the default key function.
-            $group = array(new Serial_Core_KeyFunc($group), '__invoke');
+            $group = array(new KeyFunc($group), '__invoke');
         }
         $this->groupFunc = $group;
         return;        

@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the IntField class.
  *
  */
-class Test_IntFieldTest extends Test_FieldTest
+class IntFieldTest extends FieldTest
 {
     /**
      * Set up the test fixture.
@@ -17,11 +20,10 @@ class Test_IntFieldTest extends Test_FieldTest
         $pos = array(0, 5); 
         $this->value = 123;
         $this->token = '  123';
-        $this->field = new Serial_Core_IntField('int', $pos, $fmt);
+        $this->field = new Core\IntField('int', $pos, $fmt);
         $this->default_value = -999;
         $this->default_token = ' -999';
-        $this->default_field = new Serial_Core_IntField('int', $pos, $fmt, 
-                                   $this->default_value);
+        $this->default_field = new Core\IntField('int', $pos, $fmt, $this->default_value);
         return;
     }
 

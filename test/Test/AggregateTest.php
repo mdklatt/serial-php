@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Base class for aggregate class unit testing.
  *
  */
-abstract class Test_AggregateTest extends PHPUnit_Framework_TestCase
+abstract class AggregateTest extends \PHPUnit_Framework_TestCase
 {   
     protected $records;
 

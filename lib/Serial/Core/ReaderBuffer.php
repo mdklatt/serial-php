@@ -1,11 +1,13 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Abstract base class for all Reader buffers.
  *    
  * A ReaderBuffer applies postprocessing to records being read from another 
  * Reader.
  */
-abstract class Serial_Core_ReaderBuffer extends Serial_Core_Reader
+abstract class ReaderBuffer extends Reader
 {
     protected $output = array();  // FIFO
     
@@ -64,6 +66,6 @@ abstract class Serial_Core_ReaderBuffer extends Serial_Core_Reader
      */
     protected function uflow()
     {
-        throw new Serial_Core_StopIteration();
+        throw new StopIteration();
     }
 }

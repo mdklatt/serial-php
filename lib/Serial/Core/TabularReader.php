@@ -1,4 +1,6 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Base class for tabular data readers.
  *
@@ -6,7 +8,7 @@
  * the same position in each input record. One line of text corresponds to one
  * complete record.
  */
-abstract class Serial_Core_TabularReader extends Serial_Core_Reader
+abstract class TabularReader extends Reader
 {
     /**
      * Create a reader with automatic stream handling.
@@ -35,10 +37,10 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
              // Assume this is a string to use as a file path.
              if (!($args[0] = @fopen($args[0], 'r'))) {
                  $message = "invalid input stream or path: {$args[0]}";
-                 throw new RuntimeException($message);
+                 throw new \RuntimeException($message);
              }
          }
-         $class = new ReflectionClass($className);
+         $class = new \ReflectionClass($className);
          $reader = $class->newInstanceArgs($args);
          $reader->closing = true;  // take responsibility for closing stream
          return $reader;
@@ -70,7 +72,7 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
     public function __destruct()
     {
         if ($this->closing ) {
-            Serial_Core::close($this->stream);
+            close($this->stream);
         }
         return;
     }    
@@ -90,7 +92,7 @@ abstract class Serial_Core_TabularReader extends Serial_Core_Reader
     protected function get()
     {
         if (($line = fgets($this->stream)) === false) {
-            throw new Serial_Core_StopIteration();
+            throw new StopIteration();
         }
         $tokens = $this->split(rtrim($line, $this->endl));
         $record = array();

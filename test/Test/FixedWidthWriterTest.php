@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the FixedWidthWriter class.
  *
  */
-class Test_FixedWidthWriterTest extends Test_TabularWriterTest
+class FixedWidthWriterTest extends TabularWriterTest
 {   
     /**
      * Set up the test fixture.
@@ -14,14 +17,14 @@ class Test_FixedWidthWriterTest extends Test_TabularWriterTest
     protected function setUp()
     {
         $this->fields = array(
-            new Serial_Core_IntField('int', array(0, 4), '%4d'),
-            new Serial_Core_ArrayField('arr', array(4, null), array(
-                new Serial_Core_StringField('x', array(0, 4), '%4s'),
-                new Serial_Core_StringField('y', array(4, 4), '%4s'),                
+            new Core\IntField('int', array(0, 4), '%4d'),
+            new Core\ArrayField('arr', array(4, null), array(
+                new Core\StringField('x', array(0, 4), '%4s'),
+                new Core\StringField('y', array(4, 4), '%4s'),                
             )), 
         );
         parent::setUp();
-        $this->writer = new Serial_Core_FixedWidthWriter($this->stream, 
+        $this->writer = new Core\FixedWidthWriter($this->stream, 
                         $this->fields, self::ENDL);        
         $this->data = ' 123 abc defX 456 ghi jklX';
         return;
@@ -35,7 +38,7 @@ class Test_FixedWidthWriterTest extends Test_TabularWriterTest
     {
         // TODO: This only tests an open stream; also need to test with a file
         // path.
-        $this->writer = Serial_Core_FixedWidthWriter::open($this->stream, 
+        $this->writer = Core\FixedWidthWriter::open($this->stream, 
                         $this->fields, self::ENDL);
         $this->testWrite();
         unset($this->writer);  // close $this->stream
@@ -50,7 +53,7 @@ class Test_FixedWidthWriterTest extends Test_TabularWriterTest
     public function testOpenFail()
     {
         $this->setExpectedException('RuntimeException');
-        Serial_Core_FixedWidthWriter::open(null, $this->fields);
+        Core\FixedWidthWriter::open(null, $this->fields);
         return;
     }
 
@@ -60,8 +63,9 @@ class Test_FixedWidthWriterTest extends Test_TabularWriterTest
      */
     public function testFilter()
     {
-        $this->writer->filter('Test_TabularWriterTest::rejectFilter', 
-                              'Test_TabularWriterTest::modifyFilter');
+        $this->writer->filter(
+            __NAMESPACE__.'\TabularWriterTest::rejectFilter', 
+            __NAMESPACE__.'\TabularWriterTest::modifyFilter');
         $this->data = ' 912 ghi jklX';
         $this->testDump();        
         return;

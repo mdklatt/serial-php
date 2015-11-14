@@ -1,9 +1,11 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Sort output for another writer.
  * 
  */
-class Serial_Core_SortWriter extends Serial_Core_WriterBuffer
+class SortWriter extends WriterBuffer
 {
     private $buffer;
 
@@ -23,7 +25,7 @@ class Serial_Core_SortWriter extends Serial_Core_WriterBuffer
     public function __construct($writer, $key, $group=null)
     {
         parent::__construct($writer);
-        $this->buffer = new Serial_Core_SortQueue($key, $group);
+        $this->buffer = new SortQueue($key, $group);
         $this->output = &$this->buffer->sorted;
         return;
     }

@@ -1,4 +1,6 @@
 <?php
+namespace Serial\Core;
+
 /**
  * A writer for tabular data consisting of character-delimited fields.
  *
@@ -6,7 +8,7 @@
  * position of an array field is a (begin, length) pair where the length is
  * null for a variable-length array. 
  */
-class Serial_Core_DelimitedWriter extends Serial_Core_TabularWriter
+class DelimitedWriter extends TabularWriter
 {
     // TODO: Add delimiter escaping.
     

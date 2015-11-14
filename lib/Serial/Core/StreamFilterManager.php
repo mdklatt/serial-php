@@ -1,4 +1,6 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Apply line-based filtering to a stream.
  *
@@ -6,7 +8,7 @@
  * to create an instance of this class. The public instance methods are used by 
  * the PHP stream filter protocol. 
  */
-class Serial_Core_StreamFilterManager extends php_user_filter
+class StreamFilterManager extends \php_user_filter
 {    
     const READ = STREAM_FILTER_READ;
     const WRITE = STREAM_FILTER_WRITE;

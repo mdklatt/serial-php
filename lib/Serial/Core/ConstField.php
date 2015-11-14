@@ -1,9 +1,11 @@
 <?php
+namespace Serial\Core;
+
 /**
  * A constant value field.
  *
  */
-class Serial_Core_ConstField extends Serial_Core_ScalarField
+class ConstField extends ScalarField
 {
     private $token;
     private $value;

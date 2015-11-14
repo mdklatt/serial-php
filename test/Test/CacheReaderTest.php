@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the CacheReader class.
  *
  */
-class Test_CacheReaderTest extends PHPUnit_Framework_TestCase
+class CacheReaderTest extends \PHPUnit_Framework_TestCase
 { 
     protected $reader;
     protected $records;
@@ -22,7 +25,7 @@ class Test_CacheReaderTest extends PHPUnit_Framework_TestCase
             array('str' => 'def'), 
             array('str' => 'ghi'),
         );
-        $this->reader = new ArrayIterator($this->records);
+        $this->reader = new \ArrayIterator($this->records);
         return;
     }
     
@@ -31,7 +34,7 @@ class Test_CacheReaderTest extends PHPUnit_Framework_TestCase
      */
     public function testIter()
     {
-        $reader = new Serial_Core_CacheReader($this->reader);
+        $reader = new Core\CacheReader($this->reader);
         $this->assertEquals($this->records, iterator_to_array($reader));
         return;
     }
@@ -41,7 +44,7 @@ class Test_CacheReaderTest extends PHPUnit_Framework_TestCase
      */
     public function testIterEmpty()
     {
-        $reader = new Serial_Core_CacheReader(new ArrayIterator());
+        $reader = new Core\CacheReader(new \ArrayIterator());
         $this->assertEquals(array(), iterator_to_array($reader));
         return;
     }
@@ -51,7 +54,7 @@ class Test_CacheReaderTest extends PHPUnit_Framework_TestCase
      */
     public function testReverse()
     {
-        $reader = new Serial_Core_CacheReader($this->reader);
+        $reader = new Core\CacheReader($this->reader);
         iterator_to_array($reader);  // exhaust reader
         $reader->reverse();  // does not reset Iterator key values
         $reader->reverse();  // should be a no-op
@@ -66,7 +69,7 @@ class Test_CacheReaderTest extends PHPUnit_Framework_TestCase
     public function testReverseCount()
     {
         $count = 1;
-        $reader = new Serial_Core_CacheReader($this->reader);
+        $reader = new Core\CacheReader($this->reader);
         iterator_to_array($reader);  // exhaust reader
         $reader->reverse($count);  // does not reset Iterator key values
         $records = array_values(iterator_to_array($reader));  // reset keys
@@ -80,7 +83,7 @@ class Test_CacheReaderTest extends PHPUnit_Framework_TestCase
     public function testReverseMaxlen()
     {
         $maxlen = count($this->records) - 1;
-        $reader = new Serial_Core_CacheReader($this->reader, $maxlen);
+        $reader = new Core\CacheReader($this->reader, $maxlen);
         iterator_to_array($reader);  // exhaust reader
         $reader->reverse($maxlen+1);  // attempt to reverse beyond cache
         $records = array_values(iterator_to_array($reader));  // reset keys

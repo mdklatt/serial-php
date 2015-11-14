@@ -23,7 +23,7 @@ Features
 
 Requirements
 ------------
-* PHP 5.2 - 5.6
+* PHP 5.3 - 5.6
 
 
 Installation

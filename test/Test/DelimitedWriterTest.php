@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the DelimitedWriter class.
  *
  */
-class Test_DelimitedWriterTest extends Test_TabularWriterTest
+class DelimitedWriterTest extends TabularWriterTest
 {
     const DELIM = ',';
     
@@ -16,14 +19,14 @@ class Test_DelimitedWriterTest extends Test_TabularWriterTest
     protected function setUp()
     {
         $this->fields = array(
-            new Serial_Core_IntField('int', 0),
-            new Serial_Core_ArrayField('arr', array(1, null), array(
-                new Serial_Core_StringField('x', 0),
-                new Serial_Core_StringField('y', 1),                
+            new Core\IntField('int', 0),
+            new Core\ArrayField('arr', array(1, null), array(
+                new Core\StringField('x', 0),
+                new Core\StringField('y', 1),                
             )),
         );
         parent::setUp();
-        $this->writer = new Serial_Core_DelimitedWriter($this->stream, 
+        $this->writer = new Core\DelimitedWriter($this->stream, 
                         $this->fields, self::DELIM, self::ENDL);
         $this->data = '123,abc,defX456,ghi,jklX';
         return;
@@ -37,7 +40,7 @@ class Test_DelimitedWriterTest extends Test_TabularWriterTest
     {
         // TODO: This only tests an open stream; also need to test with a file
         // path.
-        $this->writer = Serial_Core_DelimitedWriter::open($this->stream, 
+        $this->writer = Core\DelimitedWriter::open($this->stream, 
                         $this->fields, self::DELIM, self::ENDL);
         $this->testWrite();
         unset($this->writer);  // close $this->stream
@@ -52,7 +55,7 @@ class Test_DelimitedWriterTest extends Test_TabularWriterTest
     public function testOpenFail()
     {
         $this->setExpectedException('RuntimeException');
-        Serial_Core_DelimitedWriter::open(null, $this->fields, self::DELIM);
+        Core\DelimitedWriter::open(null, $this->fields, self::DELIM);
         return;
     }
 
@@ -62,8 +65,9 @@ class Test_DelimitedWriterTest extends Test_TabularWriterTest
      */
     public function testFilter()
     {
-        $this->writer->filter('Test_TabularWriterTest::rejectFilter', 
-                              'Test_TabularWriterTest::modifyFilter');
+        $this->writer->filter(
+            __NAMESPACE__.'\TabularWriterTest::rejectFilter', 
+            __NAMESPACE__.'\TabularWriterTest::modifyFilter');
         $this->data = '912,ghi,jklX';
         $this->testDump();
         return;

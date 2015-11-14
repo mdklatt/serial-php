@@ -1,4 +1,6 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Base class for tabular data writers.
  *
@@ -6,7 +8,7 @@
  * the same position in each output record. One line of text corresponds to one
  * complete record.
  */
-abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
+abstract class TabularWriter extends Writer
 {
     /**
      * Create a writer with automatic stream handling.
@@ -35,10 +37,10 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
             // Assume this is a string to use as a file path.
             if (!($args[0] = @fopen($args[0], 'r'))) {
                 $message = "invalid input stream or path: {$args[0]}";
-                throw new RuntimeException($message);
+                throw new \RuntimeException($message);
             }
         }
-        $class = new ReflectionClass($className);
+        $class = new \ReflectionClass($className);
         $writer = $class->newInstanceArgs($args);
         $writer->closing = true;  // take responsibility for closing stream
         return $writer;
@@ -70,7 +72,7 @@ abstract class Serial_Core_TabularWriter extends Serial_Core_Writer
     public function __destruct()
     {
         if ($this->closing && is_resource($this->stream)) {
-            Serial_Core::close($this->stream);
+            close($this->stream);
         }
         return;
     }    

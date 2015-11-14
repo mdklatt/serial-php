@@ -1,11 +1,13 @@
 <?php
+namespace Serial\Core;
+
 /**
  * A reader for tabular data consisting of fixed-width fields.
  *
  * The position of each field is given as a (begin, length) substring
  * expression where the end is null for a variable-length array.
  */
-class Serial_Core_FixedWidthReader extends Serial_Core_TabularReader
+class FixedWidthReader extends TabularReader
 {
     /**
      * Open a FixedWidthReader with automatic stream handling.

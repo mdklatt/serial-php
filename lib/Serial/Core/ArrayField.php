@@ -1,9 +1,11 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Translate text tokens to/from an array of PHP values.
  *
  */
-class Serial_Core_ArrayField
+class ArrayField
 {
     public $name;
     public $pos;

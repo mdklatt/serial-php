@@ -1,4 +1,6 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Default key function.
  *
@@ -6,7 +8,7 @@
  * or more key fields. This is used internally and is not part of the public 
  * library API.
  */
-class Serial_Core_KeyFunc
+class KeyFunc
 {
     /**
      * Initialize this object.

@@ -1,9 +1,11 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Cache input from another reader.
  * 
  */
-class Serial_Core_CacheReader extends Serial_Core_ReaderBuffer
+class CacheReader extends ReaderBuffer
 {
     private $maxlen;
     private $buffer = array();
@@ -60,7 +62,7 @@ class Serial_Core_CacheReader extends Serial_Core_ReaderBuffer
     {
         if ($this->bufpos >= count($this->buffer)) {
             // At end of buffer.
-            throw new Serial_Core_StopIteration();
+            throw new StopIteration();
         }
         $this->output[] = $this->buffer[$this->bufpos++];
         return;

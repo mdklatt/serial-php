@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the SubstrFilter class.
  *
  */
-class Test_SubstrFilterTest extends PHPUnit_Framework_TestCase
+class SubstrFilterTest extends \PHPUnit_Framework_TestCase
 {
     private $whitelist;
     private $blacklist;
@@ -21,9 +24,9 @@ class Test_SubstrFilterTest extends PHPUnit_Framework_TestCase
         $this->data = array("abc\n", "def\n", "ghi\n");
         $values = array('bc', 'ef');
         $pos = array(1, 2);
-        $this->whitelist = new Serial_Core_SubstrFilter($pos, $values);
+        $this->whitelist = new Core\SubstrFilter($pos, $values);
         $this->whitelist = array($this->whitelist, '__invoke');  // PHP 5.2
-        $this->blacklist = new Serial_Core_SubstrFilter($pos, $values, true);
+        $this->blacklist = new Core\SubstrFilter($pos, $values, true);
         $this->blacklist = array($this->blacklist, '__invoke');  // PHP 5.2
         return;
     }

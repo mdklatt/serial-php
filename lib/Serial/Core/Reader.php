@@ -1,11 +1,13 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Base class for all Readers.
  *
  * Serial data consists of sequential records. A Reader iterates over serial
  * data and allows for preprocessing of the data using filters.
  */
-abstract class Serial_Core_Reader implements RecursiveIterator
+abstract class Reader implements \RecursiveIterator
 {
     // Class filters are always applied before any user filters. Derived
     // classes can use these to do any preliminary data manipulation after
@@ -28,9 +30,9 @@ abstract class Serial_Core_Reader implements RecursiveIterator
      */
     public function __construct()
     {
-        $this->userFilters = new ArrayObject();
-        $this->classFilters = new ArrayObject();
-        $this->filterIter = new AppendIterator();
+        $this->userFilters = new \ArrayObject();
+        $this->classFilters = new \ArrayObject();
+        $this->filterIter = new \AppendIterator();
         $this->filterIter->append($this->classFilters->getIterator());
         $this->filterIter->append($this->userFilters->getIterator());
         return;
@@ -44,7 +46,7 @@ abstract class Serial_Core_Reader implements RecursiveIterator
      * 1. Return null to reject the record (the iterator will drop it).
      * 2. Return the data record as is.
      * 3. Return a new/modified record.
-     * 4. Throw a Serial_Core_StopIteration exception to end input.
+     * 4. Throw a StopIteration exception to end input.
      */
     public function filter(/* $args */)
     {
@@ -91,7 +93,7 @@ abstract class Serial_Core_Reader implements RecursiveIterator
                 }
                 ++$this->index;
             }
-            catch (Serial_Core_StopIteration $ex) {
+            catch (StopIteration $ex) {
                 // EOF or a filter signaled the end of valid input.
                 $this->record = null;
             }
@@ -143,7 +145,7 @@ abstract class Serial_Core_Reader implements RecursiveIterator
      */
     public function getChildren()
     {
-        return new RecursiveArrayIterator($this->current());
+        return new \RecursiveArrayIterator($this->current());
     }
 
     /**
@@ -161,7 +163,7 @@ abstract class Serial_Core_Reader implements RecursiveIterator
      * Get the next parsed record from the input stream.
      *
      * This is called before any filters have been applied. The implementation 
-     * must raise a Serial_Core_StopIteration exception to signal when input 
+     * must raise a StopIteration exception to signal when input 
      * has been exhausted.
      */   
     abstract protected function get();

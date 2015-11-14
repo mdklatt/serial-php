@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the ChainReader class.
  *
  */
-class Test_ChainReaderTest extends PHPUnit_Framework_TestCase
+class ChainReaderTest extends \PHPUnit_Framework_TestCase
 {
     
     private $streams;
@@ -20,8 +23,8 @@ class Test_ChainReaderTest extends PHPUnit_Framework_TestCase
     {
         $data = array(" 123 abc\n 456 def\n", " 123 ABC\n 456 DEF\n");
         $this->fields = array(
-            new Serial_Core_IntField('int', array(0, 4)),
-            new Serial_Core_StringField('str', array(4, 4)),
+            new Core\IntField('int', array(0, 4)),
+            new Core\StringField('str', array(4, 4)),
         );
         $this->streams = array();
         foreach ($data as $str) {
@@ -61,8 +64,8 @@ class Test_ChainReaderTest extends PHPUnit_Framework_TestCase
     {
         // Due to a circular reference, calling unset() on a ChainReader is not
         // enough to trigger its destructor, so call it explicitly.
-        $reader = Serial_Core_ChainReader::open($this->streams,
-            'Serial_Core_FixedWidthReader', $this->fields);
+        $reader = Core\ChainReader::open($this->streams,
+            'Serial\Core\FixedWidthReader', $this->fields);
         $reader->rewind();
         $this->assertEquals($this->records[0], $reader->current());
         $reader->__destruct();  // should call close()
@@ -79,8 +82,8 @@ class Test_ChainReaderTest extends PHPUnit_Framework_TestCase
      */
     public function testIter()
     {
-        $reader = new Serial_Core_ChainReader($this->streams,
-            'Serial_Core_FixedWidthReader', $this->fields);
+        $reader = new Core\ChainReader($this->streams,
+            'Serial\Core\FixedWidthReader', $this->fields);
         $this->assertEquals($this->records, iterator_to_array($reader));
         foreach ($this->streams as $stream) {
             // Make sure each stream was closed.
@@ -95,8 +98,8 @@ class Test_ChainReaderTest extends PHPUnit_Framework_TestCase
      */
     public function testIterEmpty()
     {
-        $reader = new Serial_Core_ChainReader(array(),
-            'Serial_Core_FixedWidthReader', $this->fields);
+        $reader = new Core\ChainReader(array(),
+            'Serial\Core\FixedWidthReader', $this->fields);
         $this->assertEquals(array(), iterator_to_array($reader));
         return;
     }

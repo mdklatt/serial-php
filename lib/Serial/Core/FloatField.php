@@ -1,9 +1,11 @@
 <?php
+namespace Serial\Core;
+
 /**
  * A floating-point field.
  *
  */
-class Serial_Core_FloatField extends Serial_Core_ScalarField
+class FloatField extends ScalarField
 {
     private $valfmt;
     private $strfmt;

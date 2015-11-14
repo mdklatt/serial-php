@@ -1,8 +1,11 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Mock writer for test purposes.
  */
-class Test_MockWriter
+class MockWriter
 {
     public $output = array();
     

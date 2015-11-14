@@ -1,9 +1,12 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Base class for tabular reader class unit testing.
  *
  */
-abstract class Test_TabularReaderTest extends PHPUnit_Framework_TestCase
+abstract class TabularReaderTest extends \PHPUnit_Framework_TestCase
 {
     static public function rejectFilter($record)
     {
@@ -19,7 +22,7 @@ abstract class Test_TabularReaderTest extends PHPUnit_Framework_TestCase
     static public function stopFilter($record)
     {
         if ($record['int'] == 456) {
-            throw new Serial_Core_StopIteration();
+            throw new Core\StopIteration();
         }
         return $record;
     }
@@ -84,8 +87,9 @@ abstract class Test_TabularReaderTest extends PHPUnit_Framework_TestCase
     {
         $this->records = array_slice($this->records, 1);
         $this->records[0]['int'] = 912;
-        $this->reader->filter('Test_TabularReaderTest::rejectFilter', 
-                              'Test_TabularReaderTest::modifyFilter');
+        $this->reader->filter(
+            __NAMESPACE__.'\TabularReaderTest::rejectFilter', 
+            __NAMESPACE__.'\TabularReaderTest::modifyFilter');
         $this->testIter();
         return;
     }
@@ -97,7 +101,8 @@ abstract class Test_TabularReaderTest extends PHPUnit_Framework_TestCase
     public function testFilterStop()
     {
         $this->records = array_slice($this->records, 0, 1);
-        $this->reader->filter('Test_TabularReaderTest::stopFilter');
+        $this->reader->filter(
+            __NAMESPACE__.'\TabularReaderTest::stopFilter');
         $this->testIter();
         return;        
     }

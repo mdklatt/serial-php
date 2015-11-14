@@ -1,9 +1,11 @@
 <?php
+namespace Serial\Core;
+
 /**
  * Wrap a callback as a reduction. 
  *
  */
-class Serial_Core_CallbackReduction
+class CallbackReduction
 {
     private $field;
 
@@ -24,7 +26,7 @@ class Serial_Core_CallbackReduction
         if (is_array($field)) {
             if (!$alias) {
                 $message = 'an alias is required for a multi-field reduction';
-                throw new InvalidArgumentException($message);                
+                throw new \InvalidArgumentException($message);                
             }
             $this->field = array_flip($field);
         }

@@ -26,16 +26,16 @@ between fields.
 
     $fields = array(
         // Ignoring time zone field. 
-        new Serial_Core_StringField('stid', array(0, 6)),
-        new Serial_Core_StringField('date', array(6, 11)),
-        new Serial_Core_StringField('time', array(17, 6)),
-        new Serial_Core_FloatField('data1', array(27, 8))),
-        new Serial_Core_StringField('flag1', array(35, 1)),
-        new Serial_Core_FloatField('data2' array(36, 8)),
-        new Serial_Core_StringField('flag2', array(44, 1)),
+        new StringField('stid', array(0, 6)),
+        new StringField('date', array(6, 11)),
+        new StringField('time', array(17, 6)),
+        new FloatField('data1', array(27, 8))),
+        new StringField('flag1', array(35, 1)),
+        new FloatField('data2' array(36, 8)),
+        new StringField('flag2', array(44, 1)),
     );
 
-    $reader = Serial_Core_FixedWidthReader::open('data.txt', $fields);
+    $reader = FixedWidthReader::open('data.txt', $fields);
     foreach ($reader as $record) {
         echo $record['date'].PHP_EOL;    
     }
@@ -54,19 +54,19 @@ element.
 
     $array_fields = array(
         // Define each data array element. The first field has a leading space.
-        new Serial_Core_FloatField('value', array(0, 8)),
+        new FloatField('value', array(0, 8)),
         new Serial_Core_Stringfield('flag', array(8, 1)),
     );
 
     $sample_fields = array(
         // Ignoring time zone field.
-        new Serial_Core_StringField('stid', array(0, 6)),
-        new Serial_Core_StringField('date', array(6, 11)),
-        new Serial_Core_StringField('time', arraay(17, 6)),
-        new Serial_Core_ArrayField('data', array(27, 18), $array_fields)),
+        new StringField('stid', array(0, 6)),
+        new StringField('date', array(6, 11)),
+        new StringField('time', arraay(17, 6)),
+        new ArrayField('data', array(27, 18), $array_fields)),
     );
 
-    $reader = Serial_Core_FixedWidthReader::open('data.txt', $fields);
+    $reader = FixedWidthReader::open('data.txt', $fields);
     foreach ($reader as $record) {
         foreach ($record['data'] as $sensor) {
             echo $sensor['value'].' '.$sensor['flag'].PHP_EOL;
@@ -79,10 +79,10 @@ variable-length array is created by setting its length to `null`.
 *Variable-length arrays must be at the end of the record*.
 
     $sample_fields = array(
-        new Serial_Core_StringField('stid', array(0, 6)),
-        new Serial_Core_StringField('date', array(6, 11)),
-        new Serial_Core_StringField('time', arraay(17, 6)),
-        new Serial_Core_ArrayField('data', array(27, null), $array_fields)),
+        new StringField('stid', array(0, 6)),
+        new StringField('date', array(6, 11)),
+        new StringField('time', arraay(17, 6)),
+        new ArrayField('data', array(27, null), $array_fields)),
     );
 
     ...
@@ -109,9 +109,9 @@ constructor*.
     date_default_timezone_set('UTC');
     $sample_fields = array(
         // Ignoring time zone field.
-        new Serial_Core_StringField('stid', array(0, 6)),
-        new Serial_Core_DateTimeField('timestamp', array(6, 17), 'Y-m-d H:i'),
-        new Serial_Core_ArrayField('data', array(27, 18), $array_fields)),
+        new StringField('stid', array(0, 6)),
+        new DateTimeField('timestamp', array(6, 17), 'Y-m-d H:i'),
+        new ArrayField('data', array(27, 18), $array_fields)),
     );
 
 ## Default Values ##
@@ -123,7 +123,7 @@ should not have a string as its default value.
 
     $array_fields = array(
         // Assign 'M' to all missing flag values.
-        new Serial_Core_FloatField('value', array(0, 8)),
+        new FloatField('value', array(0, 8)),
         new Serial_Core_Stringfield('flag', array(8, 1), '%1s', '', 'M'),
     );
 
@@ -141,20 +141,20 @@ reading the data, so a Reader and a Writer can be defined for a given data
 format using one set of field definitions.
 
     $array_fields = array(
-        new Serial_Core_FloatField('value', array(0, 8), '%8.2f'),
+        new FloatField('value', array(0, 8), '%8.2f'),
         new Serial_Core_Stringfield('flag', array(8, 1), '%1s'),
     );
 
     $sample_fields = array(
-        new Serial_Core_StringField('stid', array(0, 6), '%7s'),
-        new Serial_Core_DateTimeField('timestamp', array(6, 17), 'Y-m-d H:i'),
-        new Serial_Core_StringField('timezone', array(23, 4), '%4s'),
-        new Serial_Core_ArrayField('data', array(27, null), $array_fields)),
+        new StringField('stid', array(0, 6), '%7s'),
+        new DateTimeField('timestamp', array(6, 17), 'Y-m-d H:i'),
+        new StringField('timezone', array(23, 4), '%4s'),
+        new ArrayField('data', array(27, null), $array_fields)),
     );
 
     // Copy 'data.txt' to 'copy.txt'.
-    $reader = Serial_Core_FixedWidthReader::open('data.txt', $sample_fields);
-    $writer = Serial_Core_FixedWidthWriter::open('copy.txt', $sample_fields);
+    $reader = FixedWidthReader::open('data.txt', $sample_fields);
+    $writer = FixedWidthWriter::open('copy.txt', $sample_fields);
     foreach ($reader as $record) {
         // Write each record to the stream.
         $writer->write($record);
@@ -170,8 +170,8 @@ positioned within the field. Use a format width smaller than the field width to
 specify a left margin and control spacing between field values
 
     $fields = array(
-        new Serial_Core_StringField('stid', array(0, 6)),
-        new Serial_Core_FloatField('value', array(6, 8), '%7.2f'),  // left margin
+        new StringField('stid', array(0, 6)),
+        new FloatField('value', array(6, 8), '%7.2f'),  // left margin
         ...
     );
     
@@ -200,22 +200,22 @@ still use a (beg, len) pair. The format string is optional for most field
 types because a width is not required.
 
     $array_fields = array(
-        new Serial_Core_FloatField('value', 0, '%.2f'),  // precision only
+        new FloatField('value', 0, '%.2f'),  // precision only
         new Serial_Core_Stringfield('flag', 1, '%1s'),
     );
 
     $sample_fields = array(
-        new Serial_Core_StringField('stid', 0),
-        new Serial_Core_DateTimeField('timestamp', 1, 'Y-m-d H:i'),  // format required
-        new Serial_Core_StringField('timezone', 2),
-        new Serial_Core_ArrayField('data', array(3, null), $array_fields)),
+        new StringField('stid', 0),
+        new DateTimeField('timestamp', 1, 'Y-m-d H:i'),  // format required
+        new StringField('timezone', 2),
+        new ArrayField('data', array(3, null), $array_fields)),
     );
 
     ...
     
     $delim = ',';
-    $reader = Serial_Core_DelimitedReader::open($istream, $sample_fields, $delim);
-    $writer = Serial_Core_DelimitedWriter::open($ostream, $sample_fields, $delim);
+    $reader = DelimitedReader::open($istream, $sample_fields, $delim);
+    $writer = DelimitedWriter::open($ostream, $sample_fields, $delim);
 
 
 # Initializing Readers and Writers #
@@ -224,7 +224,7 @@ For most situations, calling the class's static `open()` method is the most
 convenient way to create a Reader or Writer. The stream associated with the new
 obect will automatically be closed once the Reader or Writer becomes undefined.
 
-    $reader = Serial_Core_DelimitedReader::open('data.csv', $fields, ',');
+    $reader = DelimitedReader::open('data.csv', $fields, ',');
     ...
     unset($reader);  // closes input file
 
@@ -243,7 +243,7 @@ constructor takes the same arguments as `open()`, except that the constructor
 requires an open stream instead of an optional file path.
     
     $stream = fopen('compress.zlib://data.csv.gz', 'r');
-    $reader = new Serial_Core_DelimitedReader($stream, $fields, ',');
+    $reader = new DelimitedReader($stream, $fields, ',');
     ...
     unset($reader);  // $stream is still open
     fclose($stream);
@@ -356,7 +356,7 @@ can determine that there will be no more valid input it can throw a
             if ($month > $this->month) {
                 // Data are known to be for one year in chronological order so 
                 // there are no more records for the desired month.
-                throw new Serial_Core_StopIteration();
+                throw new StopIteration();
             }
             return $month == $this->month ? $record : null;
         }    
@@ -379,10 +379,10 @@ to least.
 The library defines the `FieldFilter` class for use with Readers and Writers.
 
     // Drop all records where the color field is not crimson or cream.
-    $whitelist = new Serial_Core_FieldFilter('color', array('crimson', 'cream'));
+    $whitelist = new FieldFilter('color', array('crimson', 'cream'));
     
     // Drop all records where the color field is orange.
-    $blacklist = new Serial_Core_FieldFilter('color', array('orange'), true);
+    $blacklist = new FieldFilter('color', array('orange'), true);
 
 ## Stream Filters ##
 
@@ -401,12 +401,12 @@ on a line of text instead of a data record. Text filters can be chained.
     // Limit input to PRCP data. Filtering at the stream level can increase
     // performance by reducing the amount of data that has to be parsed
     // by the Reader.
-    $prcp_filter = new Serial_Core_SubstrFilter(array(21, 4), array('PRCP'));
+    $prcp_filter = new SubstrFilter(array(21, 4), array('PRCP'));
     
     $stream = fopen('data.txt', 'r');
-    Serial_Core_StreamFilterManager::attach($stream, 'comment_filter');
-    Serial_Core_StreamFilterManager::attach($stream, $prcp_filter);
-    $reader = Serial_Core_FixedWidthReader::open($stream, $fields);
+    StreamFilterManager::attach($stream, 'comment_filter');
+    StreamFilterManager::attach($stream, $prcp_filter);
+    $reader = FixedWidthReader::open($stream, $fields);
 
 
 # Custom Data Formats #
@@ -437,11 +437,11 @@ add them using the `classFilter()` method.
     define('SAMPLE_DELIM' ',');
 
     $SAMPLE_FIELDS = array(
-        new Serial_Core_StringField('stid', 0),
-        new Serial_Core_DateTimeField('timestamp', 1, 'Y-m-d H:i'),
-        new Serial_Core_ConstField('timezone', 'UTC'),
-        new Serial_Core_ArrayField('data', array(3, null), array(
-            new Serial_Core_FloatField('value', 0, '%.2f'),
+        new StringField('stid', 0),
+        new DateTimeField('timestamp', 1, 'Y-m-d H:i'),
+        new ConstField('timezone', 'UTC'),
+        new ArrayField('data', array(3, null), array(
+            new FloatField('value', 0, '%.2f'),
             new Serial_Core_Stringfield('flag', 1, '%1s'),
         )),
     );
@@ -453,7 +453,7 @@ add them using the `classFilter()` method.
      * The base class implements the Iterator interface for reading records.
      * All times are converted from UTC to LST on input.
      */
-    class SampleReader extends Serial_Core_DelimitedReader
+    class SampleReader extends DelimitedReader
     {
         // Base class implements the Iterator interface for reading records.
         
@@ -484,7 +484,7 @@ add them using the `classFilter()` method.
      * The base class defines write() and dump() for writing records. All times
      * are converted from LST to UTC on output.
      */ 
-    class SampleWriter extends Serial_Core_DelimitedWriter
+    class SampleWriter extends DelimitedWriter
     {
         // Base class defines write() for writing an individual record and
         // dump() for writing all records in a sequence.
@@ -552,8 +552,8 @@ reduction defined for them will not be in the aggregate record.
     // Aggregate input by site. Input should already be sorted by site 
     // identifier. Each aggregate record will have the sum of all 'data' values 
     // for a given site.
-    $reader = new Serial_Core_AggregateReader($reader, 'stid');  // auto key function
-    $reader->reduce(new Serial_Core_CallbackReduction('array_sum', 'data'));
+    $reader = new AggregateReader($reader, 'stid');  // auto key function
+    $reader->reduce(new CallbackReduction('array_sum', 'data'));
     $summed = iterator_to_array($reader);
 
     
@@ -592,7 +592,7 @@ all records get written to the destination writer.
         return array('mean' => $mean);
     }
     
-    $writer = new Serial_Core_AggregateWriter($writer, $key);
+    $writer = new AggregateWriter($writer, $key);
     $writer->reduce('mean');
     $writer->dump($records);  // dump() calls close()
 
@@ -604,7 +604,7 @@ all records get written to the destination writer.
 The `StringField` type can read and write quoted string by initializing it with
 the quote character to use.
 
-    Serial_Core_StringField('name', 0, '%s', '"');  // double-quoted string
+    StringField('name', 0, '%s', '"');  // double-quoted string
 
 ## Nonstandard Line Endings ##
 
@@ -616,7 +616,7 @@ stream.  If a Reader's input stream protocol uses a different line ending
 ending, use the `endl` argument with the appropriate constructor.
 
     define('ENDL', "\r\r");  // Windows
-    $writer = Serial_Core_FixedWidthWriter::open('data.txt', $fields, ENDL);
+    $writer = FixedWidthWriter::open('data.txt', $fields, ENDL);
 
 ## Header Data ##
 

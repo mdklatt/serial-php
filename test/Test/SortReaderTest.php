@@ -1,17 +1,20 @@
 <?php
+namespace Serial\Core\Test;
+use Serial\Core as Core;
+
 /**
  * Unit testing for the SortReader class.
  *
  */
-class Test_SortReaderTest extends Test_SortTest
+class SortReaderTest extends SortTest
 {   
     /**
      * Test the iterator interface.
      */
     public function testIter()
     {
-        $reader = new ArrayIterator($this->allRandom);
-        $reader = new Serial_Core_SortReader($reader, 'num');
+        $reader = new \ArrayIterator($this->allRandom);
+        $reader = new Core\SortReader($reader, 'num');
         $this->assertEquals($this->numSorted, iterator_to_array($reader));
         return;
     }
@@ -21,8 +24,8 @@ class Test_SortReaderTest extends Test_SortTest
      */
     public function testIterMultiKey()
     {
-        $reader = new ArrayIterator($this->allRandom);
-        $reader = new Serial_Core_SortReader($reader, array('mod', 'num'));
+        $reader = new \ArrayIterator($this->allRandom);
+        $reader = new Core\SortReader($reader, array('mod', 'num'));
         $this->assertEquals($this->modSorted, iterator_to_array($reader));
         return;
     }
@@ -32,9 +35,9 @@ class Test_SortReaderTest extends Test_SortTest
      */
     public function testIterCustomKey()
     {
-        $reader = new ArrayIterator($this->allRandom);
-        $keyfunc = 'Test_SortReaderTest::keyFunc';
-        $reader = new Serial_Core_SortReader($reader, $keyfunc);
+        $reader = new \ArrayIterator($this->allRandom);
+        $keyfunc = __NAMESPACE__.'\SortReaderTest::keyFunc';
+        $reader = new Core\SortReader($reader, $keyfunc);
         $this->assertEquals($this->modSorted, iterator_to_array($reader));
         return;
     }
@@ -44,8 +47,8 @@ class Test_SortReaderTest extends Test_SortTest
      */
     public function testIterGroup()
     {
-        $reader = new ArrayIterator($this->numRandom);
-        $reader = new Serial_Core_SortReader($reader, 'num', 'mod');
+        $reader = new \ArrayIterator($this->numRandom);
+        $reader = new Core\SortReader($reader, 'num', 'mod');
         $this->assertEquals($this->modSorted, iterator_to_array($reader));
         return;
     }
