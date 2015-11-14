@@ -17,6 +17,17 @@ class StreamFilterManager extends \php_user_filter
     private static $registry = array();
 
     /**
+     * Return the class name.
+     *
+     * This *MUST* be implemented by all derived classes. It is sufficient to
+     * copy this function verbatim.
+     */
+    protected static function className()
+    {
+        return __CLASS__;
+    }
+
+    /**
      * Attach a callback to a stream as a filter.
      *
      * A filter is a function or callable object that will be applied to each
@@ -32,12 +43,9 @@ class StreamFilterManager extends \php_user_filter
         // PHP identifies filters by class, not object. However, each class can
         // be mapped to multiple filter names. Here, the filter name is used as
         // a key to store data for each filter instance. 
-        // TODO: This uses the static class name to register each filter, which
-        // breaks inheritance. If PHP 5.2 support is no longer needed, take
-        // advantage of late static binding in PHP 5.3+ to fix this.
         $uid = uniqid();
         self::$registry[$uid] = array('endl' => PHP_EOL, 'callback' => $callback);
-        stream_filter_register($uid, __CLASS__);
+        stream_filter_register($uid, static::className());
         if ($prepend) {
             stream_filter_prepend($stream, $uid, $mode);
         }
@@ -47,10 +55,8 @@ class StreamFilterManager extends \php_user_filter
         return;
     }
    
-    // Implement the php_user_filter interface. This is not part of the class
-    // user interface. NB: Filters are registered using the static class name
-    // (see attach() above), so overriding these methods in a derived class
-    // will have no effect.
+    // Implement the php_user_filter interface. This is not part of user
+    // interface.
     
     private $buffer;
     private $bucket;
