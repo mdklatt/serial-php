@@ -11,6 +11,17 @@ namespace Serial\Core;
 abstract class TabularWriter extends Writer
 {
     /**
+     * Return the class name.
+     *
+     * This *MUST* be implemented by all derived classes. It is sufficient to
+     * copy this function verbatim.
+     */
+    protected static function className()
+    {
+        return __CLASS__;
+    }
+
+    /**
      * Create a writer with automatic stream handling.
      *
      * The first argument is a Writer class name, and the next argument is
@@ -25,14 +36,9 @@ abstract class TabularWriter extends Writer
      * the destructor. It will be called when the process ends, or it can be
      * called explicitly, i.e. $writer->__destruct().
      */
-    public static function openWriter($args)
+    public static function open(/* ... */)
     {
-        // This is a workaround for PHP 5.2's lack of late static binding. If
-        // 5.2 compatibility is no longer necessary, this should be renamed to
-        // 'open' and made public, and derived classes can override it as
-        // necessary.
-        assert($args);
-        $className = array_shift($args);
+        $args = func_get_args();
         if (!is_resource($args[0])) {
             // Assume this is a string to use as a file path.
             if (!($args[0] = @fopen($args[0], 'r'))) {
@@ -40,7 +46,7 @@ abstract class TabularWriter extends Writer
                 throw new \RuntimeException($message);
             }
         }
-        $class = new \ReflectionClass($className);
+        $class = new \ReflectionClass(static::className());
         $writer = $class->newInstanceArgs($args);
         $writer->closing = true;  // take responsibility for closing stream
         return $writer;
