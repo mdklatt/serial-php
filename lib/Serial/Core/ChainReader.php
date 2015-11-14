@@ -11,11 +11,22 @@ class ChainReader extends Reader
     protected $closing = false;
     private $readers;  // needed for __destruct() workaround
     private $records;
-    
+
+    /**
+     * Return the class name.
+     *
+     * This *MUST* be implemented by all derived classes. It is sufficient to
+     * copy this function verbatim.
+     */
+    protected static function className()
+    {
+        return __CLASS__;
+    }
+
     /**
      * Open a ChainReader with automatic stream handling.
      *
-     * The arguments are passed to the class contructor. Each stream is closed
+     * The arguments are passed to the class constructor. Each stream is closed
      * once it has been exhausted, and any remaining open streams in the 
      * sequence will be closed when the reader's destructor is called.
      *
@@ -25,9 +36,7 @@ class ChainReader extends Reader
      */
     public static function open(/* $args */)
     {
-        // Every derived class must implement its own open() method that
-        // returns the correct type of object.
-        $class = new \ReflectionClass(__NAMESPACE__.'\\ChainReader');
+        $class = new \ReflectionClass(static::className());
         $reader = $class->newInstanceArgs(func_get_args());
         $reader->closing = true;  // automatically call close()
         return $reader;
@@ -48,7 +57,7 @@ class ChainReader extends Reader
             throw new \InvalidArgumentException('missing required arguments');
         }
         array_splice($args, 1, 0, array(array($this, 'openStream')));
-        $class = new \ReflectionClass(__NAMESPACE__.'\\ReaderIterator');
+        $class = new \ReflectionClass(__NAMESPACE__.'\ReaderIterator');
         $this->readers = $class->newInstanceArgs($args);
         $this->records = new \RecursiveIteratorIterator($this->readers);
         return;        
@@ -95,9 +104,8 @@ class ChainReader extends Reader
      */
     public function openStream($expr)
     {
-        // TODO: This is an object method instead of static so that derived
-        // classes can override it, but PHP 5.3 introduces late static binding
-        // once PHP 5.2 support is no longer needed.
+        // This can seemingly be a static, but it's an object method to give
+        // more flexibility to any derived class that needs to override it.
         return is_resource($expr) ? $expr : fopen($expr, 'r');
     }
 }
@@ -107,7 +115,7 @@ class ChainReader extends Reader
  *
  * When used recursively, e.g. via RecursiveIteratorIterator, iterate over all
  * records in all streams in the sequence. This is used by ChainReader and is
- * not part of the Serial_Core API.
+ * not part of the Serial\Core API.
  */
 class ReaderIterator extends \NoRewindIterator
 implements \RecursiveIterator
