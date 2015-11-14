@@ -22,9 +22,7 @@ class RegexFilterTest extends \PHPUnit_Framework_TestCase
     {
         $regex = '/abc|def/';
         $this->whitelist = new Core\RegexFilter($regex);
-        $this->whitelist = array($this->whitelist, '__invoke');  // PHP 5.2
         $this->blacklist = new Core\RegexFilter($regex, true);
-        $this->blacklist = array($this->blacklist, '__invoke');  // PHP 5.2
         $this->data = array("abc\n", "def\n", "ghi\n");
         return;
     }

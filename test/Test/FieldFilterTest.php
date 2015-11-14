@@ -22,9 +22,7 @@ class FieldFilterTest extends \PHPUnit_Framework_TestCase
     {
         $values = array('abc', 'def');
         $this->whitelist = new Core\FieldFilter('test', $values);
-        $this->whitelist = array($this->whitelist, '__invoke');  // PHP 5.2
         $this->blacklist = new Core\FieldFilter('test', $values, true);
-        $this->blacklist = array($this->blacklist, '__invoke');  // PHP 5.2
         $this->data = array();
         $values[] = 'ghi';
         foreach ($values as $value) {
