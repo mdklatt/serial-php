@@ -27,23 +27,13 @@ class DateTimeField extends ScalarField
     /**
      * Convert a string token to a DateTime.
      *
-     * CAUTION: This does *not* use the format string to parse the token into
-     * a DateTime; instead the token must be in a format that the DateTime
-     * constructor can correctly parse. If the token is an empty string the
-     * default field value is used.
      */
     public function decode($token)
     {
-        // Can't use DateTime::createFromFormat() because of PHP 5.2, so rely 
-        // on the DateTime constructor. The legacy date/time interface is 
-        // pretty well worthless here (doesn't work the same on all platforms,
-        // doesn't reliably work for years before 1970, etc.), so this is the
-        // best that that can be done as long as PHP 5.2 compatibility is
-        // needed.
         if (!($token = trim($token))) {
             return $this->default;
         }
-        return new \DateTime($token);
+        return \DateTime::createFromFormat($this->valfmt, $token);
     }
     
     /**
