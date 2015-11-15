@@ -33,7 +33,7 @@ class DateTimeField extends ScalarField
         if (!($token = trim($token))) {
             return $this->default;
         }
-        return \DateTime::createFromFormat($this->valfmt, $token);
+        return \DateTime::createFromFormat($this->valfmt.'|', $token);
     }
     
     /**
