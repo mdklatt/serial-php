@@ -1,0 +1,20 @@
+{
+  "name": "serial/core",
+  "description": "Tools for reading and writing sequential record-oriented data.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {"name": "Michael Klatt", "email": "mdklatt@ou.edu"}
+  ],
+  "require": {
+    "php": ">=5.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.7.7",
+    "phing/phing": "^2.12"
+  },
+  "autoload": {
+    "psr-0": {"Serial": "lib/"}
+  }
+  
+}

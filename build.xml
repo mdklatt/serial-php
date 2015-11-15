@@ -11,7 +11,7 @@ Run commands using `phing <target1> <target2> ...`
   
   <property file="build.properties" />  
   <includepath classpath="${lib.root}" />
-  <includepath classpath="tool/Phing" />  
+  <includepath classpath="etc/phing" />  
   <taskdef name="const" classname="PhpConstTask" />
   <taskdef name="include" classname="PhpIncludeTask" />
   <include path="${lib.header}" />
@@ -25,7 +25,7 @@ Run commands using `phing <target1> <target2> ...`
     <includepath classpath="${test.root}" />    
     <include path="${test.header}" />
     <php expression="date_default_timezone_set('UTC')" />
-    <phpunit haltonfailure="true" haltonerror="true" pharlocation="${phpunit.phar}" printsummary="true">
+    <phpunit haltonfailure="true" haltonerror="true" pharlocation="${phpunit.bin}" printsummary="true">
       <batchtest>
         <fileset dir="test/Test">
           <include name="**/*Test.php" />
@@ -41,7 +41,7 @@ Run commands using `phing <target1> <target2> ...`
     <const name="Serial\Core\VERSION" property="version" />    
     <property name="phar" value = "${phing.project.name}-${version}.phar" />
     <mkdir dir="${lib.build}" />
-    <pharpackage destfile="${lib.build}/${phar}" basedir="lib" compression="gzip" stub="tool/stub.php">
+    <pharpackage destfile="${lib.build}/${phar}" basedir="lib" compression="gzip" stub="etc/phar/stub.php">
       <fileset dir="lib">
         <include name="**" />
       </fileset>

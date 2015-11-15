@@ -17,12 +17,13 @@ branches:
 
 sudo: false
 
-before_install:
-  - wget https://phar.phpunit.de/phpunit.phar -O tool/phpunit.phar
-  - wget http://www.phing.info/get/phing-latest.phar -O tool/phing.phar
+before_script:
+  - composer install
     
 script:
   # Run the test suite against the source tree, build a phar archive, and run
   # the test suite against the phar archive.
-  - php tool/phing.phar test phar
-  - php tool/phing.phar -Dlib.header=$(ls build/serial-core-*.phar) test 
+  - vendor/bin/phing test 
+  - vendor/bin/phing phar
+  - vendor/bin/phing test -Dlib.header=$(ls build/serial-core-*.phar)
+  
