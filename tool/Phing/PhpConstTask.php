@@ -9,7 +9,6 @@ class PhpConstTask extends Task
 {
 
     protected $name;  // constant name
-    protected $class;  // class name for a class constant
     protected $property;  // property to hold return value
 
     /** Main entry point. */
@@ -19,16 +18,9 @@ class PhpConstTask extends Task
             throw new BuildException("You must specify the constant name.", $this->location);
         }
         if ($this->property === null) {
-            throw new BuildException("You must specify a property to hold the contant.", $this->location);
+            throw new BuildException("You must specify a property to hold the constant.", $this->location);
         }
-        if ($this->class === null) {
-            // Get global constant.
-            $value = constant($this->name);
-        } else {
-            $class = new ReflectionClass($this->class);
-            $value = $class->getConstant($this->name);
-        }
-        $this->project->setProperty($this->property, $value);
+        $this->project->setProperty($this->property, constant($this->name));
     }
 
     /** Set constant name. */

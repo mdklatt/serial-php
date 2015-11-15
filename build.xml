@@ -24,14 +24,6 @@ Run commands using `phing <target1> <target2> ...`
     <echo message="running test suite against ${lib.header}" />
     <includepath classpath="${test.root}" />    
     <include path="${test.header}" />
-    <php function="phpversion" returnProperty="php.version" />
-    <if>
-      <contains string="${php.version}" substring="5.2." />
-      <then>
-        <echo message="cannot use PHPUnit phar package with PHP 5.2" />
-        <property name="phpunit.phar" value="false" override="true" />
-      </then>
-    </if>
     <php expression="date_default_timezone_set('UTC')" />
     <phpunit haltonfailure="true" haltonerror="true" pharlocation="${phpunit.phar}" printsummary="true">
       <batchtest>
@@ -46,7 +38,7 @@ Run commands using `phing <target1> <target2> ...`
   <!-- Bundle the library as a Phar file. -->
   
   <target name="phar" description="create phar distribution">
-    <const name="VERSION" class="Serial_Core" property="version" />    
+    <const name="Serial\Core\VERSION" property="version" />    
     <property name="phar" value = "${phing.project.name}-${version}.phar" />
     <mkdir dir="${lib.build}" />
     <pharpackage destfile="${lib.build}/${phar}" basedir="lib" compression="gzip" stub="tool/stub.php">
