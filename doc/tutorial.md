@@ -1,6 +1,6 @@
 # Overview #
 
-The **serial-core** library can be used to read and write serial data
+The **Serial\Core** library can be used to read and write serial data
 consisting of sequential records of typed fields. Data is read into or written
 from associative arrays that are keyed by field name. Load the library by
 including `Serial/Core/autoload.php`.
@@ -22,8 +22,8 @@ a data type and defined by its name and position. For a fixed-width field the
 position array is a substring specifier (beg, len), inclusive of any spaces 
 between fields.
 
-    require 'Serial/Core.php';
-
+    use Serial\Core;
+    
     $fields = array(
         // Ignoring time zone field. 
         new StringField('stid', array(0, 6)),
