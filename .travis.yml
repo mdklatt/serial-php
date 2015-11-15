@@ -1,26 +1,28 @@
-# Travis CI configuration.
-#
-# <http://travis-ci.org>
-#
+## Travis CI configuration for the serial-core library.
+##
+##  <https://travis-ci.org/mdklatt/serial-php>
+##
 language: php
+
 php:
-    - 5.3
-    - 5.4
-    - 5.5
-    - 5.6
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
 
 branches:
-    only:
-        - master
-        - dev
+  only:
+    - master
+    - dev
+
+sudo: false
 
 before_install:
-    - pecl install phar  # PHP 5.2 only
-    - wget https://phar.phpunit.de/phpunit.phar -O tool/phpunit.phar # PHP 5.3+
-    - wget http://www.phing.info/get/phing-latest.phar -O tool/phing.phar
+  - wget https://phar.phpunit.de/phpunit.phar -O tool/phpunit.phar
+  - wget http://www.phing.info/get/phing-latest.phar -O tool/phing.phar
     
 script:
-    # Run the test suite against the source tree, build a phar archive, and run
-    # the test suite against the phar archive.
-    - php tool/phing.phar test phar
-    - php tool/phing.phar -Dlib.header=$(ls build/serial-core-*.phar) test 
+  # Run the test suite against the source tree, build a phar archive, and run
+  # the test suite against the phar archive.
+  - php tool/phing.phar test phar
+  - php tool/phing.phar -Dlib.header=$(ls build/serial-core-*.phar) test 
