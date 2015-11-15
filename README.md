@@ -1,14 +1,13 @@
-serial-php
-==========
+Serial\Core
+===========
 
 Overview
 --------
 [![status][1]][2]
 
-The [**serial-php**][3] library provides tools for reading and writing
-record-oriented data in various formats. The core library is contained in the
-`Serial/Core` directory. Library extensions will have their own `Serial`
-subdirectories.
+The [**Serial\Core**][3] library provides tools for reading and writing
+record-oriented data in various formats. Library extensions will be in their 
+own `Serial` sub-namspace.
 
 
 Features
