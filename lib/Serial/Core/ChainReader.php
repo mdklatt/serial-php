@@ -1,6 +1,8 @@
 <?php
 namespace Serial\Core;
 
+require_once 'close.php';
+
 /**
  * Read a sequence of streams as a single set of records.
  *

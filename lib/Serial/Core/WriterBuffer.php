@@ -1,6 +1,8 @@
 <?php
 namespace Serial\Core;
 
+require_once 'close.php';
+
 /**
  * Abstract base class for all Writer buffers.
  * 

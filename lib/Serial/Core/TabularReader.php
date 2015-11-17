@@ -1,6 +1,8 @@
 <?php
 namespace Serial\Core;
 
+require_once 'close.php';
+
 /**
  * Base class for tabular data readers.
  *

@@ -11,7 +11,7 @@
 # TODO: Use a package config file (JSON) to specify paths.
 $root = implode(DIRECTORY_SEPARATOR, array(dirname(dirname(__FILE__)), 'lib'));
 if (!($path = getenv('PHPUNIT_TEST_SOURCE'))) {
-    $path = array(dirname(dirname(__FILE__)), 'lib', 'Serial', 'Core.php');
+    $path = array(dirname(dirname(__FILE__)), 'lib', 'Serial', 'Core', 'autoload.php');
     $path = implode(DIRECTORY_SEPARATOR, $path);
 }
 require $path;
