@@ -7,6 +7,6 @@
  * during the Phar creation process.
  */
 Phar::mapPhar();
-include 'phar://'.__FILE__.DIRECTORY_SEPARATOR.'Serial/Core/autoload.php';
+require 'phar://'.__FILE__.DIRECTORY_SEPARATOR.'Serial/Core/autoload.php';
 __HALT_COMPILER(); 
 ?>

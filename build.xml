@@ -7,25 +7,15 @@ Run commands using `phing <target1> <target2> ...`
 -->
 <project name="serial-core" default="">
 
-  <!-- Global initialization. -->
+  <property name="phpunit" value="vendor/bin/phpunit" />
   
-  <property file="build.properties" />  
-  <includepath classpath="${lib.root}" />
-  <includepath classpath="etc/phing" />  
-  <taskdef name="const" classname="PhpConstTask" />
-  <taskdef name="include" classname="PhpIncludeTask" />
-  <include path="${lib.header}" />
-
-
-  <!-- Run the test suite. Use the -Dlib.header command-line option to specify 
-  a phar file to test. -->
+  <!-- Run the test suite. -->
   
   <target name="test" description="run test suite">
-    <echo message="running test suite against ${lib.header}" />
-    <includepath classpath="${test.root}" />    
-    <include path="${test.header}" />
+    <includepath classpath="test" />    
+    <php expression="require 'Test.php'" />
     <php expression="date_default_timezone_set('UTC')" />
-    <phpunit haltonfailure="true" haltonerror="true" pharlocation="${phpunit.bin}" printsummary="true">
+    <phpunit haltonfailure="true" haltonerror="true" pharlocation="${phpunit}" printsummary="true">
       <batchtest>
         <fileset dir="test/Test">
           <include name="**/*Test.php" />
@@ -38,14 +28,25 @@ Run commands using `phing <target1> <target2> ...`
   <!-- Bundle the library as a Phar file. -->
   
   <target name="phar" description="create phar distribution">
-    <const name="Serial\Core\VERSION" property="version" />    
-    <property name="phar" value = "${phing.project.name}-${version}.phar" />
-    <mkdir dir="${lib.build}" />
-    <pharpackage destfile="${lib.build}/${phar}" basedir="lib" compression="gzip" stub="etc/phar/stub.php">
+    <includepath classpath="lib" />
+    <php expression="require 'Serial/Core/version.php'" />
+    <php expression="\Serial\Core\VERSION" returnProperty="lib.version" />
+    <property name="phar" value = "build/${phing.project.name}-${lib.version}.phar" />
+    <mkdir dir="build" />
+    <pharpackage destfile="${phar}" basedir="lib" compression="gzip" stub="etc/phar/stub.php">
       <fileset dir="lib">
         <include name="**" />
       </fileset>
     </pharpackage>
+    <php expression="require 'phar://${phar}/Serial/Core/version.php'" />
+    <php expression="\Serial\Core\VERSION" returnProperty="phar.version" />
+    <if>
+      <not><equals arg1="${lib.version}" arg2="${phar.version}" /></not>
+      <then>
+        <fail message="phar verification failed" />
+      </then>
+    </if>
   </target>
-
+  
+  
 </project>

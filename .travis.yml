@@ -21,9 +21,7 @@ before_script:
   - composer install
     
 script:
-  # Run the test suite against the source tree, build a phar archive, and run
-  # the test suite against the phar archive.
+  # Run the test suite and verify that a phar archive can be built.
   - vendor/bin/phing test 
   - vendor/bin/phing phar
-  - vendor/bin/phing test -Dlib.header=$(ls build/serial-core-*.phar)
   
