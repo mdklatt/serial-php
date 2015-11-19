@@ -15,4 +15,4 @@ namespace Serial\Core;
  * Version 0.x should be considered a development version with an unstable API,
  * and backwards compatibility is not guaranteed for minor versions.
  */
-const VERSION = '0.4.0dev';
+const VERSION = '0.4.0';
