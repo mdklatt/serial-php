@@ -1,0 +1,9 @@
+build/
+vendor/
+*.phar
+
+.idea/
+.project/
+nbproject/
+
+.DS_Store
