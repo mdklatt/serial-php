@@ -13,7 +13,7 @@ Run commands using `phing <target1> <target2> ...`
   
   <target name="test" description="run test suite">
     <includepath classpath="test" />    
-    <php expression="require 'Test.php'" />
+    <php expression="require 'Test/autoload.php'" />
     <php expression="date_default_timezone_set('UTC')" />
     <phpunit haltonfailure="true" haltonerror="true" pharlocation="${phpunit}" printsummary="true">
       <batchtest>

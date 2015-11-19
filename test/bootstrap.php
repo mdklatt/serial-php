@@ -8,7 +8,7 @@
  * test source by setting the PHPUNIT_TEST_SOURCE environment variable; this
  * is useful for verifying a phar file.
  */
-# TODO: Use a package config file (JSON) to specify paths.
+require 'Test/autoload.php';
 $root = implode(DIRECTORY_SEPARATOR, array(dirname(dirname(__FILE__)), 'lib'));
 if (!($path = getenv('PHPUNIT_TEST_SOURCE'))) {
     $path = array(dirname(dirname(__FILE__)), 'lib', 'Serial', 'Core', 'autoload.php');
